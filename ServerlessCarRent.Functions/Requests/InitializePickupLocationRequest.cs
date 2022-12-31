@@ -29,7 +29,7 @@ namespace ServerlessCarRent.Functions.Requests
 		[OpenApiProperty(Description = "The pickup location status")]
 		[JsonProperty("status")]
 		[JsonConverter(typeof(StringEnumConverter))]
-		public PickupLocationStatus Status { get; set; }
+		public PickupLocationState Status { get; set; }
 
 		internal bool IsValid()
 		{

@@ -30,13 +30,11 @@ namespace ServerlessCarRent.Functions.Responses
 
 		[OpenApiProperty(Description = "The search parameter for the current states")]
 		[JsonProperty("statesFilter")]
-		[JsonConverter(typeof(StringEnumConverter))]
-		public List<CarState> StatesFilter { get; set; }
+		public IEnumerable<CarState> StatesFilter { get; set; }
 
 		[OpenApiProperty(Description = "The search parameter for the current rental states of the car")]
 		[JsonProperty("rentalStatesFilter")]
-		[JsonConverter(typeof(StringEnumConverter))]
-		public List<CarRentalState> RentalStatesFilter { get; set; }
+		public IEnumerable<CarRentalState> RentalStatesFilter { get; set; }
 
 
 		[OpenApiProperty(Description = "The search results")]

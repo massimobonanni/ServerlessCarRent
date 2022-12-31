@@ -9,6 +9,6 @@ namespace ServerlessCarRent.Common.Dtos
 	{
 		public string City { get; set; }
 		public string Location { get; set; }
-		public PickupLocationStatus Status { get; set; }
+		public PickupLocationState Status { get; set; }
 	}
 }

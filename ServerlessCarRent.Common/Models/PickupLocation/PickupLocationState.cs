@@ -1,6 +1,6 @@
 ﻿namespace ServerlessCarRent.Common.Models.PickupLocation
 {
-	public enum PickupLocationStatus
+	public enum PickupLocationState
 	{
 		Open = 0,
 		Closed

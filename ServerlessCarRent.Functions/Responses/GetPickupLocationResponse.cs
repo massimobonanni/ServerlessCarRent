@@ -30,7 +30,7 @@ namespace ServerlessCarRent.Functions.Responses
 		[OpenApiProperty(Description = "The status of the pickup location")]
 		[JsonProperty("status")]
 		[JsonConverter(typeof(StringEnumConverter))]
-		public PickupLocationStatus Status { get; set; }
+		public PickupLocationState Status { get; set; }
 
 		[OpenApiProperty(Description = "The cars managed by the pickup location")]
 		[JsonProperty("cars")]

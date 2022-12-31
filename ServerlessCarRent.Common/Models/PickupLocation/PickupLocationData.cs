@@ -10,7 +10,7 @@ namespace ServerlessCarRent.Common.Models.PickupLocation
 	{
 		public string City { get; set; }
 		public string Location { get; set; }
-		public PickupLocationStatus Status { get; set; }
+		public PickupLocationState Status { get; set; }
 		public List<PickupLocationCarData> Cars { get; set; }
 	}
 }
