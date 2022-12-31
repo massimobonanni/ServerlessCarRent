@@ -68,7 +68,7 @@ namespace ServerlessCarRent.Functions.Clients
 					LocationFilter = searchFilters.Location,
 					CityFilter = searchFilters.City,
 					IdentifierFilter = searchFilters.Identifier,
-					StatesFilter = searchFilters.States,
+					StatesFilter = searchFilters.States?.Select(s=>s.ToString()),
 					PickupLocations = new List<GetPickupLocationsResponse.PickupLocationDto>()
 				};
 

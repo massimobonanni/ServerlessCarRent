@@ -31,7 +31,7 @@ namespace ServerlessCarRent.Functions.Responses
 
 		[OpenApiProperty(Description = "The search parameter for the current states")]
 		[JsonProperty("statesFilter")]
-		public IEnumerable<PickupLocationState> StatesFilter { get; set; }
+		public IEnumerable<string> StatesFilter { get; set; }
 
 
 		[OpenApiProperty(Description = "The search results")]
