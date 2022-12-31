@@ -8,6 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using PickupLocation = ServerlessCarRent.Common.Models.PickupLocation;
+using Car = ServerlessCarRent.Common.Models.Car;
+using CarRental = ServerlessCarRent.Common.Models.CarRental;
 
 namespace Microsoft.Azure.WebJobs.Extensions.DurableTask
 {
@@ -50,19 +53,19 @@ namespace Microsoft.Azure.WebJobs.Extensions.DurableTask
 			return client.EntityExistsAsync(nameof(CarEntity), plate, token);
 		}
 
-		public static Task<PickupLocationData> GetCarDataAsync(this IDurableEntityClient client,
+		public static Task<Car.CarData> GetCarDataAsync(this IDurableEntityClient client,
 			string plate, CancellationToken token = default)
 		{
-			return client.GetEntityStateAsync< PickupLocationData>(nameof(CarEntity), plate, token);
+			return client.GetEntityStateAsync< Car.CarData>(nameof(CarEntity), plate, token);
 
 		}
 		#endregion [ Car Entity methods]
 
 		#region [ Car Rentals Entity methods]
-		public static Task<CarRentalsData> GetCarRentalsDataAsync(this IDurableEntityClient client,
+		public static Task<CarRental.CarRentalsData> GetCarRentalsDataAsync(this IDurableEntityClient client,
 			string plate, CancellationToken token = default)
 		{
-			return client.GetEntityStateAsync<CarRentalsData>(nameof(CarRentalsEntity), plate, token);
+			return client.GetEntityStateAsync<CarRental.CarRentalsData>(nameof(CarRentalsEntity), plate, token);
 		}
 		#endregion [ Car Rentals Entity methods]
 
@@ -73,10 +76,10 @@ namespace Microsoft.Azure.WebJobs.Extensions.DurableTask
 			return client.EntityExistsAsync(nameof(PickupLocationEntity), locationId, token);
 		}
 
-		public static Task<PickupLocationData> GetPickupLocationDataAsync(this IDurableEntityClient client,
+		public static Task<PickupLocation.PickupLocationData> GetPickupLocationDataAsync(this IDurableEntityClient client,
 			string locationId, CancellationToken token = default)
 		{
-			return client.GetEntityStateAsync<PickupLocationData>(nameof(PickupLocationEntity), locationId, token);
+			return client.GetEntityStateAsync<PickupLocation.PickupLocationData>(nameof(PickupLocationEntity), locationId, token);
 
 		}
 		#endregion [ PickupLocation Entity methods]

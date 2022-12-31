@@ -39,7 +39,17 @@ namespace ServerlessCarRent.Functions.Entities
 
 		public void RentCar(RentCarPickupLocationDto carInfo)
 		{
-			throw new NotImplementedException();
+			var car = this.Status.Cars.FirstOrDefault(c => c.Plate == carInfo.CarPlate);
+
+			if (car == null)
+				return;
+
+			if (car.RentalStatus == Common.Models.CarRental.CarRentalState.Rented)
+				return;
+
+			car.RentalStatus = Common.Models.CarRental.CarRentalState.Rented;
+
+			SignalRentStarted(carInfo);
 		}
 
 		public void CarStatusChanged(CarStatusChangeDto carInfo)
@@ -76,6 +86,22 @@ namespace ServerlessCarRent.Functions.Entities
 				car.RentalStatus = carInfo.NewCarRentalStatus.Value;
 		}
 		#endregion [ Public methods ]
+
+		#region [ Private methods ]
+		private void SignalRentStarted(RentCarPickupLocationDto carInfo)
+		{
+			var carRentalsEntityId = new EntityId(nameof(CarEntity), carInfo.CarPlate);
+
+			Entity.Current.SignalEntity(carRentalsEntityId,
+				nameof(ICarEntity.Rent),
+				new RentCarDto()
+				{
+					RenterFirstName=carInfo.RenterFirstName,
+					RenterLastName=carInfo.RenterLastName,
+					StartDate=carInfo.RentalStart
+				});
+		}
+		#endregion [ Private methods ]
 
 		[FunctionName(nameof(PickupLocationEntity))]
 		public static Task Run([EntityTrigger] IDurableEntityContext ctx, ILogger logger)

@@ -23,13 +23,13 @@ namespace ServerlessCarRent.Functions.Entities
 		}
 
 		[JsonPropertyName("status")]
-		public Common.Models.Car.PickupLocationData Status { get; set; }
+		public CarData Status { get; set; }
 
 		#region [ Public methods ]
 		public void Initialize(InitializeCarDto carInfo)
 		{
 			if (Status == null)
-				this.Status = new Common.Models.Car.PickupLocationData();
+				this.Status = new CarData();
 
 			this.Status.Model = carInfo.Model;
 			this.Status.PickupLocation = carInfo.PickupLocation;
@@ -56,8 +56,8 @@ namespace ServerlessCarRent.Functions.Entities
 			};
 			this.Status.CurrentRenter = new Common.Models.RenterData()
 			{
-				FirstName = rentInfo.RentalFirstName,
-				LastName = rentInfo.RentalLastName
+				FirstName = rentInfo.RenterFirstName,
+				LastName = rentInfo.RenterLastName
 			};
 		}
 

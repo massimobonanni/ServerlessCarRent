@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ServerlessCarRent.Common.Models.Car
 {
-	public class PickupLocationData
+	public class CarData
 	{
 		public string Model { get; set; }
 		public string PickupLocation { get; set; }
