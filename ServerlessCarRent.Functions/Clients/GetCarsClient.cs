@@ -69,8 +69,8 @@ namespace ServerlessCarRent.Functions.Clients
 					LocationFilter = searchFilters.Location,
 					ModelFilter = searchFilters.Model,
 					PlateFilter = searchFilters.Plate,
-					RentalStatesFilter = searchFilters.RentalStates,
-					StatesFilter = searchFilters.States,
+					RentalStatesFilter = searchFilters.RentalStates?.Select(s => s.ToString()),
+					StatesFilter = searchFilters.States?.Select(s=>s.ToString()),
 					Cars = new List<GetCarsResponse.CarDto>()
 				};
 
