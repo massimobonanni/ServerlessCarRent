@@ -6,6 +6,7 @@ namespace ServerlessCarRent.Common.Dtos
 {
 	public class RentCarPickupLocationDto
 	{
+		public string rentalId { get; set; }
 		public string CarPlate { get; set; }
 		public string RenterFirstName { get; set; }
 		public string RenterLastName { get; set;}
