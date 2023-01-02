@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerlessCarRent.Functions", "ServerlessCarRent.Functions\ServerlessCarRent.Functions.csproj", "{6A46C13D-DA72-4836-92C8-A357B7EF987D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerlessCarRent.Functions", "ServerlessCarRent.Functions\ServerlessCarRent.Functions.csproj", "{6A46C13D-DA72-4836-92C8-A357B7EF987D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerlessCarRent.Common", "ServerlessCarRent.Common\ServerlessCarRent.Common.csproj", "{C5C9D943-B689-445F-802D-77C3EAA7B4D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerlessCarRent.Common", "ServerlessCarRent.Common\ServerlessCarRent.Common.csproj", "{C5C9D943-B689-445F-802D-77C3EAA7B4D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

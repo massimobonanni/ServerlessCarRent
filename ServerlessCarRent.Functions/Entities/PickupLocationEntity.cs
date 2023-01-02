@@ -37,19 +37,21 @@ namespace ServerlessCarRent.Functions.Entities
 			this.Status.Cars = new List<PickupLocationCarData>();
 		}
 
-		public void RentCar(RentCarPickupLocationDto carInfo)
+		public Task<bool> RentCar(RentCarPickupLocationDto carInfo)
 		{
 			var car = this.Status.Cars.FirstOrDefault(c => c.Plate == carInfo.CarPlate);
 
 			if (car == null)
-				return;
+				return Task.FromResult(false);
 
 			if (car.RentalStatus == Common.Models.CarRental.CarRentalState.Rented)
-				return;
+				return Task.FromResult(false); ;
 
 			car.RentalStatus = Common.Models.CarRental.CarRentalState.Rented;
 
 			SignalRentStarted(carInfo);
+
+			return Task.FromResult(true);
 		}
 
 		public void CarStatusChanged(CarStatusChangeDto carInfo)

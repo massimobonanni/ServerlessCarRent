@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ServerlessCarRent.Common.Interfaces
 {
@@ -9,7 +10,7 @@ namespace ServerlessCarRent.Common.Interfaces
 	{
 		void Initialize(InitializePickupLocationDto locationInfo);
 
-		void RentCar(RentCarPickupLocationDto carInfo);
+		Task<bool> RentCar(RentCarPickupLocationDto carInfo);
 
 		void CarStatusChanged(CarStatusChangeDto carInfo);
 	}

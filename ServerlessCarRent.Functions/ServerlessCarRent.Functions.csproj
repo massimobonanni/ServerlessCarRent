@@ -22,6 +22,5 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Activities\" />
-		<Folder Include="Orchestrators\" />
 	</ItemGroup>
 </Project>
