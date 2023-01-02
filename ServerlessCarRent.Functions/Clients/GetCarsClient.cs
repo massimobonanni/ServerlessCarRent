@@ -32,7 +32,7 @@ namespace ServerlessCarRent.Functions.Clients
 			_logger = loggerFactory.CreateLogger<GetCarClient>();
 		}
 
-		[OpenApiOperation(operationId: "getCars", new[] { "Cars management" },
+		[OpenApiOperation(operationId: "getCars", new[] { "Cars Management" },
 		   Summary = "Search cars based on search parameters", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter("plate", Summary = "The plate (or part of the plate) of the cars to search",
 		   In = Microsoft.OpenApi.Models.ParameterLocation.Query, Required = false,

@@ -28,15 +28,18 @@ namespace ServerlessCarRent.Functions.Entities
 
 		public void AddRent(CarRentalDto rentInfo)
 		{
+			if (this.Status == null)
+				this.Status = new CarRentalsData();
+
 			if (this.Status.Rentals == null)
 				this.Status.Rentals = new List<CarRentalData>();
 
 			this.Status.Rentals.Add(new CarRentalData()
 			{
-				CostPerHour=rentInfo.CostPerHour,
-				Currency=rentInfo.Currency,
-				Rental=rentInfo.Rental,
-				Renter=rentInfo.Renter
+				CostPerHour = rentInfo.CostPerHour,
+				Currency = rentInfo.Currency,
+				Rental = rentInfo.Rental,
+				Renter = rentInfo.Renter
 			});
 		}
 

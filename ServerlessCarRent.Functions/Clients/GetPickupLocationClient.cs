@@ -28,7 +28,7 @@ namespace ServerlessCarRent.Functions.Clients
 			_logger = loggerFactory.CreateLogger<GetPickupLocationClient>();
 		}
 
-		[OpenApiOperation(operationId: "getPickupLocation", new[] { "Pickup Locations management" },
+		[OpenApiOperation(operationId: "getPickupLocation", new[] { "Pickup Locations Management" },
 		   Summary = "Retrieve the information about a pickup location", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter("identifier", Summary = "The identifier of the pickup location to retrieve",
 		   In = Microsoft.OpenApi.Models.ParameterLocation.Path, Required = true,

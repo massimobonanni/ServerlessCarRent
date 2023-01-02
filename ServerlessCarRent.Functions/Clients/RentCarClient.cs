@@ -33,7 +33,7 @@ namespace ServerlessCarRent.Functions.Clients
 			_logger = loggerFactory.CreateLogger<RentCarClient>();
 		}
 
-		[OpenApiOperation(operationId: "rentCar", new[] { "Cars Management" },
+		[OpenApiOperation(operationId: "rentCar", new[] { "Rents Management" },
 			Summary = "Rent a car", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(RentCarRequest),
 			Description = "Info about the rent.", Required = true)]
@@ -86,7 +86,7 @@ namespace ServerlessCarRent.Functions.Clients
 								{
 									CarPlate = request.CarPlate,
 									PickupLocation = request.PickupLocation,
-									RentId = rentOperationId,
+									RentalId = rentOperationId,
 									RentOperationStatus = RentOperationState.Pending
 								};
 

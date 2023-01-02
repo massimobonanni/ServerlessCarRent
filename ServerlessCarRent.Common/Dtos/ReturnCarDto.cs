@@ -6,7 +6,6 @@ namespace ServerlessCarRent.Common.Dtos
 {
 	public class ReturnCarDto
 	{
-		public string RentalId { get; set; }
 		public DateTimeOffset EndDate { get; set; }
 	}
 }

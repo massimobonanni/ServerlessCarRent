@@ -50,13 +50,18 @@ namespace ServerlessCarRent.Functions.Responses
 
 		public class CarRentalDto
 		{
+
+			[OpenApiProperty(Description = "Rental id")]
+			[JsonProperty("rentalId")]
+			public string RentalId { get; set; }
+
 			[OpenApiProperty(Description = "Rental start date")]
 			[JsonProperty("rentalStart")]
 			public DateTimeOffset RentalStart { get; set; }
 
 			[OpenApiProperty(Description = "Rental end date")]
 			[JsonProperty("rentalEnd")]
-			public DateTimeOffset RentalEnd { get; set; }
+			public DateTimeOffset? RentalEnd { get; set; }
 
 			[OpenApiProperty(Description = "Renter first name")]
 			[JsonProperty("renterFirstName")]

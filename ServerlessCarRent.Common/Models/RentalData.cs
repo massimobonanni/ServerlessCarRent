@@ -10,7 +10,7 @@ namespace ServerlessCarRent.Common.Models
     {
         public string Id { get; set; }
         public DateTimeOffset StartDate { get; set; }
-        public DateTimeOffset EndDate { get; set; }
+        public DateTimeOffset? EndDate { get; set; }
 
     }
 }

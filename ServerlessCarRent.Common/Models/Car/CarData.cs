@@ -32,5 +32,17 @@ namespace ServerlessCarRent.Common.Models.Car
 		{
 			return this.CurrentRentalState == Common.Models.CarRental.CarRentalState.Rented;
 		}
+
+		public decimal CalculateCost()
+		{
+			if (this.CurrentRental == null)
+				return 0;
+
+			var endTime = this.CurrentRental.EndDate.HasValue ? this.CurrentRental.EndDate.Value : DateTimeOffset.Now;
+
+			var numberOfHours=(decimal) endTime.Subtract(this.CurrentRental.StartDate).TotalHours;
+
+			return Math.Round(numberOfHours * this.CostPerHour,2);
+		}
 	}
 }

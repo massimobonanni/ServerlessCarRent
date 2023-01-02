@@ -28,7 +28,7 @@ namespace ServerlessCarRent.Functions.Clients
 			_logger = loggerFactory.CreateLogger<GetCarClient>();
 		}
 
-		[OpenApiOperation(operationId: "getCar", new[] { "Cars management" },
+		[OpenApiOperation(operationId: "getCar", new[] { "Cars Management" },
 		   Summary = "Retrieve the information about a car", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter("plate", Summary = "The plate of the car to retrieve",
 		   In = Microsoft.OpenApi.Models.ParameterLocation.Path, Required = true,
@@ -52,7 +52,6 @@ namespace ServerlessCarRent.Functions.Clients
 			IActionResult responseData = null;
 
 			var details = req.Query.Any(e => e.Key.ToLower() == "details");
-
 			try
 			{
 				var carData = await client.GetCarDataAsync(plate);
@@ -78,6 +77,7 @@ namespace ServerlessCarRent.Functions.Clients
 								.Select(r =>
 									new GetCarResponse.CarRentalDto()
 									{
+										RentalId=r.Rental.Id,
 										CostPerHour=r.CostPerHour,
 										Currency=r.Currency,
 										RentalStart=r.Rental.StartDate,

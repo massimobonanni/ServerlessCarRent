@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ServerlessCarRent.Functions.Responses
 {
-	public class RentCarResponse
+	public class ReturnCarResponse
 	{
 		[OpenApiProperty(Description = "The identifier of the rent")]
 		[JsonProperty("rentalId")]
@@ -20,13 +20,21 @@ namespace ServerlessCarRent.Functions.Responses
 		[JsonProperty("carPlate")]
 		public string CarPlate { get; set; }
 
-		[OpenApiProperty(Description = "The identifier of the pickup location")]
-		[JsonProperty("pickupLocation")]
-		public string PickupLocation { get; set; }
+		[OpenApiProperty(Description = "The cost of the rent")]
+		[JsonProperty("cost")]
+		public decimal Cost { get; set; }
 
-		[OpenApiProperty(Description = "The status of the rent operation")]
-		[JsonProperty("rentOperationStatus")]
+		[OpenApiProperty(Description = "The cost of the rent per hour")]
+		[JsonProperty("costPerHour")]
+		public decimal CostPerHour { get; set; }
+
+		[OpenApiProperty(Description = "The currency")]
+		[JsonProperty("currency")]
+		public string Currency { get; set; }
+
+		[OpenApiProperty(Description = "The status of the return operation")]
+		[JsonProperty("returnOperationStatus")]
 		[JsonConverter(typeof(StringEnumConverter))]
-		public RentOperationState RentOperationStatus { get; set; }
+		public ReturnOperationState ReturnOperationStatus { get; set; }
 	}
 }

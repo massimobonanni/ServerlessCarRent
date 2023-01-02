@@ -46,7 +46,7 @@ namespace ServerlessCarRent.Functions.Orchestrators
 			{
 				CarPlate=requestDto.CarPlate,
 				PickupLocation=requestDto.PickupLocation,
-				RentId=context.InstanceId,
+				RentalId=context.InstanceId,
 				Status= rentOperationresult ? RentOperationState.Complete : RentOperationState.Error
 			};
 			return response;

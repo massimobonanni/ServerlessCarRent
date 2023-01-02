@@ -6,17 +6,22 @@ using System.Threading.Tasks;
 
 namespace ServerlessCarRent.Common.Dtos
 {
-	public class RentOrchestratorResponseDto
+	public class ReturnOrchestratorResponseDto
 	{
 		public string RentalId { get; set; }
+
 		public string CarPlate { get; set; }
 
-		public string PickupLocation { get; set; }
+		public decimal Cost { get; set; }
 
-		public RentOperationState Status { get; set; }
+		public decimal CostPerHour { get; set; }
+
+		public string Currency { get; set; }
+
+		public ReturnOperationState Status { get; set; }
 	}
 
-	public enum RentOperationState
+	public enum ReturnOperationState
 	{ 
 		Unknown,
 		Complete,
