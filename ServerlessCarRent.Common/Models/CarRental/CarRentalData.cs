@@ -10,5 +10,6 @@ public class CarRentalData
 	public RentalData Rental { get; set; }
 	public RenterData Renter { get; set; }
 	public decimal CostPerHour { get; set; }
+	public decimal TotalCost { get; set; }
 	public string Currency { get; set; }
 }

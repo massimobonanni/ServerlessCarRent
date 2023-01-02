@@ -84,6 +84,7 @@ namespace ServerlessCarRent.Functions.Clients
 										RentalEnd=r.Rental.EndDate,
 										RenterFirstName=r.Renter.FirstName,
 										RenterLastName=r.Renter.LastName,
+										Cost=r.TotalCost
 									})
 								.ToList(); 
 						}

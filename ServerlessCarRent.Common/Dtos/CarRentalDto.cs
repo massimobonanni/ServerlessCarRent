@@ -10,6 +10,7 @@ namespace ServerlessCarRent.Common.Dtos
 		public RentalData Rental { get; set; }
 		public RenterData Renter { get; set; }
 		public decimal CostPerHour { get; set; }
+		public decimal Cost { get; set; }
 		public string Currency { get; set; }
 	}
 }

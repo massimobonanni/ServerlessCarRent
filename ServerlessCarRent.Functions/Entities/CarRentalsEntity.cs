@@ -36,6 +36,7 @@ namespace ServerlessCarRent.Functions.Entities
 
 			this.Status.Rentals.Add(new CarRentalData()
 			{
+				TotalCost=rentInfo.Cost,
 				CostPerHour = rentInfo.CostPerHour,
 				Currency = rentInfo.Currency,
 				Rental = rentInfo.Rental,

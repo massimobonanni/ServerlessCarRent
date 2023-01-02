@@ -75,6 +75,10 @@ namespace ServerlessCarRent.Functions.Responses
 			[JsonProperty("costPerHour")]
 			public decimal CostPerHour { get; set; }
 
+			[OpenApiProperty(Description = "Total cost of the rent")]
+			[JsonProperty("cost")]
+			public decimal Cost { get; set; }
+
 			[OpenApiProperty(Description = "The currency of the rental cost")]
 			[JsonProperty("currency")]
 			public string Currency { get; set; }

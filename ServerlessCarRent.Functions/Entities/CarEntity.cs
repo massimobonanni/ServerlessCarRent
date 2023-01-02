@@ -52,6 +52,7 @@ namespace ServerlessCarRent.Functions.Entities
 			this.Status.CurrentRentalState = Common.Models.CarRental.CarRentalState.Rented;
 			this.Status.CurrentRental = new Common.Models.RentalData()
 			{
+				Id=rentInfo.RentalId,
 				StartDate = rentInfo.StartDate
 			};
 			this.Status.CurrentRenter = new Common.Models.RenterData()
@@ -71,7 +72,6 @@ namespace ServerlessCarRent.Functions.Entities
 			if (!this.Status.CanBeReturn())
 				return Task.FromResult(response);
 
-			this.Status.CurrentRentalState = Common.Models.CarRental.CarRentalState.Free;
 			this.Status.CurrentRental.EndDate = returnInfo.EndDate;
 
 			response.RentalId = this.Status.CurrentRental.Id;
@@ -82,6 +82,7 @@ namespace ServerlessCarRent.Functions.Entities
 
 			SignalRentEnded();
 
+			this.Status.CurrentRentalState = Common.Models.CarRental.CarRentalState.Free;
 			this.Status.CurrentRental = null;
 			this.Status.CurrentRenter = null;
 
@@ -143,6 +144,7 @@ namespace ServerlessCarRent.Functions.Entities
 				nameof(ICarRentalsEntity.AddRent),
 				new CarRentalDto()
 				{
+					Cost=Status.CalculateCost(),
 					CostPerHour = this.Status.CostPerHour,
 					Currency = this.Status.Currency,
 					Renter = this.Status.CurrentRenter,

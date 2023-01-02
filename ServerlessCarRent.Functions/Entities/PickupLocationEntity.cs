@@ -94,10 +94,10 @@ namespace ServerlessCarRent.Functions.Entities
 		{
 			var carRentalsEntityId = new EntityId(nameof(CarEntity), carInfo.CarPlate);
 
-			Entity.Current.SignalEntity(carRentalsEntityId,
-				nameof(ICarEntity.Rent),
+			Entity.Current.SignalEntity(carRentalsEntityId,	nameof(ICarEntity.Rent),
 				new RentCarDto()
 				{
+					RentalId=carInfo.RentalId,
 					RenterFirstName=carInfo.RenterFirstName,
 					RenterLastName=carInfo.RenterLastName,
 					StartDate=carInfo.RentalStart
