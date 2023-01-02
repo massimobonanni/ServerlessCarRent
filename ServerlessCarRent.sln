@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerlessCarRent.RestClien
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerlessCarRent.Console", "ServerlessCarRent.Console\ServerlessCarRent.Console.csproj", "{FCC05A3F-15AD-40E3-B07E-D6B163A4AA7D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerlessCarRent.WebSite", "ServerlessCarRent.WebSite\ServerlessCarRent.WebSite.csproj", "{32191208-A3A8-4441-9DC9-743970DECA69}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{FCC05A3F-15AD-40E3-B07E-D6B163A4AA7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCC05A3F-15AD-40E3-B07E-D6B163A4AA7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FCC05A3F-15AD-40E3-B07E-D6B163A4AA7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32191208-A3A8-4441-9DC9-743970DECA69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32191208-A3A8-4441-9DC9-743970DECA69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32191208-A3A8-4441-9DC9-743970DECA69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32191208-A3A8-4441-9DC9-743970DECA69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

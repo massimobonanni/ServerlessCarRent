@@ -12,9 +12,9 @@ using YamlDotNet.Core.Tokens;
 
 namespace ServerlessCarRent.RestClient
 {
-	public class CarsManagementClient : RestClientBase
+	public class PickupLocationsManagementClient : RestClientBase
 	{
-		public CarsManagementClient(HttpClient httpClient, string baseUrl, string apiKey) : 
+		public PickupLocationsManagementClient(HttpClient httpClient, string baseUrl, string apiKey) : 
 			base(httpClient, baseUrl, apiKey)
 		{
 		}
