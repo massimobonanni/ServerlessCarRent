@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ServerlessCarRent.Console": {
+      "commandName": "Project",
+      "commandLineArgs": "cars search --uri http://localhost:7264 --plate pippo"
+    }
+  }
+}

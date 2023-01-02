@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\ServerlessCarRent.Functions\Requests\InitializeCarRequest.cs" Link="Requests\InitializeCarRequest.cs" />
+    <Compile Include="..\ServerlessCarRent.Functions\Requests\InitializePickupLocationRequest.cs" Link="Requests\InitializePickupLocationRequest.cs" />
+    <Compile Include="..\ServerlessCarRent.Functions\Requests\RentCarRequest.cs" Link="Requests\RentCarRequest.cs" />
+    <Compile Include="..\ServerlessCarRent.Functions\Requests\ReturnCarRequest.cs" Link="Requests\ReturnCarRequest.cs" />
+    <Compile Include="..\ServerlessCarRent.Functions\Requests\UpdateCarRequest.cs" Link="Requests\UpdateCarRequest.cs" />
+    <Compile Include="..\ServerlessCarRent.Functions\Responses\GetCarResponse.cs" Link="Responses\GetCarResponse.cs" />
+    <Compile Include="..\ServerlessCarRent.Functions\Responses\GetCarsResponse.cs" Link="Responses\GetCarsResponse.cs" />
+    <Compile Include="..\ServerlessCarRent.Functions\Responses\GetPickupLocationResponse.cs" Link="Responses\GetPickupLocationResponse.cs" />
+    <Compile Include="..\ServerlessCarRent.Functions\Responses\GetPickupLocationsResponse.cs" Link="Responses\GetPickupLocationsResponse.cs" />
+    <Compile Include="..\ServerlessCarRent.Functions\Responses\InitializeCarResponse.cs" Link="Responses\InitializeCarResponse.cs" />
+    <Compile Include="..\ServerlessCarRent.Functions\Responses\InitializePickupLocationResponse.cs" Link="Responses\InitializePickupLocationResponse.cs" />
+    <Compile Include="..\ServerlessCarRent.Functions\Responses\RentCarResponse.cs" Link="Responses\RentCarResponse.cs" />
+    <Compile Include="..\ServerlessCarRent.Functions\Responses\ReturnCarResponse.cs" Link="Responses\ReturnCarResponse.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Responses\" />
+    <Folder Include="Requests\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.OpenApi" Version="1.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ServerlessCarRent.Common\ServerlessCarRent.Common.csproj" />
+  </ItemGroup>
+
+</Project>
