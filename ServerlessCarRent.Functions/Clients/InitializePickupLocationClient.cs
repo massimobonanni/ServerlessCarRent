@@ -36,7 +36,7 @@ namespace ServerlessCarRent.Functions.Clients
 			Summary = "Create and initialize a new pickup location", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InitializePickupLocationRequest),
 			Description = "Info about the pickup location to create.", Required = true)]
-		[OpenApiResponseWithBody(HttpStatusCode.OK, "application/json",
+		[OpenApiResponseWithBody(HttpStatusCode.Created, "application/json",
 			typeof(InitializePickupLocationResponse), Summary = "New pickup location response.",
 			Description = "If the request is valid, the response contains the info of the pickup location created.")]
 		[OpenApiResponseWithoutBody(HttpStatusCode.BadRequest,

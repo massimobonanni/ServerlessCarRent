@@ -36,7 +36,7 @@ namespace ServerlessCarRent.Functions.Clients
 			Summary = "Create and initialize a new car", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InitializeCarRequest),
 			Description = "Info about the car to create.", Required = true)]
-		[OpenApiResponseWithBody(HttpStatusCode.OK, "application/json",
+		[OpenApiResponseWithBody(HttpStatusCode.Created, "application/json",
 			typeof(InitializeCarResponse), Summary = "New car response.",
 			Description = "If the request is valid, the response contains the info of the car created.")]
 		[OpenApiResponseWithoutBody(HttpStatusCode.BadRequest,
@@ -63,22 +63,22 @@ namespace ServerlessCarRent.Functions.Clients
 						var entityId = new EntityId(nameof(CarEntity), request.Plate);
 						var carDto = new InitializeCarDto()
 						{
-							Model=request.Model,
-							PickupLocation=request.PickupLocation,
-							CarStatus=request.CurrentStatus,
-							CostPerHour=request.CostPerHour,
-							Currency=request.Currency,
+							Model = request.Model,
+							PickupLocation = request.PickupLocation,
+							CarStatus = request.CurrentStatus,
+							CostPerHour = request.CostPerHour,
+							Currency = request.Currency,
 						};
 
-						await client.SignalEntityAsync<ICarEntity>(entityId, 
+						await client.SignalEntityAsync<ICarEntity>(entityId,
 							e => e.Initialize(carDto));
 
 						var response = new InitializeCarResponse()
 						{
-							Plate=request.Plate
+							Plate = request.Plate
 						};
 
-						responseData = new OkObjectResult(response);
+						responseData = new ObjectResult(response) { StatusCode = 201 };
 					}
 					else
 					{

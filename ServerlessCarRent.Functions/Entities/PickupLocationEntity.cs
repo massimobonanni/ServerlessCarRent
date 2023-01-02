@@ -58,7 +58,7 @@ namespace ServerlessCarRent.Functions.Entities
 		{
 			var car = this.Status.Cars.FirstOrDefault(c => c.Plate == carInfo.CarPlate);
 
-			if (string.IsNullOrWhiteSpace(carInfo.NewPickupLocation)
+			if (!string.IsNullOrWhiteSpace(carInfo.NewPickupLocation)
 				&& carInfo.NewPickupLocation != Entity.Current.EntityKey)
 			{
 				if (car != null)
