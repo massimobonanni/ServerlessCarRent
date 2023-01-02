@@ -21,8 +21,12 @@ namespace ServerlessCarRent.Common.Models.Car
 
 		public bool CanBeRent()
 		{
-			return this.CurrentRentalState != Common.Models.CarRental.CarRentalState.Rented
+			var rentStatus= this.CurrentRentalState != Common.Models.CarRental.CarRentalState.Rented
 				&& this.CurrentRentalState != Common.Models.CarRental.CarRentalState.Unknown;
+
+			var carStatus =this.CurrentState==CarState.Working;
+
+			return rentStatus & carStatus;
 		}
 		public bool CanBeReturn()
 		{
