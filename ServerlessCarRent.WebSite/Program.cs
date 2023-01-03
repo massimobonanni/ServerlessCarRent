@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using ServerlessCarRent.RestClient;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,8 @@ builder.Services.AddHttpClient();
 builder.Services.AddManagementClients();
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddAutoMapper(Assembly.GetEntryAssembly());
 
 var app = builder.Build();
 

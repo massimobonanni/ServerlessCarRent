@@ -1,0 +1,59 @@
+﻿@model ServerlessCarRent.WebSite.Models.CarsController.IndexViewModel
+
+@{
+    ViewData["Title"] = "Cars management";
+}
+
+<h1>Cars Management</h1>
+
+<p>
+    <a asp-action="Create">Create New Car</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Plate
+            </th>
+            <th>
+                Model
+            </th>
+            <th>
+                Location
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Rental Status
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var car in Model.Cars)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => car.Plate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => car.Model)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => car.PickupLocation)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => car.CurrentState)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => car.CurrentRentalState)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new {  plate=car.Plate }) |
+                    @Html.ActionLink("Details", "Details", new { plate=car.Plate })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ServerlessCarRent.Common.Models.Car;
 using ServerlessCarRent.Common.Models.CarRental;
 using ServerlessCarRent.Functions.Responses;
@@ -52,5 +53,19 @@ namespace ServerlessCarRent.RestClient
 			}
 			return null;
 		}
+
+		public async Task<GetCarResponse> GetCarAsync(string plate, CancellationToken cancellationToken = default)
+		{
+            var uri = this.CreateAPIUri(null, $"{DefaultApiEndpoint}/{plate}?details");
+
+            var response = await this._httpClient.GetAsync(uri, cancellationToken);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var car = JsonConvert.DeserializeObject<GetCarResponse>(content);
+                return car;
+            }
+            return null;
+        }
 	}
 }
