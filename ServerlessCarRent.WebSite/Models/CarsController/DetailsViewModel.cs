@@ -30,6 +30,15 @@ namespace ServerlessCarRent.WebSite.Models.CarsController
 
         public string Currency { get; set; }
 
+        [DisplayName("Renter first name")]
+        public string CurrentRenterFirstName { get; set; }
+
+        [DisplayName("Renter last name")]
+        public string CurrentRenterLastName { get; set; }
+        
+        [DisplayName("Renter email")]
+        public string CurrentRenterEmail { get; set; }
+
         public List<CarRentalModel> Rentals { get; set; }
 
 

@@ -33,6 +33,17 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.CurrentRentalState)
         </dd>
+        @if (Model.CurrentRentalState == ServerlessCarRent.Common.Models.CarRental.CarRentalState.Rented)
+        {
+            <dt class="col-sm-2">
+                Current renter
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CurrentRenterLastName)&nbsp;@Html.DisplayFor(model => model.CurrentRenterFirstName)
+                <br/>
+                @Html.DisplayFor(model => model.CurrentRenterEmail)
+            </dd>
+        }
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.CostPerHour)
         </dt>
@@ -83,7 +94,7 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => rental.RenterLastName)&nbsp;@Html.DisplayFor(modelItem => rental.RenterFirstName)
                                     <br />
-                                    Qui la mail
+                                    @Html.DisplayFor(modelItem => rental.RenterEmail)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => rental.Cost)&nbsp;@Html.DisplayFor(modelItem => rental.Currency)
@@ -96,7 +107,7 @@
         </div>
     </div>
 </div>
-<br/>
+<br />
 <br />
 <div>
     @Html.ActionLink("Edit", "Edit", new { plate = Model.Plate  }) |

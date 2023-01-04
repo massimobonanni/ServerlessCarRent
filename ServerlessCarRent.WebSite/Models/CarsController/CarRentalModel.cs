@@ -22,6 +22,9 @@ namespace ServerlessCarRent.WebSite.Models.CarsController
         [DisplayName("Renter last name")]
         public string RenterLastName { get; set; }
 
+        [DisplayName("Renter email")]
+        public string RenterEmail { get; set; }
+
         [DisplayFormat(DataFormatString = "{0:##,###0.00}")]
         [DisplayName("Cost per hour")] 
         public decimal CostPerHour { get; set; }
