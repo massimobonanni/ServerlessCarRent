@@ -36,7 +36,8 @@ namespace ServerlessCarRent.Functions.Orchestrators
 				CarPlate = requestDto.CarPlate,
 				RentalStart = requestDto.RentalStartDate,
 				RenterFirstName = requestDto.RenterFirstName,
-				RenterLastName = requestDto.RenterLastName
+				RenterLastName = requestDto.RenterLastName,
+				RenterEmail= requestDto.RenterEmail,
 			};
 
 			var rentOperationresult = await context.CallEntityAsync<bool>(entityId,

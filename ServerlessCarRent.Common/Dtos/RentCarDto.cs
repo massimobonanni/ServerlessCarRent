@@ -10,5 +10,6 @@ namespace ServerlessCarRent.Common.Dtos
 		public DateTimeOffset StartDate { get; set; }
 		public string RenterFirstName { get; set; }
 		public string RenterLastName { get; set; }
-	}
+        public string RenterEmail { get; set; }
+    }
 }

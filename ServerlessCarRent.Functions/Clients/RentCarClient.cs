@@ -75,6 +75,7 @@ namespace ServerlessCarRent.Functions.Clients
 									RentalStartDate = request.RentalStartDate,
 									RenterFirstName = request.RenterFirstName,
 									RenterLastName = request.RenterLastName,
+									RenterEmail= request.RenterEmail,
 								};
 
 								var rentOperationId = await client.StartNewAsync(nameof(RentOrchestrator), orchestrationDto);

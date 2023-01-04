@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ServerlessCarRent.Functions.Requests
@@ -30,14 +31,24 @@ namespace ServerlessCarRent.Functions.Requests
 		[JsonProperty("renterLastName")]
 		public string RenterLastName { get; set; }
 
-		internal bool IsValid()
+        [OpenApiProperty(Description = "The renter email")]
+        [JsonProperty("renterEmail")]
+        public string RenterEmail { get; set; }
+
+        internal bool IsValid()
 		{
 			bool retVal = true;
 			retVal &= !string.IsNullOrWhiteSpace(CarPlate);
 			retVal &= !string.IsNullOrWhiteSpace(PickupLocation);
 			retVal &= !string.IsNullOrWhiteSpace(RenterFirstName);
 			retVal &= !string.IsNullOrWhiteSpace(RenterLastName);
-			return retVal;
+            retVal &= !string.IsNullOrWhiteSpace(RenterEmail);
+
+            Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+            Match match = regex.Match(RenterEmail);
+            retVal &= match.Success;
+
+            return retVal;
 		}
 	}
 }

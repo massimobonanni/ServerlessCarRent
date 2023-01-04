@@ -36,7 +36,20 @@ namespace ServerlessCarRent.Functions.Responses
 		[JsonConverter(typeof(StringEnumConverter))]
 		public CarRentalState CurrentRentalState { get; set; }
 
-		[OpenApiProperty(Description = "The cost for each hour of rent")]
+        [OpenApiProperty(Description = "Current renter first name")]
+        [JsonProperty("currentRenterFirstName")]
+        public string CurrentRenterFirstName { get; set; }
+
+        [OpenApiProperty(Description = "Current renter email address")]
+        [JsonProperty("currentRenterEmail")]
+        public string CurrentRenterEmail { get; set; }
+
+        [OpenApiProperty(Description = "Current renter last name")]
+        [JsonProperty("currentRenterLastName")]
+        public string CurrentRenterLastName { get; set; }
+
+
+        [OpenApiProperty(Description = "The cost for each hour of rent")]
 		[JsonProperty("costPerHour")]
 		public decimal CostPerHour { get; set; }
 
@@ -67,7 +80,11 @@ namespace ServerlessCarRent.Functions.Responses
 			[JsonProperty("renterFirstName")]
 			public string RenterFirstName { get; set; }
 
-			[OpenApiProperty(Description = "Renter last name")]
+            [OpenApiProperty(Description = "Renter email address")]
+            [JsonProperty("renterEmail")]
+            public string RenterEmail { get; set; }
+
+            [OpenApiProperty(Description = "Renter last name")]
 			[JsonProperty("renterLastName")]
 			public string RenterLastName { get; set; }
 

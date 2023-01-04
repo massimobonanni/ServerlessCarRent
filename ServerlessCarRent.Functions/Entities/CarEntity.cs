@@ -58,7 +58,8 @@ namespace ServerlessCarRent.Functions.Entities
 			this.Status.CurrentRenter = new Common.Models.RenterData()
 			{
 				FirstName = rentInfo.RenterFirstName,
-				LastName = rentInfo.RenterLastName
+				LastName = rentInfo.RenterLastName,
+				Email=rentInfo.RenterEmail
 			};
 		}
 

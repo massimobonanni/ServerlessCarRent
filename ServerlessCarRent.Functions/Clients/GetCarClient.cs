@@ -66,6 +66,9 @@ namespace ServerlessCarRent.Functions.Clients
 						CurrentState = carData.CurrentState,
 						Currency= carData.Currency,
 						CostPerHour= carData.CostPerHour,
+						CurrentRenterEmail=carData.CurrentRenter?.Email,
+						CurrentRenterFirstName=carData.CurrentRenter?.FirstName,
+						CurrentRenterLastName=carData.CurrentRenter?.LastName,
 					};
 
 					if (details)
@@ -84,6 +87,7 @@ namespace ServerlessCarRent.Functions.Clients
 										RentalEnd=r.Rental.EndDate,
 										RenterFirstName=r.Renter.FirstName,
 										RenterLastName=r.Renter.LastName,
+										RenterEmail=r.Renter.Email,
 										Cost=r.TotalCost
 									})
 								.ToList(); 

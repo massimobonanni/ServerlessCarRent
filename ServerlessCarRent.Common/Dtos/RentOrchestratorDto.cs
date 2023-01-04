@@ -17,5 +17,7 @@ namespace ServerlessCarRent.Common.Dtos
 		public string RenterFirstName { get; set; }
 
 		public string RenterLastName { get; set; }
-	}
+
+        public string RenterEmail { get; set; }
+    }
 }

@@ -100,6 +100,7 @@ namespace ServerlessCarRent.Functions.Entities
 					RentalId=carInfo.RentalId,
 					RenterFirstName=carInfo.RenterFirstName,
 					RenterLastName=carInfo.RenterLastName,
+					RenterEmail=carInfo.RenterEmail,
 					StartDate=carInfo.RentalStart
 				});
 		}
