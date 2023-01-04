@@ -6,6 +6,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Azure.WebJobs.Extensions.DurableTask" Version="2.6.1" />
 		<PackageReference Include="Microsoft.Azure.WebJobs.Extensions.OpenApi" Version="1.3.0" />
+		<PackageReference Include="Microsoft.Azure.WebJobs.Extensions.SendGrid" Version="3.0.2" />
 		<PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.0.1" />
 	</ItemGroup>
 	<ItemGroup>
@@ -19,8 +20,5 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<CopyToPublishDirectory>Never</CopyToPublishDirectory>
 		</None>
-	</ItemGroup>
-	<ItemGroup>
-		<Folder Include="Activities\" />
 	</ItemGroup>
 </Project>

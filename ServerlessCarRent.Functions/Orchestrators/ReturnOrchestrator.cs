@@ -22,11 +22,12 @@ namespace ServerlessCarRent.Functions.Orchestrators
 			_logger = loggerFactory.CreateLogger<ReturnOrchestrator>();
 		}
 
-		[FunctionName("ReturnOrchestrator")]
+		[FunctionName(nameof(ReturnOrchestrator))]
 		public async Task<ReturnOrchestratorResponseDto> RunOrchestrator(
 			[OrchestrationTrigger] IDurableOrchestrationContext context)
 		{
-			var requestDto = context.GetInput<ReturnOrchestratorDto>();
+            this._logger.LogInformation($"[START ORCHESTRATOR] --> {nameof(ReturnOrchestrator)}");
+            var requestDto = context.GetInput<ReturnOrchestratorDto>();
 
 			var entityId = new EntityId(nameof(CarEntity), requestDto.CarPlate);
 
