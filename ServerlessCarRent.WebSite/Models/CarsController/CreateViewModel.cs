@@ -22,9 +22,8 @@ namespace ServerlessCarRent.WebSite.Models.CarsController
         public string PickupLocation { get; set; }
 
         [Required()]
-        [DisplayFormat(DataFormatString = "{0:##,###0.00}", ApplyFormatInEditMode = true)]
-        [DisplayName("Cost per hour")]
-        public decimal CostPerHour { get; set; }
+        [RegularExpression(@"^[0-9]+(\.[0-9]{1,2})$", ErrorMessage = "Valid Decimal number with maximum 2 decimal places.")]
+        public string CostPerHour { get; set; }
 
         [Required()]
         public string Currency { get; set; }

@@ -1,11 +1,15 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using ServerlessCarRent.Common.Models.Car;
 using ServerlessCarRent.Functions.Requests;
 using ServerlessCarRent.RestClient;
 using ServerlessCarRent.WebSite.Models.CarsController;
 using ServerlessCarRent.WebSite.Services;
+using ServerlessCarRent.WebSite.Utilities;
+using System.Globalization;
 using System.Reflection;
 
 namespace ServerlessCarRent.WebSite.Controllers
@@ -28,6 +32,7 @@ namespace ServerlessCarRent.WebSite.Controllers
             _mapper = mapper;
             _currenciesService = currenciesService;
         }
+
 
         // GET: CarsController
         public async Task<ActionResult> Index([FromQuery] string plateFilter, [FromQuery] string locationFilter,
@@ -63,8 +68,7 @@ namespace ServerlessCarRent.WebSite.Controllers
         {
             var createViewModel = new CreateViewModel();
 
-            createViewModel.Currencies = new List<SelectListItem>();
-            createViewModel.Currencies.AddRange(_currenciesService.GetAll().Select(e => new SelectListItem(e,e)));
+            createViewModel.Currencies = _currenciesService.GetAll().GenerateListItems();
         
             return View(createViewModel);
         }
@@ -89,31 +93,52 @@ namespace ServerlessCarRent.WebSite.Controllers
                 }
             }
 
-            viewModel.Currencies = new List<SelectListItem>();
-            viewModel.Currencies.AddRange(_currenciesService.GetAll().Select(e => new SelectListItem(e, e)));
+            viewModel.Currencies = _currenciesService.GetAll().GenerateListItems();
 
             return View(viewModel);
         }
 
-        // GET: CarsController/Edit/5
-        public ActionResult Edit(int id)
+        // GET: CarsController/Edit/AA000AA
+        public async Task<ActionResult> Edit(string plate)
         {
-            return View();
+            var car = await this._carsManagementClient.GetCarAsync(plate);
+
+            if (car == null)
+                RedirectToAction("Index");
+
+            var viewModel = _mapper.Map<EditViewModel>(car);
+
+            viewModel.Currencies = _currenciesService.GetAll().GenerateListItems();
+
+            viewModel.CarStates = SelectListItemUtility.GenerateListFromCarStates(viewModel.CurrentState);
+
+            return View(viewModel);
+
         }
 
-        // POST: CarsController/Edit/5
+        // POST: CarsController/Edit/AA000AA
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(string plate, EditViewModel viewModel)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                var car = _mapper.Map<UpdateCarRequest>(viewModel);
+
+                var result = await _carsManagementClient.UpdateCarAsync(plate,car);
+
+                if (result.Succeeded)
+                    return RedirectToAction(nameof(Index));
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error);
+                }
             }
-            catch
-            {
-                return View();
-            }
+
+            viewModel.Currencies = _currenciesService.GetAll().GenerateListItems();
+
+            return View(viewModel);
         }
 
         // GET: CarsController/Delete/5

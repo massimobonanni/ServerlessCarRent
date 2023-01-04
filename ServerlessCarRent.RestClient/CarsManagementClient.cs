@@ -7,6 +7,7 @@ using ServerlessCarRent.Functions.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 using YamlDotNet.Core.Tokens;
@@ -90,6 +91,40 @@ namespace ServerlessCarRent.RestClient
                 case System.Net.HttpStatusCode.Conflict:
                     result.Succeeded = false;
                     result.Errors.Add("Car with the same plate already exists");
+                    break;
+                case System.Net.HttpStatusCode.BadRequest:
+                    result.Succeeded = false;
+                    result.Errors.Add("The car info are not correct");
+                    break;
+            }
+
+            return result;
+        }
+
+        public async Task<ClientResult> UpdateCarAsync(string carPlate, UpdateCarRequest carInfo, 
+            CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(carPlate))
+                throw new ArgumentNullException(nameof(carPlate));
+            if (carInfo == null)
+                throw new ArgumentNullException(nameof(carInfo));
+
+            var result = new ClientResult() { Succeeded = true };
+
+            var uri = this.CreateAPIUri(null, $"{DefaultApiEndpoint}/{carPlate}");
+
+            string requestJson = JsonConvert.SerializeObject(carInfo, Formatting.None);
+            var postContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
+
+            var response = await this._httpClient.PutAsync(uri, postContent, cancellationToken);
+
+            switch (response.StatusCode)
+            {
+                case System.Net.HttpStatusCode.NoContent:
+                    break;
+                case System.Net.HttpStatusCode.NotFound:
+                    result.Succeeded = false;
+                    result.Errors.Add("Car doesn't exists");
                     break;
                 case System.Net.HttpStatusCode.BadRequest:
                     result.Succeeded = false;

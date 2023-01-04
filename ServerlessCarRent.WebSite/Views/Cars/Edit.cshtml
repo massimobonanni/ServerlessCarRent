@@ -1,33 +1,30 @@
-﻿@model ServerlessCarRent.WebSite.Models.CarsController.CreateViewModel
+﻿@model ServerlessCarRent.WebSite.Models.CarsController.EditViewModel
 
 @{
-    ViewData["Title"] = "Create new car";
+    ViewData["Title"] = $"Edit car : {Model.Plate}";
 }
 
-<h1>Create new car</h1>
-
+<h1>Car Details</h1>
 <br />
-<hr />
 <div class="row">
     <div class="col-md-10">
-        <form asp-action="Create">
+        <h2>Plate: @Model.Plate</h2>
+        <h3>Model: @Model.Model</h3>
+        <hr />
+        <form asp-action="Edit">
+            <input asp-for="Plate" hidden />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group col-md-3">
-                <label asp-for="Plate" class="control-label"></label>
-                <input asp-for="Plate" class="form-control" />
-                <span asp-validation-for="Plate" class="text-danger"></span>
-            </div>
             <br/>
             <div class="form-group col-md-6">
-                <label asp-for="Model" class="control-label"></label>
-                <input asp-for="Model" class="form-control" />
-                <span asp-validation-for="Model" class="text-danger"></span>
+                <label asp-for="PickupLocation" class="control-label"></label>
+                <input asp-for="PickupLocation" class="form-control"/>
+                <span asp-validation-for="PickupLocation" class="text-danger"></span>
             </div>
             <br />
-            <div class="form-group col-md-4">
-                <label asp-for="PickupLocation" class="control-label"></label>
-                <input asp-for="PickupLocation" class="form-control " />
-                <span asp-validation-for="PickupLocation" class="text-danger"></span>
+            <div class="form-group col-md-3">
+                <label asp-for="CurrentState" class="control-label"></label>&nbsp;&nbsp;
+                <select asp-for="CurrentState" asp-items="Model.CarStates" class="form-control"></select>
+                <span asp-validation-for="CurrentState" class="text-danger"></span>
             </div>
             <br />
             <div class="form-group col-md-2">
@@ -43,7 +40,7 @@
             </div>
             <br />
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
