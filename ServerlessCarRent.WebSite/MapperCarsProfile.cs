@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ServerlessCarRent.Functions.Requests;
 using ServerlessCarRent.Functions.Responses;
 using ServerlessCarRent.WebSite.Models.CarsController;
 using static ServerlessCarRent.Functions.Responses.GetCarResponse;
@@ -14,6 +15,7 @@ namespace ServerlessCarRent.WebSite
 			CreateMap<CarDto, CarModel>();
 			CreateMap<GetCarResponse, DetailsViewModel>();
 			CreateMap<CarRentalDto,CarRentalModel>();
+			CreateMap<CreateViewModel, InitializeCarRequest>();
 		}
 	}
 }

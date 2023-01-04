@@ -1,4 +1,5 @@
 ﻿using ServerlessCarRent.RestClient;
+using ServerlessCarRent.WebSite.Services;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -31,6 +32,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
 				return client;
 			});
+
+			services.AddScoped<ICurrenciesService, CurrenciesService>();
 		}
 	}
 }

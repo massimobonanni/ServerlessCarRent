@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using ServerlessCarRent.Functions.Requests;
 using ServerlessCarRent.RestClient;
 using ServerlessCarRent.WebSite.Models.CarsController;
+using ServerlessCarRent.WebSite.Services;
+using System.Reflection;
 
 namespace ServerlessCarRent.WebSite.Controllers
 {
@@ -12,14 +16,17 @@ namespace ServerlessCarRent.WebSite.Controllers
         private readonly CarsManagementClient _carsManagementClient;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
+        private readonly ICurrenciesService _currenciesService;
 
         public CarsController(ILogger<CarsController> logger,
-            CarsManagementClient carsManagementClient, IConfiguration config, IMapper mapper)
+            CarsManagementClient carsManagementClient, IConfiguration config, 
+            IMapper mapper, ICurrenciesService currenciesService)
         {
             _logger = logger;
             _carsManagementClient = carsManagementClient;
             _config = config;
             _mapper = mapper;
+            _currenciesService = currenciesService;
         }
 
         // GET: CarsController
@@ -54,22 +61,38 @@ namespace ServerlessCarRent.WebSite.Controllers
         // GET: CarsController/Create
         public ActionResult Create()
         {
-            return View();
+            var createViewModel = new CreateViewModel();
+
+            createViewModel.Currencies = new List<SelectListItem>();
+            createViewModel.Currencies.AddRange(_currenciesService.GetAll().Select(e => new SelectListItem(e,e)));
+        
+            return View(createViewModel);
         }
 
         // POST: CarsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create(CreateViewModel viewModel)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                var car = _mapper.Map<InitializeCarRequest>(viewModel);
+
+                var result = await _carsManagementClient.CreateCarAsync(car);
+
+                if (result.Succeeded)
+                    return RedirectToAction(nameof(Index));
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error);
+                }
             }
-            catch
-            {
-                return View();
-            }
+
+            viewModel.Currencies = new List<SelectListItem>();
+            viewModel.Currencies.AddRange(_currenciesService.GetAll().Select(e => new SelectListItem(e, e)));
+
+            return View(viewModel);
         }
 
         // GET: CarsController/Edit/5
