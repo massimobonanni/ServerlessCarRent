@@ -169,7 +169,7 @@ namespace ServerlessCarRent.Functions.Entities
                 CarModel = this.Status.Model,
                 CarPlate = Entity.Current.EntityKey,
                 CarPickupLocation = this.Status.PickupLocation,
-                Cost = null,
+                Cost = newRentalStatus == CarRentalState.Rented ? null : Status.CalculateCost(),
                 CostPerHour = this.Status.CostPerHour,
                 Currency = this.Status.Currency,
                 CurrentRental = this.Status.CurrentRental,

@@ -36,7 +36,8 @@ namespace ServerlessCarRent.Functions.Orchestrators
             var orchestratorDto = context.GetInput<RentalStatusChangeOrchestratorDto>();
 
             await context.CallActivityAsync(nameof(SendEmailToAdminActivity), orchestratorDto);
-            
+
+            await context.CallActivityAsync(nameof(SendNotificationToEventGridActivity), orchestratorDto);
         }
 
 
