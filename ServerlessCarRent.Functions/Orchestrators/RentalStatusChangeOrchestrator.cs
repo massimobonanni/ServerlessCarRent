@@ -37,7 +37,7 @@ namespace ServerlessCarRent.Functions.Orchestrators
 
             await context.CallActivityAsync(nameof(SendEmailToAdminActivity), orchestratorDto);
 
-            await context.CallActivityAsync(nameof(SendNotificationToEventGridActivity), orchestratorDto);
+            await context.CallActivityAsync(nameof(SendRentalStatusChangeNotificationToEventGridActivity), orchestratorDto);
         }
 
 

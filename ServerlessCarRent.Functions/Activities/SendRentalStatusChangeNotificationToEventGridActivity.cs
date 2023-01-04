@@ -15,26 +15,26 @@ using Microsoft.Identity.Client;
 
 namespace ServerlessCarRent.Functions.Activities
 {
-    public class SendNotificationToEventGridActivity
+    public class SendRentalStatusChangeNotificationToEventGridActivity
     {
-        private readonly ILogger<SendNotificationToEventGridActivity> _logger;
+        private readonly ILogger<SendRentalStatusChangeNotificationToEventGridActivity> _logger;
         private readonly IConfiguration _configuration;
 
-        public SendNotificationToEventGridActivity(IConfiguration configuration,
+        public SendRentalStatusChangeNotificationToEventGridActivity(IConfiguration configuration,
             ILoggerFactory loggerFactory)
         {
             _configuration = configuration;
-            _logger = loggerFactory.CreateLogger<SendNotificationToEventGridActivity>();
+            _logger = loggerFactory.CreateLogger<SendRentalStatusChangeNotificationToEventGridActivity>();
         }
 
-        [FunctionName(nameof(SendNotificationToEventGridActivity))]
+        [FunctionName(nameof(SendRentalStatusChangeNotificationToEventGridActivity))]
         public async Task Run([ActivityTrigger] RentalStatusChangeOrchestratorDto context,
             [EventGrid(TopicEndpointUri = "TopicEndpoint", TopicKeySetting = "TopicKey")] IAsyncCollector<EventGridEvent> eventCollector)
         {
-            this._logger.LogInformation($"[START ACTIVITY] --> {nameof(SendNotificationToEventGridActivity)}");
+            this._logger.LogInformation($"[START ACTIVITY] --> {nameof(SendRentalStatusChangeNotificationToEventGridActivity)}");
 
             var @event = new EventGridEvent(
-              subject: $"cars\\{context.CarPlate}",
+              subject: $"cars/{context.CarPlate}",
               eventType: "RentalStatusChanged",
               dataVersion: "1.0",
               data: context);
