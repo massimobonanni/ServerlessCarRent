@@ -4,9 +4,9 @@
     ViewData["Title"] = $"Car : {@Model.Plate}";
 }
 <h1>Car Details</h1>
-
+<br />
 <div>
-    <h4>Plate: @Model.Plate</h4>
+    <h2>Plate: @Model.Plate</h2>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -41,6 +41,63 @@
         </dd>
     </dl>
 </div>
+<div class="accordion col-10 offset-1" id="carRentals">
+    <div class="card">
+        <div class="card-header" id="accessKeys">
+            <h5 class="mb-0">
+                <button class="btn btn-block text-left collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <h5>Rental History</h5>
+                </button>
+            </h5>
+        </div>
+
+        <div id="collapseOne" class="collapse" aria-labelledby="accessKeys" data-bs-parent="#carRentals">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Start date
+                            </th>
+                            <th>
+                                End date
+                            </th>
+                            <th>
+                                Renter
+                            </th>
+                            <th>
+                                Total cost
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var rental in Model.Rentals.OrderByDescending(r => r.RentalStart))
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => rental.RentalStart)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => rental.RentalEnd)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => rental.RenterLastName)&nbsp;@Html.DisplayFor(modelItem => rental.RenterFirstName)
+                                    <br />
+                                    Qui la mail
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => rental.Cost)&nbsp;@Html.DisplayFor(modelItem => rental.Currency)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<br/>
+<br />
 <div>
     @Html.ActionLink("Edit", "Edit", new { plate = Model.Plate  }) |
     <a asp-action="Index">Back to List</a>

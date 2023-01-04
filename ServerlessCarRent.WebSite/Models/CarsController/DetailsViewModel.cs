@@ -25,7 +25,7 @@ namespace ServerlessCarRent.WebSite.Models.CarsController
         public CarRentalState CurrentRentalState { get; set; }
 
         [DisplayName("Cost per hour")]
-        [DisplayFormat(DataFormatString = "{0:##,###0.00}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:##,###0.00}")]
         public decimal CostPerHour { get; set; }
 
         public string Currency { get; set; }

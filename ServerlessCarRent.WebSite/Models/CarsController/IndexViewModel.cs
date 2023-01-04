@@ -8,10 +8,10 @@ using System.ComponentModel;
 
 namespace ServerlessCarRent.WebSite.Models.CarsController
 {
-	public class IndexViewModel
-	{
-        [DisplayName("Plate")] 
-		public string PlateFilter { get; set; }
+    public class IndexViewModel
+    {
+        [DisplayName("Plate")]
+        public string PlateFilter { get; set; }
 
         [DisplayName("Model")]
         public string ModelFilter { get; set; }
@@ -25,8 +25,7 @@ namespace ServerlessCarRent.WebSite.Models.CarsController
         [DisplayName("Rental states")]
         public IEnumerable<string> RentalStatesFilter { get; set; }
 
+        public List<CarModel> Cars { get; set; }
 
-		public List<CarModel> Cars { get; set; }
-
-	}
+    }
 }
