@@ -7,7 +7,7 @@
 <h1>Cars Management</h1>
 
 <p>
-    <a asp-action="Create">Create New Car</a>
+    <a asp-action="Create"><img src="~/images/CreateCar.png" height="50" alt="Create a new car" title="Create a new car" /></a>
 </p>
 <table class="table">
     <thead>
@@ -44,14 +44,43 @@
                     @Html.DisplayFor(modelItem => car.PickupLocation)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => car.CurrentState)
+                    @switch (car.CurrentState)
+                    {
+                        case ServerlessCarRent.Common.Models.Car.CarState.Working:
+                            <img src="~/images/CarState-Working-64.png" height="32" alt="@car.CurrentState" title="@car.CurrentState" />
+                            break;
+                        case ServerlessCarRent.Common.Models.Car.CarState.UnderMaintenance:
+                            <img src="~/images/CarState-UnderMaintenance-64.png" height="32" alt="@car.CurrentState" title="@car.CurrentState" />
+                            break;
+                        case ServerlessCarRent.Common.Models.Car.CarState.Unusable:
+                        default:
+                            <img src="~/images/CarState-Unusable-64.png" height="32" alt="@car.CurrentState" title="@car.CurrentState" />
+                            break;
+                    }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => car.CurrentRentalState)
+                    @switch (car.CurrentRentalState)
+                    {
+                        case ServerlessCarRent.Common.Models.CarRental.CarRentalState.Free:
+                            <img src="~/images/RentalState-Free-64.png" height="32" alt="@car.CurrentRentalState" title="@car.CurrentRentalState" />
+                            break;
+                        case ServerlessCarRent.Common.Models.CarRental.CarRentalState.Rented:
+                            <img src="~/images/RentalState-Rented-64.png" height="32" alt="@car.CurrentRentalState" title="@car.CurrentRentalState" />
+                            break;
+                        case ServerlessCarRent.Common.Models.CarRental.CarRentalState.Booked:
+                        case ServerlessCarRent.Common.Models.CarRental.CarRentalState.Unknown:
+                        default:
+                            <img src="~/images/RentalState-Unknown-64.png" height="32" alt="@car.CurrentRentalState" title="@car.CurrentRentalState" />
+                            break;
+                    }
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new {  plate=car.Plate }) |
-                    @Html.ActionLink("Details", "Details", new { plate=car.Plate })
+                    <a href="@Url.ActionLink("Edit","Cars",new { plate=car.Plate})" >
+                        <img src="~/images/EditCar.png" height="32" alt="Edit car" title="Edit Car" />
+                    </a>
+                    <a href="@Url.ActionLink("Details","Cars",new { plate=car.Plate})" >
+                        <img src="~/images/DetailCar.png" height="32" alt="Car details" title="Car details" />
+                    </a>
                 </td>
             </tr>
         }

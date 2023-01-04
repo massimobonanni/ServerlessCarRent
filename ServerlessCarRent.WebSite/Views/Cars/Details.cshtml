@@ -25,13 +25,38 @@
             @Html.DisplayNameFor(model => model.CurrentState)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CurrentState)
+            @switch (Model.CurrentState)
+            {
+                case ServerlessCarRent.Common.Models.Car.CarState.Working:
+                    <img src="~/images/CarState-Working-64.png" height="32" alt="@Model.CurrentState" title="@Model.CurrentState" />
+                    break;
+                case ServerlessCarRent.Common.Models.Car.CarState.UnderMaintenance:
+                    <img src="~/images/CarState-UnderMaintenance-64.png" height="32" alt="@Model.CurrentState" title="@Model.CurrentState" />
+                    break;
+                case ServerlessCarRent.Common.Models.Car.CarState.Unusable:
+                default:
+                    <img src="~/images/CarState-Unusable-64.png" height="32" alt="@Model.CurrentState" title="@Model.CurrentState" />
+                    break;
+            }
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.CurrentRentalState)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CurrentRentalState)
+            @switch (Model.CurrentRentalState)
+            {
+                case ServerlessCarRent.Common.Models.CarRental.CarRentalState.Free:
+                    <img src="~/images/RentalState-Free-64.png" height="32" alt="@Model.CurrentRentalState" title="@Model.CurrentRentalState" />
+                    break;
+                case ServerlessCarRent.Common.Models.CarRental.CarRentalState.Rented:
+                    <img src="~/images/RentalState-Rented-64.png" height="32" alt="@Model.CurrentRentalState" title="@Model.CurrentRentalState" />
+                    break;
+                case ServerlessCarRent.Common.Models.CarRental.CarRentalState.Booked:
+                case ServerlessCarRent.Common.Models.CarRental.CarRentalState.Unknown:
+                default:
+                    <img src="~/images/RentalState-Unknown-64.png" height="32" alt="@Model.CurrentRentalState" title="@Model.CurrentRentalState" />
+                    break;
+            }
         </dd>
         @if (Model.CurrentRentalState == ServerlessCarRent.Common.Models.CarRental.CarRentalState.Rented)
         {
@@ -40,7 +65,7 @@
             </dt>
             <dd class="col-sm-10">
                 @Html.DisplayFor(model => model.CurrentRenterLastName)&nbsp;@Html.DisplayFor(model => model.CurrentRenterFirstName)
-                <br/>
+                <br />
                 @Html.DisplayFor(model => model.CurrentRenterEmail)
             </dd>
         }
@@ -110,6 +135,7 @@
 <br />
 <br />
 <div>
-    @Html.ActionLink("Edit", "Edit", new { plate = Model.Plate  }) |
-    <a asp-action="Index">Back to List</a>
+    <a href="@Url.ActionLink("Edit","Cars",new { plate=Model.Plate})" class="color: inherit;">
+        <img src="~/images/EditCar.png" height="50" alt="Edit car" title="Edit Car" />
+    </a>
 </div>

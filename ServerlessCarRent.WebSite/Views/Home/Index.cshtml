@@ -4,5 +4,23 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <br />
+    <br />
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-3">
+                <a class ="nav-link" asp-area="" asp-controller="Cars" asp-action="Index">
+                    <img src="~/images/CarsManagement.png" height="200" alt="Cars Management" 
+                        title="Cars Management" />
+                </a>
+            </div>
+            <div class="col-2"></div>
+            <div class="col-3">
+                 <a class ="nav-link" asp-area="" asp-controller="PickupLocations" asp-action="Index">
+                    <img src="~/images/PickupLocationsManagement.png" height="200" alt="Pickup Locations Management" 
+                        title="Pickup Locations Management" />
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
