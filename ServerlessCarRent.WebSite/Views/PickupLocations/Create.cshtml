@@ -1,0 +1,54 @@
+﻿@model ServerlessCarRent.WebSite.Models.PickupLocationsController.CreateViewModel
+
+@{
+    ViewData["Title"] = "Create new pickup location";
+}
+
+<h1>Create new pickup location</h1>
+
+<br />
+<hr />
+<div class="row">
+    <div class="col-md-10">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group col-md-3">
+                <label asp-for="Identifier" class="control-label"></label>
+                <input asp-for="Identifier" class="form-control" />
+                <span asp-validation-for="Identifier" class="text-danger"></span>
+            </div>
+            <br/>
+            <div class="form-group col-md-6">
+                <label asp-for="City" class="control-label"></label>
+                <input asp-for="City" class="form-control" />
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group col-md-4">
+                <label asp-for="Location" class="control-label"></label>
+                <input asp-for="Location" class="form-control " />
+                <span asp-validation-for="Location" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group col-md-3">
+                <label asp-for="Status" class="control-label"></label>&nbsp;&nbsp;
+                <select asp-for="Status" asp-items="Model.PickupLocationStates" class="form-control"></select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

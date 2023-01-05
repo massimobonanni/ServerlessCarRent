@@ -2,6 +2,7 @@
 using ServerlessCarRent.Common.Models.Car;
 using ServerlessCarRent.Common.Models.CarRental;
 using ServerlessCarRent.Common.Models.PickupLocation;
+using ServerlessCarRent.Functions.Requests;
 using ServerlessCarRent.Functions.Responses;
 using System;
 using System.Collections.Generic;
@@ -61,6 +62,36 @@ namespace ServerlessCarRent.RestClient
                 return location;
             }
             return null;
+        }
+
+        public async Task<ClientResult> CreatePickupLocationAsync(InitializePickupLocationRequest pickupLocation, CancellationToken cancellationToken = default)
+        {
+            if (pickupLocation == null)
+                throw new ArgumentNullException(nameof(pickupLocation));
+
+            var result = new ClientResult() { Succeeded = true };
+
+            var uri = this.CreateAPIUri(null, $"{DefaultApiEndpoint}");
+
+            var postContent = pickupLocation.GenerateStringContent();
+
+            var response = await this._httpClient.PostAsync(uri, postContent, cancellationToken);
+
+            switch (response.StatusCode)
+            {
+                case System.Net.HttpStatusCode.Created:
+                    break;
+                case System.Net.HttpStatusCode.Conflict:
+                    result.Succeeded = false;
+                    result.Errors.Add("Pickup Location with the same Id already exists");
+                    break;
+                case System.Net.HttpStatusCode.BadRequest:
+                    result.Succeeded = false;
+                    result.Errors.Add("The pickup location info are not correct");
+                    break;
+            }
+
+            return result;
         }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ServerlessCarRent.Functions.Requests;
 using ServerlessCarRent.RestClient;
 using ServerlessCarRent.WebSite.Models.PickupLocationsController;
 using ServerlessCarRent.WebSite.Services;
+using ServerlessCarRent.WebSite.Utilities;
 
 namespace ServerlessCarRent.WebSite.Controllers
 {
@@ -13,17 +15,15 @@ namespace ServerlessCarRent.WebSite.Controllers
         private readonly PickupLocationsManagementClient _pickupLocationsManagementClient;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
-        private readonly ICurrenciesService _currenciesService;
 
         public PickupLocationsController(ILogger<PickupLocationsController> logger,
             PickupLocationsManagementClient pickupLocationsManagementClient, IConfiguration config,
-            IMapper mapper, ICurrenciesService currenciesService)
+            IMapper mapper)
         {
             _logger = logger;
             _pickupLocationsManagementClient = pickupLocationsManagementClient;
             _config = config;
             _mapper = mapper;
-            _currenciesService = currenciesService;
         }
 
         // GET: PickupLocationsController
@@ -58,22 +58,35 @@ namespace ServerlessCarRent.WebSite.Controllers
         // GET: PickupLocationsController/Create
         public ActionResult Create()
         {
-            return View();
+            var createViewModel = new CreateViewModel();
+
+            createViewModel.PickupLocationStates = SelectListItemUtility.GenerateListFromPickupLocationStates(Common.Models.PickupLocation.PickupLocationState.Open);
+
+            return View(createViewModel);
         }
 
         // POST: PickupLocationsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create(CreateViewModel viewModel)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                var location = _mapper.Map<InitializePickupLocationRequest>(viewModel);
+
+                var result = await _pickupLocationsManagementClient.CreatePickupLocationAsync(location);
+                if (result.Succeeded)
+                    return RedirectToAction(nameof(Index));
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error);
+                }
             }
-            catch
-            {
-                return View();
-            }
+
+            viewModel.PickupLocationStates = SelectListItemUtility.GenerateListFromPickupLocationStates(Common.Models.PickupLocation.PickupLocationState.Open);
+
+            return View(viewModel);
         }
 
         // GET: PickupLocationsController/Edit/5
