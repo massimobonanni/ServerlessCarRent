@@ -142,9 +142,9 @@ namespace ServerlessCarRent.Functions.Clients
 			if (!string.IsNullOrEmpty(Location))
 				result &= car.PickupLocation.ToLower().Contains(Location);
 			if (States != null && States.Any())
-				result &= States.Contains(car.CurrentState);
+				result &= States.Contains(car.CurrentStatus);
 			if (RentalStates != null && RentalStates.Any())
-				result &= RentalStates.Contains(car.CurrentRentalState);
+				result &= RentalStates.Contains(car.CurrentRentalStatus);
 
 			return result;
 		}

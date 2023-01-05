@@ -67,7 +67,7 @@ namespace ServerlessCarRent.Console.Commands
 				{
 					foreach (var item in response.Cars)
 					{
-						System.Console.WriteLine($"[{item.Plate}] - {item.Model} - {item.PickupLocation} - [{item.CurrentState},{item.CurrentRentalState}]");
+						System.Console.WriteLine($"[{item.Plate}] - {item.Model} - {item.PickupLocation} - [{item.CurrentStatus},{item.CurrentRentalStatus}]");
 					}
 				}
 				else

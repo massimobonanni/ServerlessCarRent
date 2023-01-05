@@ -47,7 +47,7 @@ namespace ServerlessCarRent.Functions.Responses
 
 			public PickupLocationDto(string identifier, PickupLocationData locationData)
 			{
-				CurrentState = locationData.Status;
+				CurrentStatus = locationData.Status;
 				City=locationData.City;
 				Location=locationData.Location;
 				Identifier=identifier;
@@ -57,7 +57,7 @@ namespace ServerlessCarRent.Functions.Responses
 			{
 				var locationStatusProperty = (JObject)entityState.Property("Status").Value;
 				var locationData = locationStatusProperty.ToObject<PickupLocationData>();
-				CurrentState = locationData.Status;
+				CurrentStatus = locationData.Status;
 				City = locationData.City;
 				Location = locationData.Location;
 				Identifier = identifier;
@@ -78,7 +78,7 @@ namespace ServerlessCarRent.Functions.Responses
 			[OpenApiProperty(Description = "The current state of the location")]
 			[JsonProperty("currentState")]
 			[JsonConverter(typeof(StringEnumConverter))]
-			public PickupLocationState CurrentState { get; set; }
+			public PickupLocationState CurrentStatus { get; set; }
 
 		}
 	}

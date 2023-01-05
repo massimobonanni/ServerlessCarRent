@@ -18,9 +18,9 @@ namespace ServerlessCarRent.WebSite.Models.CarsController
         public string PickupLocation { get; set; }
 
         [DisplayName("Car state")]
-        public CarState CurrentState { get; set; }
+        public CarState CurrentStatus { get; set; }
 
         [DisplayName("Rental state")]
-        public CarRentalState CurrentRentalState { get; set; }
+        public CarRentalState CurrentRentalStatus { get; set; }
     }
 }

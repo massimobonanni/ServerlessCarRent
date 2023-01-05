@@ -50,8 +50,8 @@ namespace ServerlessCarRent.Functions.Responses
 
 			public CarDto(string plate, CarData carData)
 			{
-				CurrentRentalState = carData.CurrentRentalState;
-				CurrentState = carData.CurrentState;
+				CurrentRentalStatus = carData.CurrentRentalState;
+				CurrentStatus = carData.CurrentState;
 				Model = carData.Model;
 				PickupLocation = carData.PickupLocation;
 				Plate = plate;
@@ -61,8 +61,8 @@ namespace ServerlessCarRent.Functions.Responses
 			{
 				var carStatusProperty = (JObject)entityState.Property("Status").Value;
 				var carData = carStatusProperty.ToObject<CarData>();
-				CurrentRentalState = carData.CurrentRentalState;
-				CurrentState = carData.CurrentState;
+				CurrentRentalStatus = carData.CurrentRentalState;
+				CurrentStatus = carData.CurrentState;
 				Model = carData.Model;
 				PickupLocation = carData.PickupLocation;
 				Plate = plate;
@@ -83,12 +83,12 @@ namespace ServerlessCarRent.Functions.Responses
 			[OpenApiProperty(Description = "The current state of the car")]
 			[JsonProperty("currentState")]
 			[JsonConverter(typeof(StringEnumConverter))]
-			public CarState CurrentState { get; set; }
+			public CarState CurrentStatus { get; set; }
 
 			[OpenApiProperty(Description = "The current rental state of the car")]
 			[JsonProperty("currentRentalState")]
 			[JsonConverter(typeof(StringEnumConverter))]
-			public CarRentalState CurrentRentalState { get; set; }
+			public CarRentalState CurrentRentalStatus { get; set; }
 		}
 	}
 

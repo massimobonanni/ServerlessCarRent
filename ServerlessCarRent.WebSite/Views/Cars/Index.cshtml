@@ -44,33 +44,33 @@
                     @Html.DisplayFor(modelItem => car.PickupLocation)
                 </td>
                 <td>
-                    @switch (car.CurrentState)
+                    @switch (car.CurrentStatus)
                     {
                         case ServerlessCarRent.Common.Models.Car.CarState.Working:
-                            <img src="~/images/CarState-Working-64.png" height="32" alt="@car.CurrentState" title="@car.CurrentState" />
+                            <img src="~/images/CarState-Working-64.png" height="32" alt="@car.CurrentStatus" title="@car.CurrentStatus" />
                             break;
                         case ServerlessCarRent.Common.Models.Car.CarState.UnderMaintenance:
-                            <img src="~/images/CarState-UnderMaintenance-64.png" height="32" alt="@car.CurrentState" title="@car.CurrentState" />
+                            <img src="~/images/CarState-UnderMaintenance-64.png" height="32" alt="@car.CurrentStatus" title="@car.CurrentStatus" />
                             break;
                         case ServerlessCarRent.Common.Models.Car.CarState.Unusable:
                         default:
-                            <img src="~/images/CarState-Unusable-64.png" height="32" alt="@car.CurrentState" title="@car.CurrentState" />
+                            <img src="~/images/CarState-Unusable-64.png" height="32" alt="@car.CurrentStatus" title="@car.CurrentStatus" />
                             break;
                     }
                 </td>
                 <td>
-                    @switch (car.CurrentRentalState)
+                    @switch (car.CurrentRentalStatus)
                     {
                         case ServerlessCarRent.Common.Models.CarRental.CarRentalState.Free:
-                            <img src="~/images/RentalState-Free-64.png" height="32" alt="@car.CurrentRentalState" title="@car.CurrentRentalState" />
+                            <img src="~/images/RentalState-Free-64.png" height="32" alt="@car.CurrentRentalStatus" title="@car.CurrentRentalStatus" />
                             break;
                         case ServerlessCarRent.Common.Models.CarRental.CarRentalState.Rented:
-                            <img src="~/images/RentalState-Rented-64.png" height="32" alt="@car.CurrentRentalState" title="@car.CurrentRentalState" />
+                            <img src="~/images/RentalState-Rented-64.png" height="32" alt="@car.CurrentRentalStatus" title="@car.CurrentRentalStatus" />
                             break;
                         case ServerlessCarRent.Common.Models.CarRental.CarRentalState.Booked:
                         case ServerlessCarRent.Common.Models.CarRental.CarRentalState.Unknown:
                         default:
-                            <img src="~/images/RentalState-Unknown-64.png" height="32" alt="@car.CurrentRentalState" title="@car.CurrentRentalState" />
+                            <img src="~/images/RentalState-Unknown-64.png" height="32" alt="@car.CurrentRentalStatus" title="@car.CurrentRentalStatus" />
                             break;
                     }
                 </td>

@@ -1,0 +1,68 @@
+﻿@model ServerlessCarRent.WebSite.Models.PickupLocationsController.IndexViewModel
+
+@{
+    ViewData["Title"] = "Pickup Locations management";
+}
+
+<h1>Pickup Locations Management</h1>
+
+<p>
+    <a asp-action="Create"><img src="~/images/CreatePickupLocation.png" height="50" alt="Create a new pickup location" title="Create a new pickup location" /></a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Location Id
+            </th>
+            <th>
+                City
+            </th>
+            <th>
+                Description
+            </th>
+            <th>
+                Status
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var location in Model.PickupLocations)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => location.Identifier)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => location.City)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => location.Location)
+                </td>
+                <td>
+                    @switch (location.CurrentStatus)
+                    {
+                        case ServerlessCarRent.Common.Models.PickupLocation.PickupLocationState.Open:
+                            <img src="~/images/LocationState-Open-64.png" height="32" alt="@location.CurrentStatus" title="@location.CurrentStatus" />
+                            break;
+                        case ServerlessCarRent.Common.Models.PickupLocation.PickupLocationState.Closed:
+                            <img src="~/images/LocationState-Closed-64.png" height="32" alt="@location.CurrentStatus" title="@location.CurrentStatus" />
+                            break;
+                        default:
+                            <img src="~/images/LocationState-Closed-64.png" height="32" alt="@location.CurrentStatus" title="@location.CurrentStatus" />
+                            break;
+                    }
+                </td>
+                <td>
+                    <a href="@Url.ActionLink("Edit","PickupLocations",new { id=location.Identifier})" >
+                        <img src="~/images/EditPickupLocation.png" height="32" alt="Edit pickup location" title="Edit pickup location" />
+                    </a>
+                    <a href="@Url.ActionLink("Details","PickupLocations",new { id=location.Identifier})" >
+                        <img src="~/images/DetailPickupLocation.png" height="32" alt="Pickup Location details" title="Pickup Location details" />
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
