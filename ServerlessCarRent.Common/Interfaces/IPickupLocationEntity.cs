@@ -13,5 +13,7 @@ namespace ServerlessCarRent.Common.Interfaces
 		Task<bool> RentCar(RentCarPickupLocationDto carInfo);
 
 		void CarStatusChanged(CarStatusChangeDto carInfo);
-	}
+
+        void Update(UpdatePickupLocationDto info);
+    }
 }

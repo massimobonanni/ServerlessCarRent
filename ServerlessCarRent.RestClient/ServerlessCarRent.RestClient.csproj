@@ -12,6 +12,7 @@
     <Compile Include="..\ServerlessCarRent.Functions\Requests\RentCarRequest.cs" Link="Requests\RentCarRequest.cs" />
     <Compile Include="..\ServerlessCarRent.Functions\Requests\ReturnCarRequest.cs" Link="Requests\ReturnCarRequest.cs" />
     <Compile Include="..\ServerlessCarRent.Functions\Requests\UpdateCarRequest.cs" Link="Requests\UpdateCarRequest.cs" />
+    <Compile Include="..\ServerlessCarRent.Functions\Requests\UpdatePickupLocationRequest.cs" Link="Requests\UpdatePickupLocationRequest.cs" />
     <Compile Include="..\ServerlessCarRent.Functions\Responses\GetCarResponse.cs" Link="Responses\GetCarResponse.cs" />
     <Compile Include="..\ServerlessCarRent.Functions\Responses\GetCarsResponse.cs" Link="Responses\GetCarsResponse.cs" />
     <Compile Include="..\ServerlessCarRent.Functions\Responses\GetPickupLocationResponse.cs" Link="Responses\GetPickupLocationResponse.cs" />

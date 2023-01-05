@@ -137,6 +137,7 @@ namespace ServerlessCarRent.WebSite.Controllers
             }
 
             viewModel.Currencies = _currenciesService.GetAll().GenerateListItems();
+            viewModel.CarStates = SelectListItemUtility.GenerateListFromCarStates(viewModel.CurrentState);
 
             return View(viewModel);
         }

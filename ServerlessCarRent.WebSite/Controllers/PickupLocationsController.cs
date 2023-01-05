@@ -89,46 +89,46 @@ namespace ServerlessCarRent.WebSite.Controllers
             return View(viewModel);
         }
 
-        // GET: PickupLocationsController/Edit/5
-        public ActionResult Edit(int id)
+        // GET: PickupLocationsController/Edit/ROME-FCO
+        public async Task<ActionResult> Edit(string id)
         {
-            return View();
+            var location = await this._pickupLocationsManagementClient.GetPickupLocationAsync(id);
+
+            if (location == null)
+                RedirectToAction("Index");
+
+            var viewModel = _mapper.Map<EditViewModel>(location);
+
+            viewModel.PickupLocationStates = SelectListItemUtility.GenerateListFromPickupLocationStates(viewModel.Status);
+
+            return View(viewModel);
         }
 
-        // POST: PickupLocationsController/Edit/5
+        // POST: PickupLocationsController/Edit/ROME-FCO
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(string id, EditViewModel viewModel)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                var location = _mapper.Map<UpdatePickupLocationRequest>(viewModel);
+
+                var result = await _pickupLocationsManagementClient.UpdatePickupLocationAsync(id, location);
+
+                if (result.Succeeded)
+                    return RedirectToAction(nameof(Index));
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error);
+                }
             }
-            catch
-            {
-                return View();
-            }
+
+            viewModel.PickupLocationStates = SelectListItemUtility.GenerateListFromPickupLocationStates(viewModel.Status);
+
+            return View(viewModel);
         }
 
-        // GET: PickupLocationsController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: PickupLocationsController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        
     }
 }

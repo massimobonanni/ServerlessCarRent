@@ -87,10 +87,26 @@ namespace ServerlessCarRent.Functions.Entities
 				&& carInfo.NewCarRentalStatus.Value != car.RentalStatus)
 				car.RentalStatus = carInfo.NewCarRentalStatus.Value;
 		}
-		#endregion [ Public methods ]
 
-		#region [ Private methods ]
-		private void SignalRentStarted(RentCarPickupLocationDto carInfo)
+        public void Update(UpdatePickupLocationDto info)
+        {
+			if (info == null)
+				return;
+
+			if (!string.IsNullOrWhiteSpace(info.Location))
+				this.Status.Location = info.Location;
+
+			if (!string.IsNullOrWhiteSpace(info.City))
+				this.Status.City = info.City;
+
+			this.Status.Status = info.Status;
+
+        }
+
+        #endregion [ Public methods ]
+
+        #region [ Private methods ]
+        private void SignalRentStarted(RentCarPickupLocationDto carInfo)
 		{
 			var carRentalsEntityId = new EntityId(nameof(CarEntity), carInfo.CarPlate);
 
@@ -111,5 +127,5 @@ namespace ServerlessCarRent.Functions.Entities
 				=> ctx.DispatchAsync<PickupLocationEntity>(logger);
 
 
-	}
+    }
 }

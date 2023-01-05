@@ -19,6 +19,8 @@ namespace ServerlessCarRent.WebSite
             CreateMap<GetPickupLocationResponse, DetailsViewModel>();
             CreateMap<PickupLocationCarDto, PickupLocationCarModel>();
             CreateMap<CreateViewModel, InitializePickupLocationRequest>();
+            CreateMap<GetPickupLocationResponse, EditViewModel>();
+            CreateMap<EditViewModel, UpdatePickupLocationRequest>();
         }
     }
 

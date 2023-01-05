@@ -93,5 +93,38 @@ namespace ServerlessCarRent.RestClient
 
             return result;
         }
+
+        public async Task<ClientResult> UpdatePickupLocationAsync(string id, UpdatePickupLocationRequest locationInfo,
+             CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentNullException(nameof(id));
+            if (locationInfo == null)
+                throw new ArgumentNullException(nameof(locationInfo));
+
+            var result = new ClientResult() { Succeeded = true };
+
+            var uri = this.CreateAPIUri(null, $"{DefaultApiEndpoint}/{id}");
+
+            var postContent = locationInfo.GenerateStringContent();
+
+            var response = await this._httpClient.PutAsync(uri, postContent, cancellationToken);
+
+            switch (response.StatusCode)
+            {
+                case System.Net.HttpStatusCode.NoContent:
+                    break;
+                case System.Net.HttpStatusCode.NotFound:
+                    result.Succeeded = false;
+                    result.Errors.Add("Pickup location doesn't exists");
+                    break;
+                case System.Net.HttpStatusCode.BadRequest:
+                    result.Succeeded = false;
+                    result.Errors.Add("The pickup location info are not correct");
+                    break;
+            }
+
+            return result;
+        }
     }
 }
