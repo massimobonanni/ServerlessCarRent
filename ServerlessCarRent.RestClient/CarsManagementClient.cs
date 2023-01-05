@@ -49,8 +49,7 @@ namespace ServerlessCarRent.RestClient
 
             if (response.IsSuccessStatusCode)
             {
-                var content = await response.Content.ReadAsStringAsync();
-                var getResult = JsonConvert.DeserializeObject<GetCarsResponse>(content);
+                var getResult = await response.Content.DeserializeObjectAsync<GetCarsResponse>();
                 return getResult;
             }
             return null;
@@ -63,8 +62,7 @@ namespace ServerlessCarRent.RestClient
             var response = await this._httpClient.GetAsync(uri, cancellationToken);
             if (response.IsSuccessStatusCode)
             {
-                var content = await response.Content.ReadAsStringAsync();
-                var car = JsonConvert.DeserializeObject<GetCarResponse>(content);
+                var car = await response.Content.DeserializeObjectAsync<GetCarResponse>();
                 return car;
             }
             return null;
@@ -79,8 +77,7 @@ namespace ServerlessCarRent.RestClient
 
             var uri = this.CreateAPIUri(null, $"{DefaultApiEndpoint}");
 
-            string requestJson = JsonConvert.SerializeObject(car, Formatting.None);
-            var postContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
+            var postContent = car.GenerateStringContent();
 
             var response = await this._httpClient.PostAsync(uri, postContent, cancellationToken);
 
@@ -113,8 +110,7 @@ namespace ServerlessCarRent.RestClient
 
             var uri = this.CreateAPIUri(null, $"{DefaultApiEndpoint}/{carPlate}");
 
-            string requestJson = JsonConvert.SerializeObject(carInfo, Formatting.None);
-            var postContent = new StringContent(requestJson, Encoding.UTF8, "application/json");
+            var postContent = carInfo.GenerateStringContent();
 
             var response = await this._httpClient.PutAsync(uri, postContent, cancellationToken);
 

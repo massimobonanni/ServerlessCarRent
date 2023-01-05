@@ -44,11 +44,23 @@ namespace ServerlessCarRent.RestClient
 
 			if (response.IsSuccessStatusCode)
 			{
-				var content = await response.Content.ReadAsStringAsync();
-				var getResult = JsonConvert.DeserializeObject<GetPickupLocationsResponse>(content);
+				var getResult = await response.Content.DeserializeObjectAsync<GetPickupLocationsResponse>();
 				return getResult;
 			}
 			return null;
 		}
-	}
+
+        public async Task<GetPickupLocationResponse> GetPickupLocationAsync(string identifier, CancellationToken cancellationToken = default)
+        {
+            var uri = this.CreateAPIUri(null, $"{DefaultApiEndpoint}/{identifier}?details");
+
+            var response = await this._httpClient.GetAsync(uri, cancellationToken);
+            if (response.IsSuccessStatusCode)
+            {
+                var location = await response.Content.DeserializeObjectAsync<GetPickupLocationResponse>();
+                return location;
+            }
+            return null;
+        }
+    }
 }

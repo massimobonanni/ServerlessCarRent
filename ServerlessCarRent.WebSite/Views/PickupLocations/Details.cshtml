@@ -1,0 +1,136 @@
+﻿@model ServerlessCarRent.WebSite.Models.PickupLocationsController.DetailsViewModel
+
+@{
+    ViewData["Title"] = $"Location : {Model.Identifier}";
+}
+<h1>Pickup Location Details</h1>
+<br />
+<div>
+    <h2>Location: @Model.Identifier</h2>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.City)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.City)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Location)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Location)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd class="col-sm-10">
+            @switch (Model.Status)
+            {
+                case ServerlessCarRent.Common.Models.PickupLocation.PickupLocationState.Open:
+                    <img src="~/images/LocationState-Open-64.png" height="32" alt="@Model.Status" title="@Model.Status" />
+                    break;
+                case ServerlessCarRent.Common.Models.PickupLocation.PickupLocationState.Closed:
+                default:
+                    <img src="~/images/LocationState-Closed-64.png" height="32" alt="@Model.Status" title="@Model.Status" />
+                    break;
+            }
+        </dd>
+    </dl>
+</div>
+<div class="accordion col-10 offset-1" id="cars">
+    <div class="card">
+        <div class="card-header" id="accessKeys">
+            <h5 class="mb-0">
+                <button class="btn btn-block text-left collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <h5>Cars</h5>
+                </button>
+            </h5>
+        </div>
+
+        <div id="collapseOne" class="collapse" aria-labelledby="accessKeys" data-bs-parent="#cars">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Plate
+                            </th>
+                            <th>
+                                Model
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            <th>
+                                Rental Status
+                            </th>
+                            <th>
+
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var car in Model.Cars.OrderBy(r => r.Plate))
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => car.Plate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => car.Model)
+                                </td>
+                                <td>
+                                    @switch (car.Status)
+                                    {
+                                        case ServerlessCarRent.Common.Models.Car.CarState.Working:
+                                            <img src="~/images/CarState-Working-64.png" height="32" alt="@car.Status" title="@car.Status" />
+                                            break;
+                                        case ServerlessCarRent.Common.Models.Car.CarState.UnderMaintenance:
+                                            <img src="~/images/CarState-UnderMaintenance-64.png" height="32" alt="@car.Status" title="@car.Status" />
+                                            break;
+                                        case ServerlessCarRent.Common.Models.Car.CarState.Unusable:
+                                        default:
+                                            <img src="~/images/CarState-Unusable-64.png" height="32" alt="@car.Status" title="@car.Status" />
+                                            break;
+                                    }
+                                </td>
+                                <td>
+                                    @switch (car.RentalStatus)
+                                    {
+                                        case ServerlessCarRent.Common.Models.CarRental.CarRentalState.Free:
+                                            <img src="~/images/RentalState-Free-64.png" height="32" alt="@car.RentalStatus" title="@car.RentalStatus" />
+                                            break;
+                                        case ServerlessCarRent.Common.Models.CarRental.CarRentalState.Rented:
+                                            <img src="~/images/RentalState-Rented-64.png" height="32" alt="@car.RentalStatus" title="@car.RentalStatus" />
+                                            break;
+                                        case ServerlessCarRent.Common.Models.CarRental.CarRentalState.Booked:
+                                        case ServerlessCarRent.Common.Models.CarRental.CarRentalState.Unknown:
+                                        default:
+                                            <img src="~/images/RentalState-Unknown-64.png" height="32" alt="@car.RentalStatus" title="@car.RentalStatus" />
+                                            break;
+                                    }
+                                </td>
+                                <td>
+                                    <a href="@Url.ActionLink("Edit","Cars",new { plate=car.Plate})">
+                                        <img src="~/images/EditCar.png" height="32" alt="Edit car" title="Edit Car" />
+                                    </a>
+                                    <a href="@Url.ActionLink("Details","Cars",new { plate=car.Plate})">
+                                        <img src="~/images/DetailCar.png" height="32" alt="Car details" title="Car details" />
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<br />
+<div>
+    <a href="@Url.ActionLink("Edit","PickupLocations",new {id=Model.Identifier})" class="color: inherit;">
+        <img src="~/images/EditPickupLocation.png" height="50" alt="Edit Pickup Location" title="Edit Pickup Location" />
+    </a>
+</div>

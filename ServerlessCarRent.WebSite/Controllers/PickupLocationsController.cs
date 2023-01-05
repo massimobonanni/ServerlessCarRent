@@ -42,10 +42,17 @@ namespace ServerlessCarRent.WebSite.Controllers
             return View(indexViewModel);
         }
 
-        // GET: PickupLocationsController/Details/5
-        public ActionResult Details(int id)
+        // GET: PickupLocationsController/Details/ROME-FCO
+        public async Task<ActionResult> Details(string id)
         {
-            return View();
+            var location = await this._pickupLocationsManagementClient.GetPickupLocationAsync(id);
+
+            if (location == null)
+                RedirectToAction("Index");
+
+            var detailsViewModel = _mapper.Map<DetailsViewModel>(location);
+
+            return View(detailsViewModel);
         }
 
         // GET: PickupLocationsController/Create
