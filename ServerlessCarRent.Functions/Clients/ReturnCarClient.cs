@@ -33,7 +33,7 @@ namespace ServerlessCarRent.Functions.Clients
 			_logger = loggerFactory.CreateLogger<ReturnCarClient>();
 		}
 
-		[OpenApiOperation(operationId: "returnCar", new[] { "Rents Management" },
+		[OpenApiOperation(operationId: "returnCar", new[] { "Rentals Management" },
 			Summary = "Return a car", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ReturnCarRequest),
 			Description = "Info about the car to return.", Required = true)]

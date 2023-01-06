@@ -82,12 +82,10 @@ namespace ServerlessCarRent.RestClient
                 case System.Net.HttpStatusCode.Created:
                     break;
                 case System.Net.HttpStatusCode.Conflict:
-                    result.Succeeded = false;
-                    result.Errors.Add("Pickup Location with the same Id already exists");
-                    break;
                 case System.Net.HttpStatusCode.BadRequest:
                     result.Succeeded = false;
-                    result.Errors.Add("The pickup location info are not correct");
+                    var responseMessage = await response.Content.ReadAsStringAsync();
+                    result.Errors.Add(responseMessage);
                     break;
             }
 
@@ -115,12 +113,10 @@ namespace ServerlessCarRent.RestClient
                 case System.Net.HttpStatusCode.NoContent:
                     break;
                 case System.Net.HttpStatusCode.NotFound:
-                    result.Succeeded = false;
-                    result.Errors.Add("Pickup location doesn't exists");
-                    break;
                 case System.Net.HttpStatusCode.BadRequest:
                     result.Succeeded = false;
-                    result.Errors.Add("The pickup location info are not correct");
+                    var responseMessage = await response.Content.ReadAsStringAsync();
+                    result.Errors.Add(responseMessage);
                     break;
             }
 
