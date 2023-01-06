@@ -23,7 +23,8 @@ namespace ServerlessCarRent.RestClient
 
         protected override string DefaultApiEndpoint => "api/rents";
 
-        public async Task<ClientResult> RentCar(RentCarRequest rentalInfo, CancellationToken cancellationToken)
+        public async Task<ClientResult> RentCar(RentCarRequest rentalInfo, 
+            CancellationToken cancellationToken = default)
         {
             if (rentalInfo == null)
                 throw new ArgumentNullException(nameof(rentalInfo));
@@ -52,7 +53,7 @@ namespace ServerlessCarRent.RestClient
         }
 
         public async Task<ClientResult> ReturnCar(string plate,
-            ReturnCarRequest rentalInfo, CancellationToken cancellationToken)
+            ReturnCarRequest rentalInfo, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(plate))
                 throw new ArgumentNullException(nameof(rentalInfo));

@@ -1,0 +1,73 @@
+﻿@model ServerlessCarRent.WebSite.Models.RentalsController.RentViewModel
+
+@{
+    ViewData["Title"] = $"Rent car: {Model.CarPlate}";
+}
+
+<h1>Rent car</h1>
+
+<br />
+<hr />
+<div class="row">
+    <div class="col-md-10">
+        <form asp-action="Rent">
+            <input asp-for="ReturnAction" hidden readonly/>
+            <input asp-for="ReturnController" hidden readonly />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group col-md-3">
+                <label asp-for="CarPlate" class="control-label"></label>
+                <input asp-for="CarPlate" class="form-control" readonly/>
+            </div>
+            <br />
+            <div class="form-group col-md-6">
+                <label asp-for="CarModel" class="control-label"></label>
+                <input asp-for="CarModel" class="form-control" readonly />
+            </div>
+            <br />
+            <div class="form-group col-md-3">
+                <label asp-for="PickupLocation" class="control-label"></label>
+                <input asp-for="PickupLocation" class="form-control" readonly />
+            </div>
+            <br />
+            <div class="form-group col-md-6">
+                <label asp-for="PickupLocationDescription" class="control-label"></label>
+                <input asp-for="PickupLocationDescription" class="form-control" readonly />
+            </div>
+            <br />
+            <div class="form-group col-md-4">
+                <label asp-for="RentalStartDate" class="control-label"></label>
+                <input asp-for="RentalStartDate" class="form-control" />
+                <span asp-validation-for="RentalStartDate" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group col-md-6">
+                <label asp-for="RenterLastName" class="control-label"></label>
+                <input asp-for="RenterLastName" class="form-control " />
+                <span asp-validation-for="RenterLastName" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group col-md-6">
+                <label asp-for="RenterFirstName" class="control-label"></label>
+                <input asp-for="RenterFirstName" class="form-control" />
+                <span asp-validation-for="RenterFirstName" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group col-md-6">
+                <label asp-for="RenterEmail" class="control-label"></label>&nbsp;&nbsp;
+                <input asp-for="RenterEmail" class="form-control" />
+                <span asp-validation-for="RenterEmail" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Rent" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

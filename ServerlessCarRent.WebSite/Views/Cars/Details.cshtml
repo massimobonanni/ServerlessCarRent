@@ -141,4 +141,11 @@
     <a href="@Url.ActionLink("Edit","Cars",new { plate=Model.Plate})" class="color: inherit;">
         <img src="~/images/EditCar.png" height="50" alt="Edit car" title="Edit Car" />
     </a>
+    &nbsp;&nbsp;
+    @if (Model.CurrentRentalState == ServerlessCarRent.Common.Models.CarRental.CarRentalState.Free)
+    {
+        <a href="@Url.ActionLink("Rent","Rentals",new { plate=Model.Plate,location=Model.PickupLocation,returnAction="index",returnController="cars"})">
+            <img src="~/images/RentCar.png" height="32" alt="Rent the car" title="Rent the car" />
+        </a>
+    }
 </div>

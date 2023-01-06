@@ -28,6 +28,7 @@
                 Rental Status
             </th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -75,12 +76,20 @@
                     }
                 </td>
                 <td>
-                    <a href="@Url.ActionLink("Edit","Cars",new { plate=car.Plate})" >
+                    <a href="@Url.ActionLink("Edit","Cars",new { plate=car.Plate})">
                         <img src="~/images/EditCar.png" height="32" alt="Edit car" title="Edit Car" />
                     </a>
-                    <a href="@Url.ActionLink("Details","Cars",new { plate=car.Plate})" >
+                    <a href="@Url.ActionLink("Details","Cars",new { plate=car.Plate})">
                         <img src="~/images/DetailCar.png" height="32" alt="Car details" title="Car details" />
                     </a>
+                </td>
+                <td>
+                    @if (car.CurrentRentalStatus == ServerlessCarRent.Common.Models.CarRental.CarRentalState.Free)
+                    {
+                        <a href="@Url.ActionLink("Rent","Rentals",new { plate=car.Plate,location=car.PickupLocation,returnAction="index",returnController="cars"})">
+                            <img src="~/images/RentCar.png" height="32" alt="Rent the car" title="Rent the car" />
+                        </a>
+                    }
                 </td>
             </tr>
         }

@@ -58,12 +58,12 @@ namespace ServerlessCarRent.Functions.Clients
                 var request = JsonConvert.DeserializeObject<RentCarRequest>(payloadContent);
 
                 if (request == null || !request.IsValid())
-                    return new BadRequestResult();
+                    return new BadRequestObjectResult("The rent car info are not valid");
 
                 var car = await client.GetCarDataAsync(request.CarPlate);
 
                 if (car == null)
-                    return new NotFoundResult();
+                    return new NotFoundObjectResult("The car is not exist");
 
                 if (!car.CanBeRent())
                     new BadRequestObjectResult("The car cannot be rented");
@@ -109,9 +109,10 @@ namespace ServerlessCarRent.Functions.Clients
                 return new OkObjectResult(response);
 
             }
-            catch
+            catch (Exception ex)
             {
-                return new BadRequestResult();
+                this._logger.LogError(ex, "RentCar");
+                throw;
             }
         }
     }

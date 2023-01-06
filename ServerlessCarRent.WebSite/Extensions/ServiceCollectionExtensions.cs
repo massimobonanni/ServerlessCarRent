@@ -33,7 +33,20 @@ namespace Microsoft.Extensions.DependencyInjection
 				return client;
 			});
 
-			services.AddScoped<ICurrenciesService, CurrenciesService>();
+            services.AddScoped<RentalsManagementClient>(s =>
+            {
+                var config = s.GetService<IConfiguration>();
+                var httpClient = s.GetService<HttpClient>();
+
+                var baseUrl = config.GetValue<string>("APISettings:BaseUrl");
+                var apiKey = config.GetValue<string>("APISettings:ApiKey");
+
+                var client = new RentalsManagementClient(httpClient, baseUrl, apiKey);
+
+                return client;
+            });
+
+            services.AddScoped<ICurrenciesService, CurrenciesService>();
 		}
 	}
 }
