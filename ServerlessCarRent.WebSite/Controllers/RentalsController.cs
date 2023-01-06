@@ -84,6 +84,46 @@ namespace ServerlessCarRent.WebSite.Controllers
            return View(viewModel);
         }
 
-        
+        [HttpGet]
+        public async Task<ActionResult> Return([FromQuery] string plate, [FromQuery] string returnAction, [FromQuery] string returnController)
+        {
+            var car = await this._carsManagementClient.GetCarAsync(plate);
+
+            if (car == null)
+                return RedirectToAction(returnAction, returnController);
+
+            if (car.CurrentRentalState!=Common.Models.CarRental.CarRentalState.Rented)
+                return RedirectToAction(returnAction, returnController);
+
+            var viewModel = new ReturnViewModel();
+            viewModel.ReturnAction = returnAction;
+            viewModel.ReturnController = returnController;
+            _mapper.Map(car, viewModel);
+            viewModel.RentalEndDate = DateTimeOffset.Now;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Return(ReturnViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var rentalInfo = _mapper.Map<ReturnCarRequest>(viewModel);
+
+                var result = await _rentalsManagementClient.ReturnCar(viewModel.Plate,rentalInfo);
+
+                if (result.Succeeded)
+                    return RedirectToAction(viewModel.ReturnAction, viewModel.ReturnController);
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error);
+                }
+            }
+
+            return View(viewModel);
+        }
     }
 }

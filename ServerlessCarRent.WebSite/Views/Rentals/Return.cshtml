@@ -1,0 +1,60 @@
+﻿@model ServerlessCarRent.WebSite.Models.RentalsController.ReturnViewModel
+
+@{
+    ViewData["Title"] = $"Return car: {Model.Plate}";
+}
+
+<h1>Return car</h1>
+
+<br />
+<hr />
+<div class="row">
+    <div class="col-md-10">
+        <form asp-action="Return">
+            <input asp-for="ReturnAction" hidden readonly/>
+            <input asp-for="ReturnController" hidden readonly />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group col-md-3">
+                <label asp-for="Plate" class="control-label"></label>
+                <input asp-for="Plate" class="form-control" readonly/>
+            </div>
+            <br />
+            <div class="form-group col-md-6">
+                <label asp-for="Model" class="control-label"></label>
+                <input asp-for="Model" class="form-control" readonly />
+            </div>
+            <br />
+            <div class="form-group col-md-6">
+                <label asp-for="RenterLastName" class="control-label"></label>
+                <input asp-for="RenterLastName" class="form-control " readonly />
+            </div>
+            <br />
+            <div class="form-group col-md-6">
+                <label asp-for="RenterFirstName" class="control-label"></label>
+                <input asp-for="RenterFirstName" class="form-control" readonly />
+           </div>
+            <br />
+            <div class="form-group col-md-6">
+                <label asp-for="RenterEmail" class="control-label"></label>&nbsp;&nbsp;
+                <input asp-for="RenterEmail" class="form-control" readonly />
+            </div>
+            <br />
+            <div class="form-group col-md-4">
+                <label asp-for="RentalEndDate" class="control-label"></label>
+                <input asp-for="RentalEndDate" class="form-control" />
+                <span asp-validation-for="RentalEndDate" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Return" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

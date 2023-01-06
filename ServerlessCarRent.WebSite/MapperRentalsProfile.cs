@@ -19,6 +19,11 @@ namespace ServerlessCarRent.WebSite
                 .ForMember(dest => dest.PickupLocation, opt => opt.MapFrom(source => source.Identifier))
                 .ForMember(dest => dest.PickupLocationDescription, opt => opt.MapFrom(source => source.Location));
             CreateMap<RentViewModel, RentCarRequest>();
+            CreateMap<GetCarResponse, ReturnViewModel>()
+                .ForMember(dest => dest.RenterLastName, opt => opt.MapFrom(source => source.CurrentRenterLastName))
+                .ForMember(dest => dest.RenterFirstName, opt => opt.MapFrom(source => source.CurrentRenterFirstName))
+                .ForMember(dest => dest.RenterEmail, opt => opt.MapFrom(source => source.CurrentRenterEmail));
+            CreateMap<ReturnViewModel, ReturnCarRequest>();
         }
     }
 

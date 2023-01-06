@@ -148,4 +148,10 @@
             <img src="~/images/RentCar.png" height="32" alt="Rent the car" title="Rent the car" />
         </a>
     }
+    @if (Model.CurrentRentalState == ServerlessCarRent.Common.Models.CarRental.CarRentalState.Rented)
+    {
+        <a href="@Url.ActionLink("Return","Rentals",new { plate=Model.Plate,returnAction="index",returnController="cars"})">
+            <img src="~/images/ReturnCar.png" height="32" alt="Return the car" title="Return the car" />
+        </a>
+    }
 </div>
