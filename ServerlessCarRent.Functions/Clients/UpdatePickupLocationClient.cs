@@ -48,47 +48,35 @@ namespace ServerlessCarRent.Functions.Clients
             [DurableClient] IDurableEntityClient client)
         {
             _logger.LogInformation("UpdatePickupLocation function");
-            IActionResult responseData = null;
 
             try
             {
                 string payloadContent = await new StreamReader(req.Body).ReadToEndAsync();
                 var request = JsonConvert.DeserializeObject<UpdatePickupLocationRequest>(payloadContent);
 
-                if (request != null)
+                if (request == null)
+                    return new BadRequestObjectResult("The pickup location update info are not valid");
+
+                if (!await client.PickupLocationExistsAsync(id))
+                    return new NotFoundObjectResult("The pickup location is not exist");
+
+                var entityId = new EntityId(nameof(PickupLocationEntity), id);
+                var locationDto = new UpdatePickupLocationDto()
                 {
-                    if (await client.PickupLocationExistsAsync(id))
-                    {
-                        var entityId = new EntityId(nameof(PickupLocationEntity), id);
-                        var locationDto = new UpdatePickupLocationDto()
-                        {
-                            City = request.City,
-                            Location = request.Location,
-                            Status = request.Status,
-                        };
+                    City = request.City,
+                    Location = request.Location,
+                    Status = request.Status,
+                };
 
-                        await client.SignalEntityAsync<IPickupLocationEntity>(entityId,
-                            e => e.Update(locationDto));
+                await client.SignalEntityAsync<IPickupLocationEntity>(entityId, e => e.Update(locationDto));
 
-
-                        responseData = new NoContentResult();
-                    }
-                    else
-                    {
-                        responseData = new NotFoundResult();
-                    }
-                }
-                else
-                {
-                    responseData = new BadRequestResult();
-                }
+                return new NoContentResult();
             }
-            catch
+            catch (Exception ex)
             {
-                responseData = new BadRequestResult();
+                this._logger.LogError(ex, ex.Message);
+                throw;
             }
-
-            return responseData;
         }
     }
 }

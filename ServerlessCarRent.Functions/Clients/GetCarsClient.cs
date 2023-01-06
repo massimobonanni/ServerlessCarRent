@@ -98,12 +98,13 @@ namespace ServerlessCarRent.Functions.Clients
 
 				responseData = new OkObjectResult(response);
 			}
-			catch
-			{
-				responseData = new BadRequestResult();
-			}
+            catch (Exception ex)
+            {
+                this._logger.LogError(ex, ex.Message);
+                throw;
+            }
 
-			return responseData;
+            return responseData;
 		}
 	}
 

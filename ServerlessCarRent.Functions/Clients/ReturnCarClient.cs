@@ -24,101 +24,86 @@ using ServerlessCarRent.Functions.Orchestrators;
 
 namespace ServerlessCarRent.Functions.Clients
 {
-	public class ReturnCarClient
-	{
-		private readonly ILogger _logger;
+    public class ReturnCarClient
+    {
+        private readonly ILogger _logger;
 
-		public ReturnCarClient(ILoggerFactory loggerFactory)
-		{
-			_logger = loggerFactory.CreateLogger<ReturnCarClient>();
-		}
+        public ReturnCarClient(ILoggerFactory loggerFactory)
+        {
+            _logger = loggerFactory.CreateLogger<ReturnCarClient>();
+        }
 
-		[OpenApiOperation(operationId: "returnCar", new[] { "Rentals Management" },
-			Summary = "Return a car", Visibility = OpenApiVisibilityType.Important)]
-		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ReturnCarRequest),
-			Description = "Info about the car to return.", Required = true)]
-		[OpenApiResponseWithBody(HttpStatusCode.OK, "application/json",
-			typeof(ReturnCarResponse), Summary = "Return operation response.",
-			Description = "If the request is valid, the response contains the info of the closed rent.")]
-		[OpenApiResponseWithBody(HttpStatusCode.BadRequest, "text/plain", typeof(string),
-			Summary = "The request is not valid. The API returns a message with the error")]
-		[OpenApiResponseWithoutBody(HttpStatusCode.NotFound,
-			Summary = "The car is not exists")]
+        [OpenApiOperation(operationId: "returnCar", new[] { "Rentals Management" },
+            Summary = "Return a car", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ReturnCarRequest),
+            Description = "Info about the car to return.", Required = true)]
+        [OpenApiResponseWithBody(HttpStatusCode.OK, "application/json",
+            typeof(ReturnCarResponse), Summary = "Return operation response.",
+            Description = "If the request is valid, the response contains the info of the closed rent.")]
+        [OpenApiResponseWithBody(HttpStatusCode.BadRequest, "text/plain", typeof(string),
+            Summary = "The request is not valid. The API returns a message with the error")]
+        [OpenApiResponseWithoutBody(HttpStatusCode.NotFound,
+            Summary = "The car is not exists")]
 
-		[FunctionName("ReturnCar")]
-		public async Task<IActionResult> Run(
-			[HttpTrigger(AuthorizationLevel.Function, "put", Route = "rents/{carPlate}")] HttpRequest req,
-			string carPlate,
-			[DurableClient] IDurableClient client)
-		{
-			_logger.LogInformation("ReturnCar function");
-			IActionResult responseData = null;
+        [FunctionName("ReturnCar")]
+        public async Task<IActionResult> Run(
+            [HttpTrigger(AuthorizationLevel.Function, "put", Route = "rents/{carPlate}")] HttpRequest req,
+            string carPlate,
+            [DurableClient] IDurableClient client)
+        {
+            _logger.LogInformation("ReturnCar function");
 
-			try
-			{
-				string payloadContent = await new StreamReader(req.Body).ReadToEndAsync();
-				var request = JsonConvert.DeserializeObject<ReturnCarRequest>(payloadContent);
+            try
+            {
+                string payloadContent = await new StreamReader(req.Body).ReadToEndAsync();
+                var request = JsonConvert.DeserializeObject<ReturnCarRequest>(payloadContent);
 
-				if (request != null)
-				{
-					var car = await client.GetCarDataAsync(carPlate);
+                if (request == null)
+                    return new BadRequestObjectResult("The request is not valid");
 
-					if (car != null)
-					{
-						if (car.CanBeReturn())
-						{
-							var orchestrationDto = new ReturnOrchestratorDto()
-							{
-								CarPlate = carPlate,
-								RentalEndDate=request.RentalEndDate
-							};
+                var car = await client.GetCarDataAsync(carPlate);
 
-							var returnOperationId = await client.StartNewAsync(nameof(ReturnOrchestrator), 
-								orchestrationDto);
+                if (car == null)
+                    return new NotFoundObjectResult("The car is not exist");
 
-							await client.WaitForCompletionOrCreateCheckStatusResponseAsync(req, returnOperationId,
-								TimeSpan.FromSeconds(10));
+                if (!car.CanBeReturn())
+                    return new BadRequestObjectResult("The car cannot be returned");
 
-							var response = new ReturnCarResponse()
-							{
-								CarPlate = carPlate,
-								ReturnOperationStatus=ReturnOperationState.Pending
-							};
+                var orchestrationDto = new ReturnOrchestratorDto()
+                {
+                    CarPlate = carPlate,
+                    RentalEndDate = request.RentalEndDate
+                };
 
-							var orchestratorStatus = await client.GetStatusAsync(returnOperationId);
-							if (orchestratorStatus.RuntimeStatus == OrchestrationRuntimeStatus.Completed)
-							{
-								var orchestratorOutput = orchestratorStatus.Output.ToObject<ReturnOrchestratorResponseDto>();
-								response.CostPerHour = orchestratorOutput.CostPerHour;
-								response.Cost= orchestratorOutput.Cost;
-								response.Currency = orchestratorOutput.Currency;
-								response.RentalId = orchestratorOutput.RentalId;
-								response.ReturnOperationStatus = orchestratorOutput.Status;
-							}
+                var returnOperationId = await client.StartNewAsync(nameof(ReturnOrchestrator), orchestrationDto);
 
-							responseData = new OkObjectResult(response);
-						}
-						else
-						{
-							responseData = new BadRequestObjectResult("The car cannot be returned");
-						}
-					}
-					else
-					{
-						responseData = new NotFoundResult();
-					}
-				}
-				else
-				{
-					responseData = new BadRequestObjectResult("The car plate, location identifier or renter info are not valid");
-				}
-			}
-			catch
-			{
-				responseData = new BadRequestResult();
-			}
+                await client.WaitForCompletionOrCreateCheckStatusResponseAsync(req, returnOperationId,
+                    TimeSpan.FromSeconds(10));
 
-			return responseData;
-		}
-	}
+                var response = new ReturnCarResponse()
+                {
+                    CarPlate = carPlate,
+                    ReturnOperationStatus = ReturnOperationState.Pending
+                };
+
+                var orchestratorStatus = await client.GetStatusAsync(returnOperationId);
+                if (orchestratorStatus.RuntimeStatus == OrchestrationRuntimeStatus.Completed)
+                {
+                    var orchestratorOutput = orchestratorStatus.Output.ToObject<ReturnOrchestratorResponseDto>();
+                    response.CostPerHour = orchestratorOutput.CostPerHour;
+                    response.Cost = orchestratorOutput.Cost;
+                    response.Currency = orchestratorOutput.Currency;
+                    response.RentalId = orchestratorOutput.RentalId;
+                    response.ReturnOperationStatus = orchestratorOutput.Status;
+                }
+
+                return new OkObjectResult(response);
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(ex, ex.Message);
+                throw;
+            }
+        }
+    }
 }

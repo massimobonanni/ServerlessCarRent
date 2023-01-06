@@ -23,73 +23,62 @@ using ServerlessCarRent.Common.Interfaces;
 
 namespace ServerlessCarRent.Functions.Clients
 {
-	public class UpdateCarClient
-	{
-		private readonly ILogger _logger;
+    public class UpdateCarClient
+    {
+        private readonly ILogger _logger;
 
-		public UpdateCarClient(ILoggerFactory loggerFactory)
-		{
-			_logger = loggerFactory.CreateLogger<UpdateCarClient>();
-		}
+        public UpdateCarClient(ILoggerFactory loggerFactory)
+        {
+            _logger = loggerFactory.CreateLogger<UpdateCarClient>();
+        }
 
-		[OpenApiOperation(operationId: "updateCar", new[] { "Cars Management" },
-			Summary = "Update info for an existing car", Visibility = OpenApiVisibilityType.Important)]
-		[OpenApiRequestBody(contentType: "application/json", bodyType: typeof(UpdateCarRequest),
-			Description = "Info about the car to update.", Required = true)]
-		[OpenApiResponseWithoutBody(HttpStatusCode.NoContent, Summary = "Car updated.")]
-		[OpenApiResponseWithoutBody(HttpStatusCode.BadRequest,
-			Summary = "The request is not valid because one of the plate or model is not valid")]
-		[OpenApiResponseWithoutBody(HttpStatusCode.NotFound, Summary = "The car doesn't exist")]
+        [OpenApiOperation(operationId: "updateCar", new[] { "Cars Management" },
+            Summary = "Update info for an existing car", Visibility = OpenApiVisibilityType.Important)]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(UpdateCarRequest),
+            Description = "Info about the car to update.", Required = true)]
+        [OpenApiResponseWithoutBody(HttpStatusCode.NoContent, Summary = "Car updated.")]
+        [OpenApiResponseWithoutBody(HttpStatusCode.BadRequest,
+            Summary = "The request is not valid because one of the plate or model is not valid")]
+        [OpenApiResponseWithoutBody(HttpStatusCode.NotFound, Summary = "The car doesn't exist")]
 
-		[FunctionName("UpdateCar")]
-		public async Task<IActionResult> Run(
-			[HttpTrigger(AuthorizationLevel.Function, "put", Route = "cars/{carPlate}")] HttpRequest req,
-			string carPlate,
-			[DurableClient] IDurableEntityClient client)
-		{
-			_logger.LogInformation("UpdateCar function");
-			IActionResult responseData = null;
+        [FunctionName("UpdateCar")]
+        public async Task<IActionResult> Run(
+            [HttpTrigger(AuthorizationLevel.Function, "put", Route = "cars/{carPlate}")] HttpRequest req,
+            string carPlate,
+            [DurableClient] IDurableEntityClient client)
+        {
+            _logger.LogInformation("UpdateCar function");
 
-			try
-			{
-				string payloadContent = await new StreamReader(req.Body).ReadToEndAsync();
-				var request = JsonConvert.DeserializeObject<UpdateCarRequest>(payloadContent);
+            try
+            {
+                string payloadContent = await new StreamReader(req.Body).ReadToEndAsync();
+                var request = JsonConvert.DeserializeObject<UpdateCarRequest>(payloadContent);
 
-				if (request != null )
-				{
-					if (await client.CarExistsAsync(carPlate))
-					{
-						var entityId = new EntityId(nameof(CarEntity), carPlate);
-						var carDto = new UpdateCarDto()
-						{
-							NewCarStatus=request.NewCarStatus,
-							NewCostPerHour=request.NewCostPerHour,
-							NewCurrency=request.NewCurrency,
-							NewPickupLocation = request.NewPickupLocation	
-						};
+                if (request == null)
+                    return new BadRequestObjectResult("The update info are not valid");
 
-						await client.SignalEntityAsync<ICarEntity>(entityId, 
-							e => e.Update(carDto));
+                if (!await client.CarExistsAsync(carPlate))
+                    return new NotFoundObjectResult("The car is not exist");
 
 
-						responseData = new NoContentResult();
-					}
-					else
-					{
-						responseData = new NotFoundResult();
-					}
-				}
-				else
-				{
-					responseData = new BadRequestResult();
-				}
-			}
-			catch
-			{
-				responseData = new BadRequestResult();
-			}
+                var entityId = new EntityId(nameof(CarEntity), carPlate);
+                var carDto = new UpdateCarDto()
+                {
+                    NewCarStatus = request.NewCarStatus,
+                    NewCostPerHour = request.NewCostPerHour,
+                    NewCurrency = request.NewCurrency,
+                    NewPickupLocation = request.NewPickupLocation
+                };
 
-			return responseData;
-		}
-	}
+                await client.SignalEntityAsync<ICarEntity>(entityId, e => e.Update(carDto));
+
+                return new NoContentResult();
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(ex, ex.Message);
+                throw;
+            }
+        }
+    }
 }
