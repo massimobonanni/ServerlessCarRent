@@ -32,5 +32,8 @@ namespace ServerlessCarRent.WebSite.Models.CarsController
 
         [ValidateNever()]
         public List<SelectListItem> CarStates { get; set; }
+
+        [ValidateNever()]
+        public List<SelectListItem> PickupLocations { get; set; }
     }
 }

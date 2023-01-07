@@ -80,6 +80,9 @@ namespace ServerlessCarRent.RestClient
                 case System.Net.HttpStatusCode.Created:
                     break;
                 case System.Net.HttpStatusCode.Conflict:
+                    result.Succeeded = false;
+                    result.Errors.Add("A location with the same id already exists");
+                    break;
                 case System.Net.HttpStatusCode.BadRequest:
                     result.Succeeded = false;
                     var responseMessage = await response.Content.ReadAsStringAsync();

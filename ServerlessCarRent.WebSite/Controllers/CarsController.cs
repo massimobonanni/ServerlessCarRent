@@ -98,6 +98,8 @@ namespace ServerlessCarRent.WebSite.Controllers
             }
 
             viewModel.Currencies = _currenciesService.GetAll().GenerateListItems();
+            viewModel.PickupLocations =
+                await SelectListItemUtility.GenerateListFromPickupLocationsAsync(_pickupLocationsManagementClient);
 
             return View(viewModel);
         }
@@ -113,8 +115,9 @@ namespace ServerlessCarRent.WebSite.Controllers
             var viewModel = _mapper.Map<EditViewModel>(car);
 
             viewModel.Currencies = _currenciesService.GetAll().GenerateListItems();
-
             viewModel.CarStates = SelectListItemUtility.GenerateListFromCarStates(viewModel.CurrentState);
+            viewModel.PickupLocations =
+                await SelectListItemUtility.GenerateListFromPickupLocationsAsync(_pickupLocationsManagementClient);
 
             return View(viewModel);
 
@@ -142,6 +145,8 @@ namespace ServerlessCarRent.WebSite.Controllers
 
             viewModel.Currencies = _currenciesService.GetAll().GenerateListItems();
             viewModel.CarStates = SelectListItemUtility.GenerateListFromCarStates(viewModel.CurrentState);
+            viewModel.PickupLocations =
+                await SelectListItemUtility.GenerateListFromPickupLocationsAsync(_pickupLocationsManagementClient);
 
             return View(viewModel);
         }
