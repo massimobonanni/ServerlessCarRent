@@ -35,19 +35,17 @@ namespace ServerlessCarRent.WebSite.Controllers
 
 
         // GET: CarsController
-        public async Task<ActionResult> Index([FromQuery] string plateFilter, [FromQuery] string locationFilter,
-            [FromQuery] string modelFilter)
+        public async Task<ActionResult> Index([FromQuery] IndexViewModel viewModel)
         {
-            var indexViewModel = new IndexViewModel();
-
-            var searchResult = await this._carsManagementClient.GetCarsAsync(plateFilter, locationFilter, modelFilter, null, null);
+            var searchResult = await this._carsManagementClient.GetCarsAsync(viewModel.PlateFilter,
+                viewModel.LocationFilter,viewModel.ModelFilter, viewModel.StatesFilter, viewModel.RentalStatesFilter);
 
             if (searchResult != null)
             {
-                indexViewModel = _mapper.Map<IndexViewModel>(searchResult);
+                _mapper.Map(searchResult,viewModel);
             }
 
-            return View(indexViewModel);
+            return View(viewModel);
         }
 
         // GET: CarsController/Details/AA000BB

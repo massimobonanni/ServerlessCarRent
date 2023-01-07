@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ServerlessCarRent.Common.Models.Car;
 using ServerlessCarRent.Common.Models.CarRental;
@@ -27,21 +28,18 @@ namespace ServerlessCarRent.RestClient
             IEnumerable<CarState> carStates, IEnumerable<CarRentalState> carRentalStates,
             CancellationToken cancellationToken = default)
         {
-            string query = string.Empty;
-            if (!string.IsNullOrEmpty(plate))
-                query += $"plate={plate}";
-            if (!string.IsNullOrEmpty(location))
-                query += $"location={location}";
-            if (!string.IsNullOrEmpty(model))
-                query += $"model={model}";
+            var queryBuilder= new QueryStringBuilder();
+            queryBuilder.Append("plate", plate);
+            queryBuilder.Append("location", location);
+            queryBuilder.Append("model", model);
             if (carStates != null && carStates.Any())
-                query += $"state={carStates.Select(s => s.ToString()).Aggregate((a, b) => $"{a}|{b}")}";
+                queryBuilder.Append("state", carStates.Select(s => s.ToString()).Aggregate((a, b) => $"{a}|{b}"));
             if (carRentalStates != null && carRentalStates.Any())
-                query += $"rentalState={carRentalStates.Select(s => s.ToString()).Aggregate((a, b) => $"{a}|{b}")}";
+                queryBuilder.Append("rentalState",carRentalStates.Select(s => s.ToString()).Aggregate((a, b) => $"{ a}|{b}"));
 
             Uri uri;
-            if (!string.IsNullOrEmpty(query))
-                uri = this.CreateAPIUri($"{query}");
+            if (!queryBuilder.IsEmpty)
+                uri = this.CreateAPIUri($"{queryBuilder}");
             else
                 uri = this.CreateAPIUri();
 

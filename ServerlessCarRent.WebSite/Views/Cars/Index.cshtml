@@ -5,9 +5,74 @@
 }
 
 <h1>Cars Management</h1>
-
+<br />
+<div class="border rounded">
+    <br />
+    <form>
+        <div class="row">
+            <div class="col-3 offset-1">
+                <label for="plateFilter">Plate</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="plateFilter" name="plateFilter" placeholder="plate" value="@Model.PlateFilter">
+                </div>
+            </div>
+            <div class="col-4">
+                <label for="modelFilter">Model</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="modelFilter" name="modelFilter" placeholder="model" value="@Model.ModelFilter">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 offset-1">
+                <label for="locationFilter">Location</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="locationFilter" name="locationFilter" placeholder="location" value="@Model.LocationFilter">
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="col-10 offset-1 border rounded">
+                <label for="carStateFilter">Car state</label>
+                <div class="input-group" id="carStateFilter">
+                    <label class="checkbox-inline offset-1 col-2">
+                        @Html.CheckBoxFor(model=>Model.CarWorking) Working
+                    </label>
+                    <label class="checkbox-inline col-2">
+                        @Html.CheckBoxFor(model=>Model.CarUnusable) Unusable
+                    </label>
+                    <label class="checkbox-inline col-2">
+                        @Html.CheckBoxFor(model=>Model.CarUnderMaintenance) UnderMaintenance
+                    </label>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-10 offset-1 border rounded">
+                <label for="rentalStateFilter">Rental state</label>
+                <div class="input-group" id="rentalStateFilter">
+                    <label class="checkbox-inline offset-1 col-2">
+                        @Html.CheckBoxFor(model=>Model.CarRentFree) Free
+                    </label>
+                    <label class="checkbox-inline col-2">
+                        @Html.CheckBoxFor(model=>Model.CarRentRented) Rented
+                    </label>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="offset-1 col-10">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </form>
+    <br />
+</div>
 <p>
-    <a asp-action="Create"><img src="~/images/CreateCar.png" height="50" alt="Create a new car" title="Create a new car" /></a>
+
 </p>
 <table class="table">
     <thead>
@@ -100,4 +165,12 @@
             </tr>
         }
     </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="7">
+                <a asp-action="Create"><img src="~/images/CreateCar.png" height="50" alt="Create a new car" title="Create a new car" /></a>
+            </td>
+        </tr>
+
+    </tfoot>
 </table>
