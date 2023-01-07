@@ -1,0 +1,18 @@
+{
+  "pickupLocations": [
+    {
+      "identifier": "",
+      "city": "",
+      "location": ""
+    }
+  ],
+  "cars": [
+    {
+      "plate": "",
+      "model": "",
+      "location": "",
+      "costPerHour": 10.0,
+      "currency": "EUR"
+    }
+  ]
+}

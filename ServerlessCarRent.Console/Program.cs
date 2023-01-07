@@ -10,8 +10,9 @@ class Program
 		var rootCommand = new RootCommand("Console for Serverless Rent car platform");
 		
 		rootCommand.AddCommand(GetCarsManagementCommand.GetCommand());
+        rootCommand.AddCommand(CreateEnvironmentCommand.GetCommand());
 
-		return await rootCommand.InvokeAsync(args);
+        return await rootCommand.InvokeAsync(args);
 	}
 
 		
