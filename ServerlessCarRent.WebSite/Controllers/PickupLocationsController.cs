@@ -27,19 +27,18 @@ namespace ServerlessCarRent.WebSite.Controllers
         }
 
         // GET: PickupLocationsController
-        public async Task<ActionResult> Index([FromQuery] string identifierFilter, [FromQuery] string cityFilter,
-            [FromQuery] string locationFilter)
+        public async Task<ActionResult> Index(IndexViewModel viewModel)
         {
-            var indexViewModel = new IndexViewModel();
-
-            var searchResult = await this._pickupLocationsManagementClient.GetPickupLocationsAsync(identifierFilter, cityFilter, locationFilter, null);
+   
+            var searchResult = await this._pickupLocationsManagementClient.GetPickupLocationsAsync(
+                viewModel.IdentifierFilter,viewModel.CityFilter,viewModel.LocationFilter, viewModel.StatesFilter);
 
             if (searchResult != null)
             {
-                indexViewModel = _mapper.Map<IndexViewModel>(searchResult);
+                 _mapper.Map(searchResult,viewModel);
             }
 
-            return View(indexViewModel);
+            return View(viewModel);
         }
 
         // GET: PickupLocationsController/Details/ROME-FCO

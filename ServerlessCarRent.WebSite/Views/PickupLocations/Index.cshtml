@@ -5,10 +5,58 @@
 }
 
 <h1>Pickup Locations Management</h1>
+<br />
+<div class="border rounded">
+    <br />
+    <form>
+        <div class="row">
+            <div class="col-6 offset-1">
+                <label for="identifierFilter">Location id</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="identifierFilter" name="identifierFilter" placeholder="id" value="@Model.IdentifierFilter">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4 offset-1">
+                <label for="cityFilter">City</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="cityFilter" name="cityFilter" placeholder="city" value="@Model.CityFilter">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 offset-1">
+                <label for="locationFilter">Location</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="locationFilter" name="locationFilter" placeholder="location" value="@Model.LocationFilter">
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-10 offset-1 border rounded">
+                <label for="locationStateFilter">Location state</label>
+                <div class="input-group" id="locationStateFilter">
+                    <label class="checkbox-inline offset-1 col-2">
+                        @Html.CheckBoxFor(model=>Model.LocationOpenFilter) Open
+                    </label>
+                    <label class="checkbox-inline col-2">
+                        @Html.CheckBoxFor(model=>Model.LocationClosedFilter) Closed
+                    </label>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="offset-1 col-10">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </form>
+    <br />
+</div>
 
-<p>
-    <a asp-action="Create"><img src="~/images/CreatePickupLocation.png" height="50" alt="Create a new pickup location" title="Create a new pickup location" /></a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -65,4 +113,11 @@
             </tr>
         }
     </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="5">
+                <a asp-action="Create"><img src="~/images/CreatePickupLocation.png" height="50" alt="Create a new pickup location" title="Create a new pickup location" /></a>
+            </td>
+        </tr>
+    </tfoot>
 </table>
