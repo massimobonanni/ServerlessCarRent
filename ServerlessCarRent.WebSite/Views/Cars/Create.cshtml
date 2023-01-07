@@ -26,7 +26,7 @@
             <br />
             <div class="form-group col-md-4">
                 <label asp-for="PickupLocation" class="control-label"></label>
-                <input asp-for="PickupLocation" class="form-control " />
+                <select asp-for="PickupLocation" asp-items="Model.PickupLocations" class="form-control"></select>
                 <span asp-validation-for="PickupLocation" class="text-danger"></span>
             </div>
             <br />

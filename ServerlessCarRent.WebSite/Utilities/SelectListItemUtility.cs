@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using ServerlessCarRent.Common.Models.Car;
 using ServerlessCarRent.Common.Models.PickupLocation;
+using ServerlessCarRent.RestClient;
 
 namespace ServerlessCarRent.WebSite.Utilities
 {
@@ -36,6 +37,27 @@ namespace ServerlessCarRent.WebSite.Utilities
                 list.Add(new SelectListItem(state.ToString(),
                     ((int)state).ToString(),
                     selectedState.HasValue && selectedState.Value == (PickupLocationState)state));
+            }
+            return list;
+        }
+
+        public static async Task<List<SelectListItem>> GenerateListFromPickupLocationsAsync(
+            PickupLocationsManagementClient client,
+            string selectedLocation = null,
+            bool addEmptyRow = false)
+        {
+            var list = new List<SelectListItem>();
+
+            if (addEmptyRow)
+                list.Add(new SelectListItem(string.Empty, null));
+
+            var pickupLocations = await client.GetPickupLocationsAsync(null, null, null, null);
+
+            foreach (var location in pickupLocations.PickupLocations.OrderBy(p=>p.Location))
+            {
+                list.Add(new SelectListItem(location.Location,
+                    location.Identifier,
+                    selectedLocation!=null && selectedLocation == location.Identifier));
             }
             return list;
         }

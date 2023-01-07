@@ -18,16 +18,20 @@ namespace ServerlessCarRent.WebSite.Controllers
     {
         private readonly ILogger<CarsController> _logger;
         private readonly CarsManagementClient _carsManagementClient;
+        private readonly PickupLocationsManagementClient _pickupLocationsManagementClient;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
         private readonly ICurrenciesService _currenciesService;
 
         public CarsController(ILogger<CarsController> logger,
-            CarsManagementClient carsManagementClient, IConfiguration config, 
+            CarsManagementClient carsManagementClient,
+            PickupLocationsManagementClient pickupLocationsManagementClient,
+            IConfiguration config, 
             IMapper mapper, ICurrenciesService currenciesService)
         {
             _logger = logger;
             _carsManagementClient = carsManagementClient;
+            _pickupLocationsManagementClient = pickupLocationsManagementClient;
             _config = config;
             _mapper = mapper;
             _currenciesService = currenciesService;
@@ -62,12 +66,14 @@ namespace ServerlessCarRent.WebSite.Controllers
         }
 
         // GET: CarsController/Create
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
             var createViewModel = new CreateViewModel();
 
             createViewModel.Currencies = _currenciesService.GetAll().GenerateListItems();
-        
+            createViewModel.PickupLocations = 
+                await SelectListItemUtility.GenerateListFromPickupLocationsAsync(_pickupLocationsManagementClient);
+
             return View(createViewModel);
         }
 
