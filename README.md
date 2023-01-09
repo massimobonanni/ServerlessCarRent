@@ -16,12 +16,21 @@ The solution is composed by three logical layers:
 ## Functions
 
 ### Clients
+In this solution the Client Functions are used to expose a set of APIs (REST) and call orchestrators, entities and Durable Functions platform behind the scenes.  
  
 ### Orchestrators
+In this solution, we use the orchestrators in two different ways:
+* to "sinchronize" operations between client and entity: a client can only execute a signal operation against an entity. This means that the client continues its own flow while the entity method of the signal operation will be called in asynchronous way. In some scenarios (e.g. rent a car), we need to wait the result of the operation, and to do that, we use an orchestrator.
+* to implement integration flows from our solution to the external world.
 
 ### Entities
+This solution has three different entities:
+* CarEntity: it manages a single car. Its status contains only the current rental (if exist).
+* PickupLocationEntity: it manages a pickup location with different cars.
+* CarRentalsEntity: it stores all the rental history for a car. Its status contains all the rentals completed for a specific car.
 
 ### Activities
+This solution uses activities to implement atomic operation for the external services integration (e.g. send an event to Event Grdi).
 
 ## Sequence Diagrams
 
@@ -47,4 +56,37 @@ sequenceDiagram
     critical if orchestrator status is completed
         Note over RentCarClient: Retrieve the orchestrator status<br/>from the GetStatusAsync result
     end
+    RentCarClient ->> -App : Rent car response
+```
+
+### Rent a car
+
+```mermaid
+sequenceDiagram
+    actor App
+    participant ReturnCarClient
+    participant ReturnOrchestrator
+    participant CarEntity
+    participant CarRentalsEntity
+    participant PickupLocationEntity
+    participant RentalStatusChangeOrchestrator
+    participant DurableFunctionsExtension
+    App ->> +ReturnCarClient : [PUT]
+    ReturnCarClient -->> ReturnOrchestrator : StartNewAsync
+    ReturnOrchestrator ->> +CarEntity : CallEntityAsync -> Return
+    critical if car can be returned
+        CarEntity --) CarRentalsEntity : SignalEntity -> AddRent
+        CarEntity --) RentalStatusChangeOrchestrator: StartAsync
+        CarEntity --) PickupLocationEntity : SignalEntity -> CarStatusChanged
+        Note over PickupLocationEntity,CarEntity: Fire and forget communications
+    end
+    CarEntity ->> -ReturnOrchestrator : Return car result
+    ReturnCarClient ->> DurableFunctionsExtension : GetStatusAsync(idOrchestrator)
+    critical if orchestrator status is completed
+        Note over ReturnCarClient: Retrieve the orchestrator status<br/>from the GetStatusAsync result
+    end
+    ReturnCarClient ->> -App : Response
+
+
+   
 ```
