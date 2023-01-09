@@ -12,7 +12,7 @@ param keyVaultName string
 @description('The name of the function app that implements backend APIs.')
 param backEndFunctionName string
 
-var appServiceName = toLower('${environmentName}fe')
+var appServiceName = toLower('${environmentName}-fe')
 var appServicePlanName = toLower('${environmentName}-fe-plan')
 
 
