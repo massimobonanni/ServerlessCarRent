@@ -15,5 +15,7 @@
     <ProjectReference Include="..\ServerlessCarRent.Common\ServerlessCarRent.Common.csproj" />
     <ProjectReference Include="..\ServerlessCarRent.RestClient\ServerlessCarRent.RestClient.csproj" />
   </ItemGroup>
-
+	<ItemGroup>
+		<Content Update="appsettings.local.json" CopyToPublishDirectory="Never" />
+	</ItemGroup>
 </Project>
