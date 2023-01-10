@@ -125,9 +125,25 @@ namespace ServerlessCarRent.Functions.Entities
                 SignalCarStatusChanged(this.Status.PickupLocation);
             }
         }
+
+        public void Delete()
+        {
+            if (!this.Status.CanBeDeleted())
+                return;
+            DeleteRentals();
+            Entity.Current.DeleteState();
+        }
         #endregion [ Public methods ]
 
         #region [ Private methods ]
+        private void DeleteRentals()
+        {
+            var carRentalsEntityId = new EntityId(nameof(CarRentalsEntity),
+                             Entity.Current.EntityKey);
+
+            Entity.Current.SignalEntity(carRentalsEntityId, "delete");
+        }
+
         private void SignalCarStatusChanged(string pickupLocation)
         {
             var pickupLocationEntityId = new EntityId(nameof(PickupLocationEntity),

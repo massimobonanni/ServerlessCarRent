@@ -12,5 +12,10 @@ namespace ServerlessCarRent.Common.Models.PickupLocation
 		public string Location { get; set; }
 		public PickupLocationState Status { get; set; }
 		public List<PickupLocationCarData> Cars { get; set; }
+
+		public bool CanBeDeleted()
+		{
+			return !this.Cars.Any();
+		}
 	}
 }

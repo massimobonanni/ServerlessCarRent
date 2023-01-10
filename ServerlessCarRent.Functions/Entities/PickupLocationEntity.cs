@@ -103,6 +103,12 @@ namespace ServerlessCarRent.Functions.Entities
 
         }
 
+        public void Delete()
+        {
+            if (!this.Status.CanBeDeleted())
+                return;
+            Entity.Current.DeleteState();
+        }
         #endregion [ Public methods ]
 
         #region [ Private methods ]

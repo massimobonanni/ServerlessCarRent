@@ -33,6 +33,11 @@ namespace ServerlessCarRent.Common.Models.Car
 			return this.CurrentRentalState == Common.Models.CarRental.CarRentalState.Rented;
 		}
 
+		public bool CanBeDeleted()
+		{
+			return this.CurrentRentalState == CarRentalState.Free || this.CurrentRentalState == CarRentalState.Unknown;
+		}
+
 		public decimal CalculateCost()
 		{
 			if (this.CurrentRental == null)
