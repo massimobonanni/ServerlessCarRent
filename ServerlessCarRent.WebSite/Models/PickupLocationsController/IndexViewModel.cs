@@ -11,10 +11,10 @@ namespace ServerlessCarRent.WebSite.Models.PickupLocationsController
         [DisplayName("Location Id")]
         public string IdentifierFilter { get; set; }
 
-        [DisplayName("City")] 
+        [DisplayName("City")]
         public string CityFilter { get; set; }
 
-        [DisplayName("Location Description")] 
+        [DisplayName("Location Description")]
         public string LocationFilter { get; set; }
 
         public bool LocationOpenFilter { get; set; }
@@ -28,17 +28,18 @@ namespace ServerlessCarRent.WebSite.Models.PickupLocationsController
                 if (this.LocationOpenFilter)
                     result.Add(PickupLocationState.Open);
                 if (this.LocationClosedFilter)
-                    result.Add(PickupLocationState.Closed );
+                    result.Add(PickupLocationState.Closed);
                 return result;
             }
             set
             {
                 this.LocationOpenFilter = value.Contains(PickupLocationState.Open);
                 this.LocationClosedFilter = value.Contains(PickupLocationState.Closed);
-              }
+            }
         }
 
 
         public List<PickupLocationModel> PickupLocations { get; set; }
+
     }
 }

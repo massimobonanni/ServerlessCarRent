@@ -19,5 +19,6 @@ namespace ServerlessCarRent.WebSite.Models.PickupLocationsController
 
         [DisplayName("Status")]
         public PickupLocationState CurrentStatus { get; set; }
+
     }
 }
