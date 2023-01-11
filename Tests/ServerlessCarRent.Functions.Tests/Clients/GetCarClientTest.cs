@@ -3,11 +3,15 @@ using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Moq;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ServerlessCarRent.Common.Models.Car;
 using ServerlessCarRent.Functions.Clients;
 using ServerlessCarRent.Functions.Entities;
+using ServerlessCarRent.Functions.Responses;
+using ServerlessCarRent.Functions.Tests.DataGenerators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +28,7 @@ namespace ServerlessCarRent.Functions.Tests.Clients
         {
             var plate = "AA000AA";
             // Setup Ilogger
-             var loggerMock = new Mock<ILogger<GetCarClient>>();
+            var loggerMock = new Mock<ILogger<GetCarClient>>();
             //Setup HttpRequest            
             var requestMock = new Mock<HttpRequest>();
             requestMock.SetupGet(r => r.Query)
@@ -32,7 +36,7 @@ namespace ServerlessCarRent.Functions.Tests.Clients
             // Setup IDurableEntityClient
             var durableClientMock = new Mock<IDurableEntityClient>();
             var entityId = new EntityId(nameof(CarEntity), plate);
-            durableClientMock.Setup( c =>  c.ReadEntityStateAsync<JObject>(entityId, null, null))
+            durableClientMock.Setup(c => c.ReadEntityStateAsync<JObject>(entityId, null, null))
                 .Returns(() => Task.FromResult(new EntityStateResponse<JObject>() { EntityState = null, EntityExists = false }));
 
             // Create Class to test
@@ -45,6 +49,77 @@ namespace ServerlessCarRent.Functions.Tests.Clients
             // Assertions
             Assert.NotNull(actual);
             Assert.IsType<NotFoundResult>(actual);
+        }
+
+        [Fact]
+        public async void Run_PlateNotExist_WithDetail_ReturnNotFound()
+        {
+            var plate = "AA000AA";
+            // Setup Ilogger
+            var loggerMock = new Mock<ILogger<GetCarClient>>();
+            //Setup HttpRequest            
+            var requestMock = new Mock<HttpRequest>();
+            requestMock.SetupGet(r => r.Query)
+                .Returns(() =>
+                {
+                    var queryDict = new Dictionary<string, StringValues>
+                    {
+                        { "details", StringValues.Empty }
+                    };
+                    return new QueryCollection(queryDict);
+                });
+            // Setup IDurableEntityClient
+            var durableClientMock = new Mock<IDurableEntityClient>();
+            var entityId = new EntityId(nameof(CarEntity), plate);
+            durableClientMock.Setup(c => c.ReadEntityStateAsync<JObject>(entityId, null, null))
+                .Returns(() => Task.FromResult(new EntityStateResponse<JObject>() { EntityState = null, EntityExists = false }));
+
+            // Create Class to test
+            var funcClass = new GetCarClient(loggerMock.Object);
+
+
+            // Call method under test
+            var actual = await funcClass.Run(requestMock.Object, plate, durableClientMock.Object);
+
+            // Assertions
+            Assert.NotNull(actual);
+            Assert.IsType<NotFoundResult>(actual);
+        }
+
+        [Theory]
+        [MemberData(nameof(CarDataGenerator.GetCarDataWithoutDetails), MemberType = typeof(CarDataGenerator))]
+        public async void Run_PlateExist_NoDetail_ReturnOk(string plate, CarData carData)
+        {
+            // Setup Ilogger
+            var loggerMock = new Mock<ILogger<GetCarClient>>();
+            //Setup HttpRequest            
+            var requestMock = new Mock<HttpRequest>();
+            requestMock.SetupGet(r => r.Query)
+                .Returns(() => new QueryCollection());
+            // Setup IDurableEntityClient
+            var durableClientMock = new Mock<IDurableEntityClient>();
+            var entityId = new EntityId(nameof(CarEntity), plate);
+            durableClientMock.Setup(c => c.ReadEntityStateAsync<JObject>(entityId, null, null))
+                .Returns(() =>
+                {
+                    var entityState = JObject.FromObject(new { Status = carData });
+                    return Task.FromResult(new EntityStateResponse<JObject>() { EntityState = entityState, EntityExists = true });
+                });
+
+            // Create Class to test
+            var funcClass = new GetCarClient(loggerMock.Object);
+
+
+            // Call method under test
+            var actual = await funcClass.Run(requestMock.Object, plate, durableClientMock.Object);
+
+            // Assertions
+            Assert.NotNull(actual);
+            Assert.IsType<OkObjectResult>(actual);
+            var responseValue = ((OkObjectResult)actual).Value;
+            Assert.IsType<GetCarResponse>(responseValue);
+            Assert.Equal(plate, ((GetCarResponse)responseValue).Plate);
+            AssertUtility.AreCarsEqual(carData, ((GetCarResponse)responseValue));
         }
     }
 }
