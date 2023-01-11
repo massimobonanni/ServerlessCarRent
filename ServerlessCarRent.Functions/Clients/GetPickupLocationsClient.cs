@@ -27,14 +27,15 @@ namespace ServerlessCarRent.Functions.Clients
 {
 	public class GetPickupLocationsClient
 	{
-		private readonly ILogger _logger;
+        private readonly ILogger<GetPickupLocationsClient> _logger;
 
-		public GetPickupLocationsClient(ILoggerFactory loggerFactory)
-		{
-			_logger = loggerFactory.CreateLogger<GetPickupLocationsClient>();
-		}
+        public GetPickupLocationsClient(ILogger<GetPickupLocationsClient> logger)
+        {
+            _logger = logger;
+        }
 
-		[OpenApiOperation(operationId: "getPickupLocations", new[] { "Pickup Locations Management" },
+
+        [OpenApiOperation(operationId: "getPickupLocations", new[] { "Pickup Locations Management" },
 		   Summary = "Search pickup locations based on search parameters", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter("identifier", Summary = "The identifier (or part of the plate) of the locations to search",
 		   In = Microsoft.OpenApi.Models.ParameterLocation.Query, Required = false,

@@ -25,11 +25,11 @@ namespace ServerlessCarRent.Functions.Clients
 {
     public class UpdatePickupLocationClient
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<UpdatePickupLocationClient> _logger;
 
-        public UpdatePickupLocationClient(ILoggerFactory loggerFactory)
+        public UpdatePickupLocationClient(ILogger<UpdatePickupLocationClient> logger)
         {
-            _logger = loggerFactory.CreateLogger<UpdateCarClient>();
+            _logger = logger;
         }
 
         [OpenApiOperation(operationId: "updatePickupLocation", new[] { "Pickup Locations Management" },

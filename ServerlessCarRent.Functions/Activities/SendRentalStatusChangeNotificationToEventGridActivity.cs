@@ -21,10 +21,10 @@ namespace ServerlessCarRent.Functions.Activities
         private readonly IConfiguration _configuration;
 
         public SendRentalStatusChangeNotificationToEventGridActivity(IConfiguration configuration,
-            ILoggerFactory loggerFactory)
+            ILogger<SendRentalStatusChangeNotificationToEventGridActivity> logger)
         {
             _configuration = configuration;
-            _logger = loggerFactory.CreateLogger<SendRentalStatusChangeNotificationToEventGridActivity>();
+            _logger = logger;
         }
 
         [FunctionName(nameof(SendRentalStatusChangeNotificationToEventGridActivity))]

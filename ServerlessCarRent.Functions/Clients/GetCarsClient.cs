@@ -25,14 +25,14 @@ namespace ServerlessCarRent.Functions.Clients
 {
 	public class GetCarsClient
 	{
-		private readonly ILogger _logger;
+		private readonly ILogger<GetCarsClient> _logger;
 
-		public GetCarsClient(ILoggerFactory loggerFactory)
-		{
-			_logger = loggerFactory.CreateLogger<GetCarClient>();
-		}
+        public GetCarsClient(ILogger<GetCarsClient> logger)
+        {
+            _logger = logger;
+        }
 
-		[OpenApiOperation(operationId: "getCars", new[] { "Cars Management" },
+        [OpenApiOperation(operationId: "getCars", new[] { "Cars Management" },
 		   Summary = "Search cars based on search parameters", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter("plate", Summary = "The plate (or part of the plate) of the cars to search",
 		   In = Microsoft.OpenApi.Models.ParameterLocation.Query, Required = false,

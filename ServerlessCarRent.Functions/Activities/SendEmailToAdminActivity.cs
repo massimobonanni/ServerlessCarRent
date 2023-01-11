@@ -19,10 +19,10 @@ namespace ServerlessCarRent.Functions.Activities
         private readonly IConfiguration _configuration;
 
         public SendEmailToAdminActivity(IConfiguration configuration,
-            ILoggerFactory loggerFactory)
+            ILogger<SendEmailToAdminActivity> logger)
         {
             _configuration = configuration;
-            _logger = loggerFactory.CreateLogger<SendEmailToAdminActivity>();
+            _logger = logger;
         }
 
         [FunctionName(nameof(SendEmailToAdminActivity))]

@@ -15,11 +15,11 @@ namespace ServerlessCarRent.Functions.Orchestrators
 {
 	public class RentOrchestrator
 	{
-		private readonly ILogger _logger;
+		private readonly ILogger<RentOrchestrator> _logger;
 
-		public RentOrchestrator(ILoggerFactory loggerFactory)
+		public RentOrchestrator(ILogger<RentOrchestrator> logger)
 		{
-			_logger = loggerFactory.CreateLogger<RentOrchestrator>();
+			_logger = logger;
 		}
 
 		[FunctionName(nameof(RentOrchestrator))]

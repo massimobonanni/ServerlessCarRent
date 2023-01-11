@@ -17,14 +17,14 @@ namespace ServerlessCarRent.Functions.Orchestrators
 {
     public class RentalStatusChangeOrchestrator
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<RentalStatusChangeOrchestrator> _logger;
         private readonly IConfiguration _configuration;
 
         public RentalStatusChangeOrchestrator(IConfiguration configuration,
-            ILoggerFactory loggerFactory)
+            ILogger<RentalStatusChangeOrchestrator> logger)
         {
             _configuration= configuration;
-            _logger = loggerFactory.CreateLogger<RentalStatusChangeOrchestrator>();
+            _logger = logger;
         }
 
         [FunctionName(nameof(RentalStatusChangeOrchestrator))]

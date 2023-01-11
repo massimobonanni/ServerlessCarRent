@@ -25,11 +25,11 @@ namespace ServerlessCarRent.Functions.Clients
 {
     public class UpdateCarClient
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<UpdateCarClient> _logger;
 
-        public UpdateCarClient(ILoggerFactory loggerFactory)
+        public UpdateCarClient(ILogger<UpdateCarClient> logger)
         {
-            _logger = loggerFactory.CreateLogger<UpdateCarClient>();
+            _logger = logger;
         }
 
         [OpenApiOperation(operationId: "updateCar", new[] { "Cars Management" },
