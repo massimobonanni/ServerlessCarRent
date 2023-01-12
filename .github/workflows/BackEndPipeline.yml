@@ -8,14 +8,14 @@ on:
     paths:
       - "ServerlessCarRent.Common/**"
       - "ServerlessCarRent.Functions/**"
-      - "Tests/ServerlessCarRent.Functions.Tests"
+      - "Tests/ServerlessCarRent.Functions.Tests/**"
   pull_request:
     branches:
       - "main"
     paths:
       - "ServerlessCarRent.Common/**"
       - "ServerlessCarRent.Functions/**"
-      - "Tests/ServerlessCarRent.Functions.Tests"
+      - "Tests/ServerlessCarRent.Functions.Tests/**"
 env: 
   AZURE_FUNCTIONAPP_PACKAGE_PATH: '${{ github.workspace }}/ServerlessCarRent.Functions'
   BUILD_OUTPUT_PATH: '${{ github.workspace }}/build-artifacts'
