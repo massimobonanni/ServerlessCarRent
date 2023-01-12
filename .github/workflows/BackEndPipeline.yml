@@ -32,11 +32,14 @@ jobs:
         with:
           dotnet-version: 6.0.x
 
-      - name: Build
-        run: dotnet build --configuration Release
+      - name: Build Common library
+        run: dotnet build ServerlessCarRent.Common --configuration Release
     
+      - name: Build Azure Functions
+        run: dotnet build ServerlessCarRent.Functions --configuration Release
+
       - name: Test
-        run: dotnet test Tests/ServerlessCarRent.Functions.Tests --no-build --verbosity normal
+        run: dotnet test Tests/ServerlessCarRent.Functions.Tests --configuration Release --verbosity normal
 
       - name: Publish
         run: |
