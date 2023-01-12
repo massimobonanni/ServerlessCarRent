@@ -40,6 +40,7 @@ jobs:
 
       # - name: Test
       #   run: dotnet test Tests/ServerlessCarRent.Functions.Tests --configuration Release --verbosity normal
+      
       - name: use this action, test solution dir
         uses: zyborg/dotnet-tests-report@v1
         with:
