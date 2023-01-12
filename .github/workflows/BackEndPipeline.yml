@@ -38,9 +38,16 @@ jobs:
       - name: Build Azure Functions
         run: dotnet build ServerlessCarRent.Functions --configuration Release
 
-      - name: Test
-        run: dotnet test Tests/ServerlessCarRent.Functions.Tests --configuration Release --verbosity normal
-
+      # - name: Test
+      #   run: dotnet test Tests/ServerlessCarRent.Functions.Tests --configuration Release --verbosity normal
+      - name: use this action, test solution dir
+        uses: zyborg/dotnet-tests-report@v1
+        with:
+          project_path: Tests/ServerlessCarRent.Functions.Tests
+          report_name: SCR_BackEnd_Test_Report
+          report_title: ServerlessCarRent backEnd Test Report
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Publish
         run: |
           publishfolder="${{ github.workspace }}/output"
