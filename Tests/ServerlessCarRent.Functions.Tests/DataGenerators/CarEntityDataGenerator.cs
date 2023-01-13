@@ -1,4 +1,5 @@
 ﻿using ServerlessCarRent.Common.Dtos;
+using ServerlessCarRent.Common.Models;
 using ServerlessCarRent.Common.Models.Car;
 using ServerlessCarRent.Common.Models.CarRental;
 using System;
@@ -37,6 +38,108 @@ namespace ServerlessCarRent.Functions.Tests.DataGenerators
                     PickupLocation = null
                 }
             };
+        }
+
+        public static IEnumerable<object[]> GetRentCarDtos()
+        {
+            yield return new object[]
+            {
+                "AA000BB",
+                new CarData()
+                {
+                    CostPerHour=10.0M,
+                    Currency="EUR",
+                    PickupLocation="MILAN",
+                    Model="Fiat 500",
+                    CurrentState=CarState.Working,
+                     CurrentRentalState=CarRentalState.Free,
+                    CurrentRental=null,
+                    CurrentRenter=null
+                },
+                new RentCarDto()
+                {
+                     RentalId="12345",
+                     RenterEmail="jane.doe@mail.com",
+                     RenterFirstName="Jane",
+                     RenterLastName="Doe",
+                     StartDate=DateTimeOffset.Parse("2020-01-01T00:00:00Z"),
+                },
+                CarRentalState.Rented,
+                new CarData()
+                {
+                    CostPerHour=10.0M,
+                    Currency="EUR",
+                    PickupLocation="MILAN",
+                    Model="Fiat 500",
+                    CurrentState=CarState.Working,
+                    CurrentRental= new RentalData()
+                    {
+                         Id="12345",
+                         StartDate=DateTimeOffset.Parse("2020-01-01T00:00:00Z"),
+                         EndDate=null,
+                    },
+                    CurrentRenter=new RenterData()
+                    {
+                        Email="jane.doe@mail.com",
+                        FirstName="Jane",
+                        LastName="Doe"
+                    }
+                },
+            };
+            yield return new object[]
+           {
+                "AA000BB",
+                new CarData()
+                {
+                    CostPerHour=10.0M,
+                    Currency="EUR",
+                    PickupLocation="MILAN",
+                    Model="Fiat 500",
+                    CurrentState=CarState.Working,
+                    CurrentRentalState=CarRentalState.Rented,
+                    CurrentRental= new RentalData()
+                    {
+                         Id="12345",
+                         StartDate=DateTimeOffset.Parse("2020-01-01T00:00:00Z"),
+                         EndDate=null,
+                    },
+                    CurrentRenter=new RenterData()
+                    {
+                        Email="jane.doe@mail.com",
+                        FirstName="Jane",
+                        LastName="Doe"
+                    }
+                },
+                new RentCarDto()
+                {
+                     RentalId="99999",
+                     RenterEmail="john.doe@mail.com",
+                     RenterFirstName="John",
+                     RenterLastName="Doe",
+                     StartDate=DateTimeOffset.Parse("2021-01-01T00:00:00Z"),
+                },
+                CarRentalState.Rented,
+                new CarData()
+                {
+                    CostPerHour=10.0M,
+                    Currency="EUR",
+                    PickupLocation="MILAN",
+                    Model="Fiat 500",
+                    CurrentState=CarState.Working,
+                    CurrentRental= new RentalData()
+                    {
+                         Id="12345",
+                         StartDate=DateTimeOffset.Parse("2020-01-01T00:00:00Z"),
+                         EndDate=null,
+                    },
+                    CurrentRenter=new RenterData()
+                    {
+                        Email="jane.doe@mail.com",
+                        FirstName="Jane",
+                        LastName="Doe"
+                    }
+                },
+           };
         }
     }
 }
