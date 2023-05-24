@@ -7,15 +7,11 @@ using System.Threading.Tasks;
 
 namespace ServerlessCarRent.Console.Commands
 {
-	internal static class GetCarsManagementCommand
+	internal  class GetCarsManagementCommand : Command
 	{
-		public static Command GetCommand()
-		{
-			var carsManagementCommand = new Command("cars", "manages cars");
-
-			carsManagementCommand.Add(GetCarsCommand.GetCommand());
-
-			return carsManagementCommand;
-		}
+        public GetCarsManagementCommand() : base("cars", "manages cars")
+        {
+            this.Add(new GetCarsCommand());
+        }
 	}
 }

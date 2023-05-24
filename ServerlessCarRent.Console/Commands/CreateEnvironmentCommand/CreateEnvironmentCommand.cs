@@ -11,50 +11,48 @@ using System.Threading.Tasks;
 
 namespace ServerlessCarRent.Console.Commands
 {
-    internal static class CreateEnvironmentCommand
+    internal class CreateEnvironmentCommand:Command
     {
-        public static Command GetCommand()
+        public CreateEnvironmentCommand() : 
+            base("createenv", "Creates pickup locations and cars based on input file (JSON)")
         {
-            var createEnvCommand = new Command("createenv", "Creates pickup locations and cars based on input file (JSON)");
-
             var urlOptions = new Option<Uri>(
                 name: "--uri",
                 description: "The service url to call.")
             { IsRequired = true };
 
-            createEnvCommand.AddOption(urlOptions);
+            this.AddOption(urlOptions);
 
             var keyOptions = new Option<string>(
                 name: "--key",
                 description: "The key to call the service.");
 
-            createEnvCommand.AddOption(keyOptions);
+            this.AddOption(keyOptions);
 
             var fileOptions = new Option<string>(
                name: "--file",
                description: "The JSON file full path to use for configuration.");
 
-            createEnvCommand.AddOption(fileOptions);
+            this.AddOption(fileOptions);
 
             var createJsonOptions = new Option<bool>(
                "--createJson",
                () => false,
                "Save a templet for the JSON file");
 
-            createEnvCommand.AddOption(createJsonOptions);
+            this.AddOption(createJsonOptions);
 
-            createEnvCommand.SetHandler(async (uri, key, file, createJson) =>
+            this.SetHandler(async (uri, key, file, createJson) =>
             {
-                await CreateEnvironmentCommand.CommandHandler(uri, key, file, createJson);
+                await CommandHandler(uri, key, file, createJson);
             }
             , urlOptions, keyOptions, fileOptions, createJsonOptions);
 
-            return createEnvCommand;
         }
 
-        public static async Task CommandHandler(Uri uri, string key, string file, bool createJson)
+        private async Task CommandHandler(Uri uri, string key, string file, bool createJson)
         {
-            JsonEnvironment data;
+            JsonEnvironment? data;
             if (createJson)
             {
                 data = JsonEnvironment.GetTemplateData();
