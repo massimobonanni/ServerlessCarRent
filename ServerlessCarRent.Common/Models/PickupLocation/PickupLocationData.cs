@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace ServerlessCarRent.Common.Models.PickupLocation
 {
-	public class PickupLocationData
-	{
-		public string City { get; set; }
-		public string Location { get; set; }
-		public PickupLocationState Status { get; set; }
-		public List<PickupLocationCarData> Cars { get; set; }
+    public class PickupLocationData
+    {
+        public string City { get; set; }
+        public string Location { get; set; }
+        public PickupLocationState Status { get; set; }
+        public List<PickupLocationCarData> Cars { get; set; }
 
-		public bool CanBeDeleted()
-		{
-			return !this.Cars.Any();
-		}
-	}
+        public bool CanBeDeleted()
+        {
+            return this.Cars == null || !this.Cars.Any();
+        }
+    }
 }
