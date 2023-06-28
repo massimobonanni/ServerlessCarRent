@@ -41,7 +41,15 @@ jobs:
       # - name: Test
       #   run: dotnet test Tests/ServerlessCarRent.Functions.Tests --configuration Release --verbosity normal
       
-      - name: use this action, test solution dir
+      - name: Common classes tests
+        uses: zyborg/dotnet-tests-report@v1
+        with:
+          project_path: Tests/ServerlessCarRent.Common.Tests
+          report_name: SCR_Common_Test_Report
+          report_title: ServerlessCarRent Common Test Report
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Azure Functions tests
         uses: zyborg/dotnet-tests-report@v1
         with:
           project_path: Tests/ServerlessCarRent.Functions.Tests
