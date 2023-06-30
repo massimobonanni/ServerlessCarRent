@@ -26,7 +26,7 @@ namespace ServerlessCarRent.Functions.Tests.Clients
     public class GetCarClientTest
     {
         [Fact]
-        public async void Run_PlateNotExist_NoDetail_ReturnNotFound()
+        public async void Run_ShouldReturnNotFound_WhenPlateNotExist_AndNoDetailRequest()
         {
             var plate = "AA000AA";
             // Setup Ilogger
@@ -52,7 +52,7 @@ namespace ServerlessCarRent.Functions.Tests.Clients
         }
 
         [Fact]
-        public async void Run_PlateNotExist_WithDetail_ReturnNotFound()
+        public async void Run_ShouldReturnNotFound_WhenPlateNotExist_AndDetailRequest()
         {
             var plate = "AA000AA";
             // Setup Ilogger
@@ -79,7 +79,7 @@ namespace ServerlessCarRent.Functions.Tests.Clients
 
         [Theory]
         [MemberData(nameof(CarDataGenerator.GetCarDataWithoutDetails), MemberType = typeof(CarDataGenerator))]
-        public async void Run_PlateExist_NoDetail_ReturnOk(string plate, CarData carData)
+        public async void Run_ShouldReturnOk_WhenPlateExist_AndNoDetailRequest(string plate, CarData carData)
         {
             // Setup Ilogger
             var loggerMock = new Mock<ILogger<GetCarClient>>();
@@ -113,7 +113,7 @@ namespace ServerlessCarRent.Functions.Tests.Clients
 
         [Theory]
         [MemberData(nameof(CarDataGenerator.GetCarDataWithDetails), MemberType = typeof(CarDataGenerator))]
-        public async void Run_PlateExist_WithDetail_ReturnOk(string plate, CarData carData, CarRentalsData carRentals)
+        public async void Run_ShouldReturnOk_WhenPlateExist_WithDetailRequest(string plate, CarData carData, CarRentalsData carRentals)
         {
             // Setup Ilogger
             var loggerMock = new Mock<ILogger<GetCarClient>>();
