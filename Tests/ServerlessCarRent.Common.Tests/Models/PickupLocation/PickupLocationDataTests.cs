@@ -8,7 +8,7 @@ namespace ServerlessCarRent.Common.Tests.Models.PickupLocation
     public class PickupLocationDataTests
     {
         [Fact]
-        public void CanBeDeleted_ShouldReturnFalse_WhenCarsIsEmpty()
+        public void CanBeDeleted_ShouldReturnTrue_WhenCarsIsEmpty()
         {
             // Arrange
             var pickupLocationData = new PickupLocationData
@@ -20,11 +20,27 @@ namespace ServerlessCarRent.Common.Tests.Models.PickupLocation
             var result = pickupLocationData.CanBeDeleted();
 
             // Assert
-            Assert.False(result);
+            Assert.True(result);
         }
 
         [Fact]
-        public void CanBeDeleted_ShouldReturnTrue_WhenCarsIsNotEmpty()
+        public void CanBeDeleted_ShouldReturnTrue_WhenCarsIsNull()
+        {
+            // Arrange
+            var pickupLocationData = new PickupLocationData
+            {
+                Cars = null
+            };
+
+            // Act
+            var result = pickupLocationData.CanBeDeleted();
+
+            // Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void CanBeDeleted_ShouldReturnFalse_WhenCarsIsNotEmpty()
         {
             // Arrange
             var mockList = new List<PickupLocationCarData> { new PickupLocationCarData() };
@@ -37,7 +53,7 @@ namespace ServerlessCarRent.Common.Tests.Models.PickupLocation
             var result = pickupLocationData.CanBeDeleted();
 
             // Assert
-            Assert.True(result);
+            Assert.False(result);
         }
     }
 }
