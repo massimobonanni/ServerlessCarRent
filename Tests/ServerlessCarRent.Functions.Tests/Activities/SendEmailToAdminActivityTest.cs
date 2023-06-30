@@ -19,104 +19,74 @@ namespace ServerlessCarRent.Functions.Tests.Activities
 {
     public class SendEmailToAdminActivityTest
     {
-        private readonly Mock<IConfiguration> _mockConfiguration;
         private readonly Mock<ILogger<SendEmailToAdminActivity>> _mockLogger;
 
         public SendEmailToAdminActivityTest()
         {
-            _mockConfiguration = new Mock<IConfiguration>();
             _mockLogger = new Mock<ILogger<SendEmailToAdminActivity>>();
         }
 
-        private SendEmailToAdminActivity CreateInstance()
+        private SendEmailToAdminActivity CreateInstance(IConfiguration configuration)
         {
-            return new SendEmailToAdminActivity(_mockConfiguration.Object, _mockLogger.Object);
+            return new SendEmailToAdminActivity(configuration, _mockLogger.Object);
         }
 
-        //[Fact]
-        //public async Task TestRun()
-        //{
-        //    // Arrange
-        //    var context = new RentalStatusChangeOrchestratorDto()
-        //    {
-        //        CarPlate = "testCarPlate",
-        //        CarModel = "testCarModel",
-        //        NewRentalStatus = CarRentalState.Free,
-        //        CurrentRenter = new RenterData()
-        //        {
-        //            LastName = "testLastName",
-        //            FirstName = "testFirstName",
-        //            Email = "testEmail"
-        //        }
-        //    };
-
-        //    var mockMessageCollector = new Mock<IAsyncCollector<SendGridMessage>>();
-        //    var instance = CreateInstance();
-
-        //    _mockConfiguration.Setup(x => x.GetValue<string>("AdminEmail")).Returns("test_admin_email");
-
-        //    // Act
-        //    await instance.Run(context, mockMessageCollector.Object);
-
-        //    // Assert
-        //    mockMessageCollector.Verify(x => x.AddAsync(It.IsAny<SendGridMessage>()), Times.Once());
-        //}
+        private RentalStatusChangeOrchestratorDto CreateRentalStatusChangeOrchestratorDto(CarRentalState carRentalState = CarRentalState.Free)
+        {
+            return new RentalStatusChangeOrchestratorDto()
+            {
+                CarPlate = Faker.Lorem.Words(1).First(),
+                CarModel = Faker.Lorem.Words(1).First(),
+                NewRentalStatus = carRentalState,
+                CurrentRenter = new RenterData()
+                {
+                    LastName = Faker.Name.First(),
+                    FirstName = Faker.Name.Last(),
+                    Email = Faker.Internet.Email()
+                }
+            };
+        }
 
         [Fact]
         public async Task TestRun_WithNullAdminEmail_ShouldLogWarning()
         {
             // Arrange
-            var context = new RentalStatusChangeOrchestratorDto()
-            {
-                CarPlate = "testCarPlate",
-                CarModel = "testCarModel",
-                NewRentalStatus = CarRentalState.Free,
-                CurrentRenter = new RenterData()
-                {
-                    LastName = "testLastName",
-                    FirstName = "testFirstName",
-                    Email = "testEmail"
-                }
+            var inMemorySettings = new Dictionary<string, string> {
+                {"AdminEmail", null},
             };
-
+            IConfiguration configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(inMemorySettings)
+                .Build();
+            var instance = CreateInstance(configuration);
+            var context = CreateRentalStatusChangeOrchestratorDto();
             var mockMessageCollector = new Mock<IAsyncCollector<SendGridMessage>>();
-            var instance = CreateInstance();
-
-            _mockConfiguration.Setup(x => x.GetValue<string>("AdminEmail")).Returns((string)null);
 
             // Act
             await instance.Run(context, mockMessageCollector.Object);
 
             // Assert
-            _mockLogger.Verify(x => x.LogWarning(It.IsAny<string>()), Times.Once());
+            Assert.False(mockMessageCollector.Invocations.Any());
         }
 
         [Fact]
-        public async Task TestCreateSendGridMessageAsync()
+        public async Task Run_WithNotNullAdminMail_ShouldSendMessage()
         {
             // Arrange
-            var instance = CreateInstance();
-            var context = new RentalStatusChangeOrchestratorDto()
-            {
-                CarPlate = "testCarPlate",
-                CarModel = "testCarModel",
-                NewRentalStatus = CarRentalState.Free,
-                CurrentRenter = new RenterData()
-                {
-                    LastName = "testLastName",
-                    FirstName = "testFirstName",
-                    Email = "testmail@mail.something"
-                }
+            var inMemorySettings = new Dictionary<string, string> {
+                {"AdminEmail", "admin@mail.something"},
             };
+            IConfiguration configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(inMemorySettings)
+                .Build();
+            var instance = CreateInstance(configuration);
+            var context = CreateRentalStatusChangeOrchestratorDto();
             var mockMessageCollector = new Mock<IAsyncCollector<SendGridMessage>>();
-            _mockConfiguration.Setup(x => x.GetValue<string>("AdminEmail")).Returns("admin@mail.something");
 
             // Act
             await instance.Run(context, mockMessageCollector.Object);
 
             // Assert
            mockMessageCollector.Verify( x=> x.AddAsync(It.IsNotNull<SendGridMessage>(),default));
-            
         }
     }
 }

@@ -28,6 +28,7 @@ namespace ServerlessCarRent.Functions.Clients
             _logger = logger;
         }
 
+        
         [OpenApiOperation(operationId: "getCar", new[] { "Cars Management" },
            Summary = "Retrieve the information about a car", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter("plate", Summary = "The plate of the car to retrieve",
@@ -49,11 +50,12 @@ namespace ServerlessCarRent.Functions.Clients
            [DurableClient] IDurableEntityClient client)
         {
             _logger.LogInformation("GetCar function");
-
+            // Get the details parameter
             var details = req.Query.Any(e => e.Key.ToLower() == "details");
 
             try
             {
+                // Get the car data
                 var carData = await client.GetCarDataAsync(plate);
                 if (carData == null)
                     return new NotFoundResult(); ;
@@ -74,6 +76,7 @@ namespace ServerlessCarRent.Functions.Clients
 
                 if (details)
                 {
+                    // Get the car rentals data
                     var carRentalsData = await client.GetCarRentalsDataAsync(plate);
                     if (carRentalsData != null)
                     {
