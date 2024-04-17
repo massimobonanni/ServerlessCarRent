@@ -1,31 +1,25 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
+using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
-using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
+using ServerlessCarRent.Common.Models.PickupLocation;
+using ServerlessCarRent.Functions.Entities;
+using ServerlessCarRent.Functions.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
-using ServerlessCarRent.Functions.Responses;
-using ServerlessCarRent.Functions.Entities;
-using ServerlessCarRent.Common.Models.Car;
-using static ServerlessCarRent.Functions.Responses.GetCarsResponse;
-using ServerlessCarRent.Common.Models.CarRental;
-using ServerlessCarRent.Common.Models.PickupLocation;
 using static ServerlessCarRent.Functions.Responses.GetPickupLocationsResponse;
 
 namespace ServerlessCarRent.Functions.Clients
 {
-	public class GetPickupLocationsClient
+    public class GetPickupLocationsClient
 	{
         private readonly ILogger<GetPickupLocationsClient> _logger;
 
@@ -34,8 +28,7 @@ namespace ServerlessCarRent.Functions.Clients
             _logger = logger;
         }
 
-
-        [OpenApiOperation(operationId: "getPickupLocations", new[] { "Pickup Locations Management" },
+        [OpenApiOperation(operationId: "getPickupLocations", ["Pickup Locations Management"],
 		   Summary = "Search pickup locations based on search parameters", Visibility = OpenApiVisibilityType.Important)]
 		[OpenApiParameter("identifier", Summary = "The identifier (or part of the plate) of the locations to search",
 		   In = Microsoft.OpenApi.Models.ParameterLocation.Query, Required = false,
@@ -70,7 +63,7 @@ namespace ServerlessCarRent.Functions.Clients
 					CityFilter = searchFilters.City,
 					IdentifierFilter = searchFilters.Identifier,
 					StatesFilter = searchFilters.States?.Select(s=>s.ToString()),
-					PickupLocations = new List<GetPickupLocationsResponse.PickupLocationDto>()
+					PickupLocations = []
 				};
 
 				EntityQuery queryDefinition = new EntityQuery()

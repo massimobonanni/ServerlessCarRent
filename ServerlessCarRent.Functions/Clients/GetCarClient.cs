@@ -1,21 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.DurableTask.Client;
+using Microsoft.DurableTask.Client.Entities;
+using Microsoft.Extensions.Logging;
+using ServerlessCarRent.Functions.Responses;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using ServerlessCarRent.Functions.Responses;
 
 namespace ServerlessCarRent.Functions.Clients
 {
@@ -28,8 +21,8 @@ namespace ServerlessCarRent.Functions.Clients
             _logger = logger;
         }
 
-        
-        [OpenApiOperation(operationId: "getCar", new[] { "Cars Management" },
+
+        [OpenApiOperation(operationId: "getCar", ["Cars Management"],
            Summary = "Retrieve the information about a car", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter("plate", Summary = "The plate of the car to retrieve",
            In = Microsoft.OpenApi.Models.ParameterLocation.Path, Required = true,
@@ -43,20 +36,20 @@ namespace ServerlessCarRent.Functions.Clients
         [OpenApiResponseWithoutBody(HttpStatusCode.NotFound,
            Summary = "The car with the search plate doesn't exist")]
 
-        [FunctionName("GetCar")]
+        [Function("GetCar")]
         public async Task<IActionResult> Run(
            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "cars/{plate}")] HttpRequest req,
            string plate,
-           [DurableClient] IDurableEntityClient client)
+           [DurableClient] DurableTaskClient client)
         {
             _logger.LogInformation("GetCar function");
             // Get the details parameter
-            var details = req.Query.Any(e => e.Key.ToLower() == "details");
+            var details = req.Query.Any(e => e.Key.Equals("details", StringComparison.CurrentCultureIgnoreCase));
 
             try
             {
                 // Get the car data
-                var carData = await client.GetCarDataAsync(plate);
+                var carData = await client.Entities.GetCarDataAsync(plate);
                 if (carData == null)
                     return new NotFoundResult(); ;
 
@@ -77,7 +70,7 @@ namespace ServerlessCarRent.Functions.Clients
                 if (details)
                 {
                     // Get the car rentals data
-                    var carRentalsData = await client.GetCarRentalsDataAsync(plate);
+                    var carRentalsData = await client.Entities.GetCarRentalsDataAsync(plate);
                     if (carRentalsData != null)
                     {
                         response.Rentals = carRentalsData.Rentals

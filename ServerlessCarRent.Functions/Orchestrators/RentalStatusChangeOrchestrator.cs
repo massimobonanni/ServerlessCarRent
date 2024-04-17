@@ -1,17 +1,11 @@
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Azure.WebJobs.Host;
+using Microsoft.DurableTask;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ServerlessCarRent.Common.Dtos;
-using ServerlessCarRent.Common.Interfaces;
 using ServerlessCarRent.Functions.Activities;
-using ServerlessCarRent.Functions.Clients;
-using ServerlessCarRent.Functions.Entities;
+using System.Threading.Tasks;
 
 namespace ServerlessCarRent.Functions.Orchestrators
 {
@@ -29,7 +23,7 @@ namespace ServerlessCarRent.Functions.Orchestrators
 
         [FunctionName(nameof(RentalStatusChangeOrchestrator))]
         public async Task RunOrchestrator(
-            [OrchestrationTrigger] IDurableOrchestrationContext context)
+            [OrchestrationTrigger] TaskOrchestrationContext context)
         {
             this._logger.LogInformation($"[START ORCHESTRATOR] --> {nameof(RentalStatusChangeOrchestrator)}");
 

@@ -122,7 +122,7 @@
                                 </td>
                                 <td>
                                     @if (car.RentalStatus == ServerlessCarRent.Common.Models.CarRental.CarRentalState.Free
-                                            && Model.Status == ServerlessCarRent.Common.Models.PickupLocation.PickupLocationState.Open)
+                                        && Model.Status == ServerlessCarRent.Common.Models.PickupLocation.PickupLocationState.Open)
                                     {
                                         <a href="@Url.ActionLink("Rent","Rentals",new { plate=car.Plate,location=Model.Identifier,returnAction="index",returnController="pickuplocations"})">
                                             <img src="~/images/RentCar.png" height="32" alt="Rent the car" title="Rent the car" />

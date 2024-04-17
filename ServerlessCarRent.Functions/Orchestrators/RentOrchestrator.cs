@@ -1,19 +1,17 @@
-using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading.Tasks;
+using DurableTask.Core.Entities;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Azure.WebJobs.Host;
+using Microsoft.DurableTask;
+using Microsoft.DurableTask.Entities;
 using Microsoft.Extensions.Logging;
 using ServerlessCarRent.Common.Dtos;
 using ServerlessCarRent.Common.Interfaces;
-using ServerlessCarRent.Functions.Clients;
 using ServerlessCarRent.Functions.Entities;
 
 namespace ServerlessCarRent.Functions.Orchestrators
 {
-	public class RentOrchestrator
+    public class RentOrchestrator
 	{
 		private readonly ILogger<RentOrchestrator> _logger;
 
@@ -24,13 +22,13 @@ namespace ServerlessCarRent.Functions.Orchestrators
 
 		[FunctionName(nameof(RentOrchestrator))]
 		public async Task<RentOrchestratorResponseDto> RunOrchestrator(
-			[OrchestrationTrigger] IDurableOrchestrationContext context)
+			[OrchestrationTrigger] TaskOrchestrationContext context)
 		{
             this._logger.LogInformation($"[START ORCHESTRATOR] --> {nameof(RentOrchestrator)}");
 
             var requestDto = context.GetInput<RentOrchestratorDto>();
 
-			var entityId = new EntityId(nameof(PickupLocationEntity), requestDto.PickupLocation);
+			var entityId = new EntityInstanceId(nameof(PickupLocationEntity), requestDto.PickupLocation);
 
 			var rentCarDto = new RentCarPickupLocationDto()
 			{
@@ -42,7 +40,7 @@ namespace ServerlessCarRent.Functions.Orchestrators
 				RenterEmail= requestDto.RenterEmail,
 			};
 
-			var rentOperationresult = await context.CallEntityAsync<bool>(entityId,
+			var rentOperationresult = await context.Entities.CallEntityAsync<bool>(entityId,
 				nameof(IPickupLocationEntity.RentCar), rentCarDto);
 
 			var response = new RentOrchestratorResponseDto()

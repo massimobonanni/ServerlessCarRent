@@ -1,17 +1,11 @@
-﻿using Microsoft.Azure.WebJobs.Extensions.DurableTask;
-using Microsoft.Azure.WebJobs;
+﻿using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using ServerlessCarRent.Common.Dtos;
-using Microsoft.Azure.WebJobs.Extensions.EventGrid;
 using Azure.Messaging.EventGrid;
-using Microsoft.Identity.Client;
+using Microsoft.Azure.Functions.Worker;
+using ActivityTriggerAttribute = Microsoft.Azure.Functions.Worker.ActivityTriggerAttribute;
 
 namespace ServerlessCarRent.Functions.Activities
 {
@@ -28,8 +22,8 @@ namespace ServerlessCarRent.Functions.Activities
         }
 
         [FunctionName(nameof(SendRentalStatusChangeNotificationToEventGridActivity))]
-        public async Task Run([ActivityTrigger] RentalStatusChangeOrchestratorDto context,
-            [EventGrid(TopicEndpointUri = "TopicEndpoint", TopicKeySetting = "TopicKey")] IAsyncCollector<EventGridEvent> eventCollector)
+        [EventGridOutput(TopicEndpointUri = "TopicEndpoint", TopicKeySetting = "TopicKey")]
+        public EventGridEvent Run([ActivityTrigger] RentalStatusChangeOrchestratorDto context)
         {
             this._logger.LogInformation($"[START ACTIVITY] --> {nameof(SendRentalStatusChangeNotificationToEventGridActivity)}");
 
@@ -39,9 +33,9 @@ namespace ServerlessCarRent.Functions.Activities
               dataVersion: "1.0",
               data: context);
 
-            await eventCollector.AddAsync(@event);
+            this._logger.LogInformation("Event sending to custom topic", JsonConvert.SerializeObject(@event));
 
-            this._logger.LogInformation("Event sended to custom topic", JsonConvert.SerializeObject(@event));
+            return @event;
 
         }
     }

@@ -1,26 +1,18 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
-using Microsoft.Azure.WebJobs;
+using Microsoft.DurableTask;
+using Microsoft.DurableTask.Client;
+using Microsoft.DurableTask.Client.Entities;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using ServerlessCarRent.Common.Dtos;
+using ServerlessCarRent.Functions.Orchestrators;
 using ServerlessCarRent.Functions.Requests;
 using ServerlessCarRent.Functions.Responses;
-using ServerlessCarRent.Functions.Entities;
-using ServerlessCarRent.Common.Dtos;
-using ServerlessCarRent.Common.Interfaces;
-using ServerlessCarRent.Functions.Orchestrators;
+using System.Net;
 
 namespace ServerlessCarRent.Functions.Clients
 {
@@ -33,7 +25,7 @@ namespace ServerlessCarRent.Functions.Clients
             _logger = logger;
         }
 
-        [OpenApiOperation(operationId: "rentCar", new[] { "Rentals Management" },
+        [OpenApiOperation(operationId: "rentCar", ["Rentals Management"],
             Summary = "Rent a car", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(RentCarRequest),
             Description = "Info about the rent.", Required = true)]
@@ -45,10 +37,10 @@ namespace ServerlessCarRent.Functions.Clients
         [OpenApiResponseWithoutBody(HttpStatusCode.NotFound,
             Summary = "The car is not exists")]
 
-        [FunctionName("RentCar")]
+        [Function("RentCar")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "rents")] HttpRequest req,
-            [DurableClient] IDurableClient client)
+            [DurableClient] DurableTaskClient client)
         {
             _logger.LogInformation("RentCar function");
 
@@ -60,7 +52,7 @@ namespace ServerlessCarRent.Functions.Clients
                 if (request == null || !request.IsValid())
                     return new BadRequestObjectResult("The rent car info are not valid");
 
-                var car = await client.GetCarDataAsync(request.CarPlate);
+                var car = await client.Entities.GetCarDataAsync(request.CarPlate);
 
                 if (car == null)
                     return new NotFoundObjectResult("The car is not exist");
@@ -68,7 +60,7 @@ namespace ServerlessCarRent.Functions.Clients
                 if (!car.CanBeRent())
                     new BadRequestObjectResult("The car cannot be rented");
 
-                var location = await client.GetPickupLocationDataAsync(car.PickupLocation);
+                var location = await client.Entities.GetPickupLocationDataAsync(car.PickupLocation);
 
                 if (location.Status != Common.Models.PickupLocation.PickupLocationState.Open)
                     return new BadRequestObjectResult("The pickup location is not open");
@@ -86,10 +78,11 @@ namespace ServerlessCarRent.Functions.Clients
                     RenterEmail = request.RenterEmail,
                 };
 
-                var rentOperationId = await client.StartNewAsync(nameof(RentOrchestrator), orchestrationDto);
+                var rentTaskName = new TaskName(nameof(RentOrchestrator));
+                var rentOperationId = await client.ScheduleNewOrchestrationInstanceAsync(rentTaskName, orchestrationDto);
 
-                await client.WaitForCompletionOrCreateCheckStatusResponseAsync(req, rentOperationId,
-                    TimeSpan.FromSeconds(10));
+                var waitForCompletionToken = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+                await client.WaitForInstanceCompletionAsync(rentOperationId, waitForCompletionToken);
 
                 var response = new RentCarResponse()
                 {
@@ -99,10 +92,10 @@ namespace ServerlessCarRent.Functions.Clients
                     RentOperationStatus = RentOperationState.Pending
                 };
 
-                var orchestratorStatus = await client.GetStatusAsync(rentOperationId);
+                var orchestratorStatus = await client.GetInstanceAsync(rentOperationId);
                 if (orchestratorStatus.RuntimeStatus == OrchestrationRuntimeStatus.Completed)
                 {
-                    var orchestratorOutput = orchestratorStatus.Output.ToObject<RentOrchestratorResponseDto>();
+                    var orchestratorOutput = orchestratorStatus.ReadOutputAs<RentOrchestratorResponseDto>();
                     response.RentOperationStatus = orchestratorOutput.Status;
                 }
 

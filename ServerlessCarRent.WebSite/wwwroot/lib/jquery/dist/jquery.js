@@ -9482,7 +9482,7 @@ jQuery.extend( {
 						if ( completed ) {
 
 							// Execute the appropriate callbacks
-							jqXHR.always( map[ jqXHR.status ] );
+							jqXHR.always( map[ jqXHR.State ] );
 						} else {
 
 							// Lazy-add the new callbacks in a way that preserves old ones
@@ -9778,7 +9778,7 @@ jQuery.extend( {
 			}
 
 			// Set data for the fake xhr object
-			jqXHR.status = status;
+			jqXHR.State = status;
 			jqXHR.statusText = ( nativeStatusText || statusText ) + "";
 
 			// Success/Error
@@ -10033,19 +10033,19 @@ jQuery.ajaxTransport( function( options ) {
 								// Support: IE <=9 only
 								// On a manual native abort, IE9 throws
 								// errors on any property access that is not readyState
-								if ( typeof xhr.status !== "number" ) {
+								if ( typeof xhr.State !== "number" ) {
 									complete( 0, "error" );
 								} else {
 									complete(
 
 										// File: protocol always yields status 0; see #8605, #14207
-										xhr.status,
+										xhr.State,
 										xhr.statusText
 									);
 								}
 							} else {
 								complete(
-									xhrSuccessStatus[ xhr.status ] || xhr.status,
+									xhrSuccessStatus[ xhr.State ] || xhr.State,
 									xhr.statusText,
 
 									// Support: IE <=9 only

@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
-using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
-using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -20,6 +17,10 @@ using ServerlessCarRent.Functions.Responses;
 using ServerlessCarRent.Functions.Entities;
 using ServerlessCarRent.Common.Dtos;
 using ServerlessCarRent.Common.Interfaces;
+using Microsoft.DurableTask.Client;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.DurableTask.Client.Entities;
+using Microsoft.DurableTask.Entities;
 
 namespace ServerlessCarRent.Functions.Clients
 {
@@ -32,7 +33,7 @@ namespace ServerlessCarRent.Functions.Clients
             _logger = logger;
         }
 
-        [OpenApiOperation(operationId: "initializePickupLocation", new[] { "Pickup Locations Management" },
+        [OpenApiOperation(operationId: "initializePickupLocation", ["Pickup Locations Management"],
             Summary = "Create and initialize a new pickup location", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InitializePickupLocationRequest),
             Description = "Info about the pickup location to create.", Required = true)]
@@ -43,10 +44,10 @@ namespace ServerlessCarRent.Functions.Clients
             Summary = "The request is not valid because city or location is not valid")]
         [OpenApiResponseWithoutBody(HttpStatusCode.Conflict, Summary = "A pickup location with the same identifier already exists")]
 
-        [FunctionName("InitializePickupLocation")]
+        [Function("InitializePickupLocation")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "pickuplocations")] HttpRequest req,
-            [DurableClient] IDurableEntityClient client)
+            [DurableClient] DurableTaskClient client)
         {
             _logger.LogInformation("InitializePickupLocation function");
 
@@ -58,10 +59,10 @@ namespace ServerlessCarRent.Functions.Clients
                 if (request == null || !request.IsValid())
                     return new BadRequestObjectResult("The pickup location info are not valid");
 
-                if (await client.PickupLocationExistsAsync(request.Identifier))
+                if (await client.Entities.PickupLocationExistsAsync(request.Identifier))
                     return new ConflictResult(); ;
 
-                var entityId = new EntityId(nameof(PickupLocationEntity), request.Identifier);
+                var entityId = new EntityInstanceId(nameof(PickupLocationEntity), request.Identifier);
                 var pickupLocationDto = new InitializePickupLocationDto()
                 {
                     Location = request.Location,
@@ -69,7 +70,9 @@ namespace ServerlessCarRent.Functions.Clients
                     City = request.City,
                 };
 
-                await client.SignalEntityAsync<IPickupLocationEntity>(entityId, e => e.Initialize(pickupLocationDto));
+                await client.Entities.SignalEntityAsync(entityId, 
+                    nameof(PickupLocationEntity.Initialize),
+                    pickupLocationDto);
 
                 var response = new InitializePickupLocationResponse()
                 {

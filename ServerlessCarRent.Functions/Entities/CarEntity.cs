@@ -1,22 +1,19 @@
-﻿using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+﻿using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+using Microsoft.DurableTask.Entities;
 using Microsoft.Extensions.Logging;
 using ServerlessCarRent.Common.Dtos;
 using ServerlessCarRent.Common.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ServerlessCarRent.Common.Models.PickupLocation;
-using System.Text.Json.Serialization;
 using ServerlessCarRent.Common.Models.Car;
 using ServerlessCarRent.Common.Models.CarRental;
 using ServerlessCarRent.Functions.Orchestrators;
+using System.Threading.Tasks;
+using EntityTriggerAttribute = Microsoft.Azure.Functions.Worker.EntityTriggerAttribute;
 
 namespace ServerlessCarRent.Functions.Entities
 {
-    public class CarEntity : ICarEntity
+    public class CarEntity : TaskEntity<CarData>, ICarEntity
     {
         private readonly ILogger _logger;
         public CarEntity(ILogger logger)
@@ -24,49 +21,47 @@ namespace ServerlessCarRent.Functions.Entities
             _logger = logger;
         }
 
-        [JsonPropertyName("status")]
-        public CarData Status { get; set; }
-
         #region [ Public methods ]
         public void Initialize(InitializeCarDto carInfo)
         {
-            if (Status == null)
-                this.Status = new CarData();
+            if (this.State == null)
+                this.State = new CarData();
 
-            this.Status.Model = carInfo.Model;
-            this.Status.PickupLocation = carInfo.PickupLocation;
-            this.Status.CurrentState = carInfo.CarStatus;
-            this.Status.CostPerHour = carInfo.CostPerHour;
-            this.Status.Currency = carInfo.Currency;
-            this.Status.CurrentRentalState = Common.Models.CarRental.CarRentalState.Free;
+            this.State.Model = carInfo.Model;
+            this.State.PickupLocation = carInfo.PickupLocation;
+            this.State.CurrentState = carInfo.CarStatus;
+            this.State.CostPerHour = carInfo.CostPerHour;
+            this.State.Currency = carInfo.Currency;
+            this.State.CurrentRentalState = Common.Models.CarRental.CarRentalState.Free;
 
-            if (!string.IsNullOrWhiteSpace(this.Status.PickupLocation))
+            if (!string.IsNullOrWhiteSpace(this.State.PickupLocation))
             {
-                SignalCarStatusChanged(this.Status.PickupLocation);
+                SignalCarStatusChanged(this.State.PickupLocation);
             }
         }
 
         public void Rent(RentCarDto rentInfo)
         {
-            if (!this.Status.CanBeRent())
+            if (!this.State.CanBeRent())
                 return;
 
-            var oldRentalStatus = this.Status.CurrentRentalState;
+            var oldRentalStatus = this.State.CurrentRentalState;
 
-            this.Status.CurrentRentalState = Common.Models.CarRental.CarRentalState.Rented;
-            this.Status.CurrentRental = new Common.Models.RentalData()
+            this.State.CurrentRentalState = CarRentalState.Rented;
+            this.State.CurrentRental = new Common.Models.RentalData()
             {
                 Id = rentInfo.RentalId,
                 StartDate = rentInfo.StartDate
             };
-            this.Status.CurrentRenter = new Common.Models.RenterData()
+            this.State.CurrentRenter = new Common.Models.RenterData()
             {
                 FirstName = rentInfo.RenterFirstName,
                 LastName = rentInfo.RenterLastName,
                 Email = rentInfo.RenterEmail
             };
 
-            CallRentalStatusChangeOrchestrator(oldRentalStatus, this.Status.CurrentRentalState);
+            CallRentalStatusChangeOrchestrator(oldRentalStatus, 
+                this.State.CurrentRentalState);
 
         }
 
@@ -77,26 +72,26 @@ namespace ServerlessCarRent.Functions.Entities
                 Succeeded = false,
             };
 
-            if (!this.Status.CanBeReturn())
+            if (!this.State.CanBeReturn())
                 return Task.FromResult(response);
 
             var oldRentalStatus =
-            this.Status.CurrentRental.EndDate = returnInfo.EndDate;
+            this.State.CurrentRental.EndDate = returnInfo.EndDate;
 
-            response.RentalId = this.Status.CurrentRental.Id;
-            response.CostPerHour = this.Status.CostPerHour;
-            response.Currency = this.Status.Currency;
-            response.Cost = this.Status.CalculateCost();
+            response.RentalId = this.State.CurrentRental.Id;
+            response.CostPerHour = this.State.CostPerHour;
+            response.Currency = this.State.Currency;
+            response.Cost = this.State.CalculateCost();
             response.Succeeded = true;
 
             SignalRentEnded();
-            CallRentalStatusChangeOrchestrator(this.Status.CurrentRentalState, CarRentalState.Free);
+            CallRentalStatusChangeOrchestrator(this.State.CurrentRentalState, CarRentalState.Free);
 
-            this.Status.CurrentRentalState = CarRentalState.Free;
-            this.Status.CurrentRental = null;
-            this.Status.CurrentRenter = null;
+            this.State.CurrentRentalState = CarRentalState.Free;
+            this.State.CurrentRental = null;
+            this.State.CurrentRenter = null;
 
-            SignalCarStatusChanged(this.Status.PickupLocation);
+            SignalCarStatusChanged(this.State.PickupLocation);
 
             return Task.FromResult(response);
         }
@@ -104,77 +99,77 @@ namespace ServerlessCarRent.Functions.Entities
         public void Update(UpdateCarDto info)
         {
             if (!string.IsNullOrWhiteSpace(info.NewCurrency))
-                this.Status.Currency = info.NewCurrency;
+                this.State.Currency = info.NewCurrency;
 
             if (!string.IsNullOrWhiteSpace(info.NewPickupLocation)
-                && info.NewPickupLocation != this.Status.PickupLocation)
+                && info.NewPickupLocation != this.State.PickupLocation)
             {
-                var oldPickupLocation = this.Status.PickupLocation;
-                this.Status.PickupLocation = info.NewPickupLocation;
+                var oldPickupLocation = this.State.PickupLocation;
+                this.State.PickupLocation = info.NewPickupLocation;
                 SignalCarStatusChanged(oldPickupLocation);
-                SignalCarStatusChanged(this.Status.PickupLocation);
+                SignalCarStatusChanged(this.State.PickupLocation);
             }
 
             if (info.NewCostPerHour.HasValue)
-                this.Status.CostPerHour = info.NewCostPerHour.Value;
+                this.State.CostPerHour = info.NewCostPerHour.Value;
 
             if (info.NewCarStatus.HasValue
-                && info.NewCarStatus.Value != this.Status.CurrentState)
+                && info.NewCarStatus.Value != this.State.CurrentState)
             {
-                this.Status.CurrentState = info.NewCarStatus.Value;
-                SignalCarStatusChanged(this.Status.PickupLocation);
+                this.State.CurrentState = info.NewCarStatus.Value;
+                SignalCarStatusChanged(this.State.PickupLocation);
             }
         }
 
         public void Delete()
         {
-            if (!this.Status.CanBeDeleted())
+            if (!this.State.CanBeDeleted())
                 return;
             DeleteRentals();
-            Entity.Current.DeleteState();
+            this.State = null;
         }
         #endregion [ Public methods ]
 
         #region [ Private methods ]
         private void DeleteRentals()
         {
-            var carRentalsEntityId = new EntityId(nameof(CarRentalsEntity),
-                             Entity.Current.EntityKey);
+            var carRentalsEntityId = new EntityInstanceId(nameof(CarRentalsEntity),
+                             this.Context.Id.Key);
 
-            Entity.Current.SignalEntity(carRentalsEntityId, "delete");
+            this.Context.SignalEntity(carRentalsEntityId, "delete");
         }
 
         private void SignalCarStatusChanged(string pickupLocation)
         {
-            var pickupLocationEntityId = new EntityId(nameof(PickupLocationEntity),
+            var pickupLocationEntityId = new EntityInstanceId(nameof(PickupLocationEntity),
                                 pickupLocation);
 
-            Entity.Current.SignalEntity(pickupLocationEntityId,
+            this.Context.SignalEntity(pickupLocationEntityId,
                 nameof(IPickupLocationEntity.CarStatusChanged),
                 new CarStatusChangeDto()
                 {
-                    CarPlate = Entity.Current.EntityKey,
-                    NewCarModel = this.Status.Model,
-                    NewPickupLocation = this.Status.PickupLocation,
-                    NewCarRentalStatus = this.Status.CurrentRentalState,
-                    NewCarStatus = this.Status.CurrentState
+                    CarPlate = this.Context.Id.Key,
+                    NewCarModel = this.State.Model,
+                    NewPickupLocation = this.State.PickupLocation,
+                    NewCarRentalStatus = this.State.CurrentRentalState,
+                    NewCarStatus = this.State.CurrentState
                 });
         }
 
         private void SignalRentEnded()
         {
-            var carRentalsEntityId = new EntityId(nameof(CarRentalsEntity),
-                            Entity.Current.EntityKey);
+            var carRentalsEntityId = new EntityInstanceId(nameof(CarRentalsEntity),
+                            this.Context.Id.Key);
 
-            Entity.Current.SignalEntity(carRentalsEntityId,
+            this.Context.SignalEntity(carRentalsEntityId,
                 nameof(ICarRentalsEntity.AddRent),
                 new CarRentalDto()
                 {
-                    Cost = Status.CalculateCost(),
-                    CostPerHour = this.Status.CostPerHour,
-                    Currency = this.Status.Currency,
-                    Renter = this.Status.CurrentRenter,
-                    Rental = this.Status.CurrentRental
+                    Cost = State.CalculateCost(),
+                    CostPerHour = this.State.CostPerHour,
+                    Currency = this.State.Currency,
+                    Renter = this.State.CurrentRenter,
+                    Rental = this.State.CurrentRental
                 });
         }
 
@@ -182,27 +177,27 @@ namespace ServerlessCarRent.Functions.Entities
         {
             var orchestratorDto = new RentalStatusChangeOrchestratorDto()
             {
-                CarModel = this.Status.Model,
-                CarPlate = Entity.Current.EntityKey,
-                CarPickupLocation = this.Status.PickupLocation,
-                Cost = newRentalStatus == CarRentalState.Rented ? null : Status.CalculateCost(),
-                CostPerHour = this.Status.CostPerHour,
-                Currency = this.Status.Currency,
-                CurrentRental = this.Status.CurrentRental,
-                CurrentRenter = this.Status.CurrentRenter,
+                CarModel = this.State.Model,
+                CarPlate = this.Context.Id.Key,
+                CarPickupLocation = this.State.PickupLocation,
+                Cost = newRentalStatus == CarRentalState.Rented ? null : State.CalculateCost(),
+                CostPerHour = this.State.CostPerHour,
+                Currency = this.State.Currency,
+                CurrentRental = this.State.CurrentRental,
+                CurrentRenter = this.State.CurrentRenter,
                 NewRentalStatus = newRentalStatus,
                 OldRentalStatus = oldRentalStatus
             };
 
-            Entity.Current.StartNewOrchestration(nameof(RentalStatusChangeOrchestrator),
+            this.Context.ScheduleNewOrchestration(nameof(RentalStatusChangeOrchestrator),
                 orchestratorDto);
         }
 
         #endregion [ Private methods ]
 
         [FunctionName(nameof(CarEntity))]
-        public static Task Run([EntityTrigger] IDurableEntityContext ctx, ILogger logger)
-            => ctx.DispatchAsync<CarEntity>(logger);
+        public static Task Run([EntityTrigger] TaskEntityDispatcher ctx)
+            => ctx.DispatchAsync<CarEntity>();
 
     }
 }

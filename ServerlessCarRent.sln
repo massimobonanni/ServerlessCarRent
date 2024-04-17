@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CD864B0E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerlessCarRent.Functions.Tests", "Tests\ServerlessCarRent.Functions.Tests\ServerlessCarRent.Functions.Tests.csproj", "{6643B0C7-DBEB-40FF-8B6C-8890567D19D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerlessCarRent.Common.Tests", "Tests\ServerlessCarRent.Common.Tests\ServerlessCarRent.Common.Tests.csproj", "{F1752911-30F5-4554-BA1C-FE6B6DC5F2A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerlessCarRent.Common.Tests", "Tests\ServerlessCarRent.Common.Tests\ServerlessCarRent.Common.Tests.csproj", "{F1752911-30F5-4554-BA1C-FE6B6DC5F2A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

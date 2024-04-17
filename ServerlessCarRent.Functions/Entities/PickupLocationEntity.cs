@@ -1,20 +1,19 @@
-﻿using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+﻿using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.WebJobs;
+using Microsoft.DurableTask.Entities;
 using Microsoft.Extensions.Logging;
 using ServerlessCarRent.Common.Dtos;
 using ServerlessCarRent.Common.Interfaces;
 using ServerlessCarRent.Common.Models.PickupLocation;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using EntityTriggerAttribute = Microsoft.Azure.Functions.Worker.EntityTriggerAttribute;
 
 
 namespace ServerlessCarRent.Functions.Entities
 {
-	public class PickupLocationEntity : IPickupLocationEntity
+    public class PickupLocationEntity : TaskEntity<PickupLocationData>,IPickupLocationEntity
 	{
 		private readonly ILogger _logger;
 		public PickupLocationEntity(ILogger logger)
@@ -22,24 +21,21 @@ namespace ServerlessCarRent.Functions.Entities
 			_logger = logger;
 		}
 
-		[JsonPropertyName("status")]
-		public PickupLocationData Status { get; set; }
-
 		#region [ Public methods ]
 		public void Initialize(InitializePickupLocationDto locationInfo)
 		{
-			if (this.Status == null)
-				this.Status = new PickupLocationData();
+			if (this.State == null)
+				this.State = new PickupLocationData();
 
-			this.Status.Status = locationInfo.Status;
-			this.Status.City = locationInfo.City;
-			this.Status.Location = locationInfo.Location;
-			this.Status.Cars = new List<PickupLocationCarData>();
+			this.State.Status = locationInfo.Status;
+			this.State.City = locationInfo.City;
+			this.State.Location = locationInfo.Location;
+			this.State.Cars = new List<PickupLocationCarData>();
 		}
 
 		public Task<bool> RentCar(RentCarPickupLocationDto carInfo)
 		{
-			var car = this.Status.Cars.FirstOrDefault(c => c.Plate == carInfo.CarPlate);
+			var car = this.State.Cars.FirstOrDefault(c => c.Plate == carInfo.CarPlate);
 
 			if (car == null)
 				return Task.FromResult(false);
@@ -56,17 +52,17 @@ namespace ServerlessCarRent.Functions.Entities
 
 		public void CarStatusChanged(CarStatusChangeDto carInfo)
 		{
-			var car = this.Status.Cars.FirstOrDefault(c => c.Plate == carInfo.CarPlate);
+			var car = this.State.Cars.FirstOrDefault(c => c.Plate == carInfo.CarPlate);
 
 			if (!string.IsNullOrWhiteSpace(carInfo.NewPickupLocation)
-				&& carInfo.NewPickupLocation != Entity.Current.EntityKey)
+				&& carInfo.NewPickupLocation != this.Context.Id.Key)
 			{
 				if (car != null)
-					this.Status.Cars.Remove(car);
+					this.State.Cars.Remove(car);
 				return;
 			}
 
-			if (car == null && carInfo.NewPickupLocation == Entity.Current.EntityKey)
+			if (car == null && carInfo.NewPickupLocation == this.Context.Id.Key)
 			{
 				car = new PickupLocationCarData()
 				{
@@ -75,7 +71,7 @@ namespace ServerlessCarRent.Functions.Entities
 					RentalStatus = carInfo.NewCarRentalStatus.Value,
 					Status = carInfo.NewCarStatus.Value
 				};
-				this.Status.Cars.Add(car);
+				this.State.Cars.Add(car);
 				return;
 			}
 
@@ -94,29 +90,29 @@ namespace ServerlessCarRent.Functions.Entities
 				return;
 
 			if (!string.IsNullOrWhiteSpace(info.Location))
-				this.Status.Location = info.Location;
+				this.State.Location = info.Location;
 
 			if (!string.IsNullOrWhiteSpace(info.City))
-				this.Status.City = info.City;
+				this.State.City = info.City;
 
-			this.Status.Status = info.Status;
+			this.State.Status = info.Status;
 
         }
 
         public void Delete()
         {
-            if (!this.Status.CanBeDeleted())
+            if (!this.State.CanBeDeleted())
                 return;
-            Entity.Current.DeleteState();
+			this.State = null;
         }
         #endregion [ Public methods ]
 
         #region [ Private methods ]
         private void SignalRentStarted(RentCarPickupLocationDto carInfo)
 		{
-			var carRentalsEntityId = new EntityId(nameof(CarEntity), carInfo.CarPlate);
+			var carRentalsEntityId = new EntityInstanceId(nameof(CarEntity), carInfo.CarPlate);
 
-			Entity.Current.SignalEntity(carRentalsEntityId,	nameof(ICarEntity.Rent),
+			this.Context.SignalEntity(carRentalsEntityId, nameof(ICarEntity.Rent),
 				new RentCarDto()
 				{
 					RentalId=carInfo.RentalId,
@@ -129,8 +125,8 @@ namespace ServerlessCarRent.Functions.Entities
 		#endregion [ Private methods ]
 
 		[FunctionName(nameof(PickupLocationEntity))]
-		public static Task Run([EntityTrigger] IDurableEntityContext ctx, ILogger logger)
-				=> ctx.DispatchAsync<PickupLocationEntity>(logger);
+		public static Task Run([EntityTrigger] TaskEntityDispatcher ctx)
+				=> ctx.DispatchAsync<PickupLocationEntity>();
 
 
     }

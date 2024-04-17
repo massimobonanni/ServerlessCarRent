@@ -1,26 +1,18 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
-using Microsoft.Azure.WebJobs;
+using Microsoft.DurableTask;
+using Microsoft.DurableTask.Client;
+using Microsoft.DurableTask.Client.Entities;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using ServerlessCarRent.Common.Dtos;
+using ServerlessCarRent.Functions.Orchestrators;
 using ServerlessCarRent.Functions.Requests;
 using ServerlessCarRent.Functions.Responses;
-using ServerlessCarRent.Functions.Entities;
-using ServerlessCarRent.Common.Dtos;
-using ServerlessCarRent.Common.Interfaces;
-using ServerlessCarRent.Functions.Orchestrators;
+using System.Net;
 
 namespace ServerlessCarRent.Functions.Clients
 {
@@ -33,7 +25,7 @@ namespace ServerlessCarRent.Functions.Clients
             _logger = logger;
         }
 
-        [OpenApiOperation(operationId: "returnCar", new[] { "Rentals Management" },
+        [OpenApiOperation(operationId: "returnCar", ["Rentals Management"],
             Summary = "Return a car", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(ReturnCarRequest),
             Description = "Info about the car to return.", Required = true)]
@@ -45,11 +37,11 @@ namespace ServerlessCarRent.Functions.Clients
         [OpenApiResponseWithoutBody(HttpStatusCode.NotFound,
             Summary = "The car is not exists")]
 
-        [FunctionName("ReturnCar")]
+        [Function("ReturnCar")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "put", Route = "rents/{carPlate}")] HttpRequest req,
             string carPlate,
-            [DurableClient] IDurableClient client)
+            [DurableClient] DurableTaskClient client)
         {
             _logger.LogInformation("ReturnCar function");
 
@@ -61,7 +53,7 @@ namespace ServerlessCarRent.Functions.Clients
                 if (request == null)
                     return new BadRequestObjectResult("The request is not valid");
 
-                var car = await client.GetCarDataAsync(carPlate);
+                var car = await client.Entities.GetCarDataAsync(carPlate);
 
                 if (car == null)
                     return new NotFoundObjectResult("The car is not exist");
@@ -75,10 +67,11 @@ namespace ServerlessCarRent.Functions.Clients
                     RentalEndDate = request.RentalEndDate
                 };
 
-                var returnOperationId = await client.StartNewAsync(nameof(ReturnOrchestrator), orchestrationDto);
+                var returnTaskName = new TaskName(nameof(RentOrchestrator));
+                var returnOperationId = await client.ScheduleNewOrchestrationInstanceAsync(returnTaskName, orchestrationDto);
 
-                await client.WaitForCompletionOrCreateCheckStatusResponseAsync(req, returnOperationId,
-                    TimeSpan.FromSeconds(10));
+                var waitForCompletionToken = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+                await client.WaitForInstanceCompletionAsync(returnOperationId,waitForCompletionToken);
 
                 var response = new ReturnCarResponse()
                 {
@@ -86,10 +79,10 @@ namespace ServerlessCarRent.Functions.Clients
                     ReturnOperationStatus = ReturnOperationState.Pending
                 };
 
-                var orchestratorStatus = await client.GetStatusAsync(returnOperationId);
+                var orchestratorStatus = await client.GetInstanceAsync(returnOperationId);
                 if (orchestratorStatus.RuntimeStatus == OrchestrationRuntimeStatus.Completed)
                 {
-                    var orchestratorOutput = orchestratorStatus.Output.ToObject<ReturnOrchestratorResponseDto>();
+                    var orchestratorOutput = orchestratorStatus.ReadOutputAs<ReturnOrchestratorResponseDto>();
                     response.CostPerHour = orchestratorOutput.CostPerHour;
                     response.Cost = orchestratorOutput.Cost;
                     response.Currency = orchestratorOutput.Currency;

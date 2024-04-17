@@ -1,40 +1,34 @@
-﻿using Microsoft.Azure.WebJobs.Extensions.DurableTask;
-using Microsoft.Azure.WebJobs;
+﻿using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using ServerlessCarRent.Common.Dtos;
 using ServerlessCarRent.Common.Interfaces;
-using ServerlessCarRent.Common.Models;
-using ServerlessCarRent.Common.Models.Car;
 using ServerlessCarRent.Common.Models.CarRental;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Microsoft.DurableTask.Entities;
+using Microsoft.Azure.Functions.Worker;
+using EntityTriggerAttribute = Microsoft.Azure.Functions.Worker.EntityTriggerAttribute;
 
 namespace ServerlessCarRent.Functions.Entities
 {
-	public class CarRentalsEntity : ICarRentalsEntity
-	{
+    public class CarRentalsEntity : TaskEntity<CarRentalsData>,ICarRentalsEntity
+
+    {
 		private readonly ILogger _logger;
 		public CarRentalsEntity(ILogger logger)
 		{
 			_logger = logger;
 		}
 
-		[JsonPropertyName("status")]
-		public CarRentalsData Status { get; set; }
-
 		public void AddRent(CarRentalDto rentInfo)
 		{
-			if (this.Status == null)
-				this.Status = new CarRentalsData();
+			if (this.State == null)
+				this.State = new CarRentalsData();
 
-			if (this.Status.Rentals == null)
-				this.Status.Rentals = new List<CarRentalData>();
+			if (this.State.Rentals == null)
+				this.State.Rentals = new List<CarRentalData>();
 
-			this.Status.Rentals.Add(new CarRentalData()
+			this.State.Rentals.Add(new CarRentalData()
 			{
 				TotalCost=rentInfo.Cost,
 				CostPerHour = rentInfo.CostPerHour,
@@ -45,7 +39,7 @@ namespace ServerlessCarRent.Functions.Entities
 		}
 
 		[FunctionName(nameof(CarRentalsEntity))]
-		public static Task Run([EntityTrigger] IDurableEntityContext ctx, ILogger logger)
-			=> ctx.DispatchAsync<CarRentalsEntity>(logger);
+		public static Task Run([EntityTrigger] TaskEntityDispatcher ctx)
+			=> ctx.DispatchAsync<CarRentalsEntity>();
 	}
 }

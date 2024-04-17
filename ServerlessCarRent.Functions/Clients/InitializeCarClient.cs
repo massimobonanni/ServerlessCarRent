@@ -1,25 +1,19 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
-using Microsoft.Azure.WebJobs;
+using Microsoft.DurableTask.Client;
+using Microsoft.DurableTask.Client.Entities;
+using Microsoft.DurableTask.Entities;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using ServerlessCarRent.Functions.Requests;
-using ServerlessCarRent.Functions.Responses;
-using ServerlessCarRent.Functions.Entities;
 using ServerlessCarRent.Common.Dtos;
 using ServerlessCarRent.Common.Interfaces;
+using ServerlessCarRent.Functions.Entities;
+using ServerlessCarRent.Functions.Requests;
+using ServerlessCarRent.Functions.Responses;
+using System.Net;
 
 namespace ServerlessCarRent.Functions.Clients
 {
@@ -32,7 +26,7 @@ namespace ServerlessCarRent.Functions.Clients
             _logger = logger;
         }
 
-        [OpenApiOperation(operationId: "initializeCar", new[] { "Cars Management" },
+        [OpenApiOperation(operationId: "initializeCar", ["Cars Management"],
             Summary = "Create and initialize a new car", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(InitializeCarRequest),
             Description = "Info about the car to create.", Required = true)]
@@ -43,10 +37,10 @@ namespace ServerlessCarRent.Functions.Clients
             Summary = "The request is not valid because one of the plate or model is not valid")]
         [OpenApiResponseWithoutBody(HttpStatusCode.Conflict, Summary = "A car with the same plate already exists")]
 
-        [FunctionName("InitializeCar")]
+        [Function("InitializeCar")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = "cars")] HttpRequest req,
-            [DurableClient] IDurableEntityClient client)
+            [DurableClient] DurableTaskClient client)
         {
             _logger.LogInformation("InitializeCar function");
 
@@ -58,10 +52,10 @@ namespace ServerlessCarRent.Functions.Clients
                 if (request == null || !request.IsValid())
                     return new BadRequestObjectResult("The car info are not valid");
 
-                if (await client.CarExistsAsync(request.Plate))
+                if (await client.Entities.CarExistsAsync(request.Plate))
                     return new ConflictResult();
 
-                var entityId = new EntityId(nameof(CarEntity), request.Plate);
+                var entityId = new EntityInstanceId(nameof(CarEntity), request.Plate);
                 var carDto = new InitializeCarDto()
                 {
                     Model = request.Model,
@@ -71,7 +65,9 @@ namespace ServerlessCarRent.Functions.Clients
                     Currency = request.Currency,
                 };
 
-                await client.SignalEntityAsync<ICarEntity>(entityId, e => e.Initialize(carDto));
+                await client.Entities.SignalEntityAsync(entityId,
+                    nameof(CarEntity.Initialize),
+                    carDto);
 
                 var response = new InitializeCarResponse()
                 {

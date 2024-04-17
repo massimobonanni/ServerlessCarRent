@@ -42,7 +42,7 @@ namespace ServerlessCarRent.Functions.Tests.Orchestrators
             Assert.NotNull(actual);
             Assert.Equal(orchestratorDto.CarPlate, actual.CarPlate);
             Assert.Equal(orchestratorDto.PickupLocation, actual.PickupLocation);
-            Assert.Equal(expectedOrchestratorResult, actual.Status);
+            Assert.Equal(expectedOrchestratorResult, actual.State);
             Assert.Equal(instanceId, actual.RentalId);
         }
     }

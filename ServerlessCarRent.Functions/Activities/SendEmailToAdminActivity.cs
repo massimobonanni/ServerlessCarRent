@@ -1,15 +1,13 @@
-﻿using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+﻿using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using SendGrid.Helpers.Mail;
 using ServerlessCarRent.Common.Dtos;
 using System.IO;
-using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
+using SendGrid.Helpers.Mail;
 
 namespace ServerlessCarRent.Functions.Activities
 {
@@ -26,8 +24,8 @@ namespace ServerlessCarRent.Functions.Activities
         }
 
         [FunctionName(nameof(SendEmailToAdminActivity))]
-        public async Task Run([ActivityTrigger] RentalStatusChangeOrchestratorDto context,
-                [SendGrid(ApiKey = "SendGridApiKey")] IAsyncCollector<SendGridMessage> messageCollector)
+        [SendGridOutput(ApiKey = "SendGridApiKey")]
+        public async Task<SendGridMessage> Run([ActivityTrigger] RentalStatusChangeOrchestratorDto context)
         {
             this._logger.LogInformation($"[START ACTIVITY] --> {nameof(SendEmailToAdminActivity)}");
 
@@ -36,11 +34,12 @@ namespace ServerlessCarRent.Functions.Activities
             if (!string.IsNullOrWhiteSpace(adminEmail))
             {
                 var message = await CreateSendGridMessageAsync(adminEmail, context);
-                await messageCollector.AddAsync(message);
+                return message;
             }
             else
             {
                 this._logger.LogWarning("AdminEmail not setted in the configuration file. The Sendmail activity cannot send email to admin.");
+                return null;
             }
 
         }
@@ -55,7 +54,7 @@ namespace ServerlessCarRent.Functions.Activities
             };
 
             message.AddTo(new EmailAddress(toEmail));
-            
+
             var contextJson = JsonConvert.SerializeObject(context, Formatting.Indented);
             byte[] byteArray = Encoding.ASCII.GetBytes(contextJson);
             MemoryStream stream = new MemoryStream(byteArray);

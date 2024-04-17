@@ -1,15 +1,19 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
+using Microsoft.DurableTask;
+using Microsoft.DurableTask.Entities;
 using Microsoft.Extensions.Logging;
 using ServerlessCarRent.Common.Dtos;
 using ServerlessCarRent.Common.Interfaces;
 using ServerlessCarRent.Functions.Clients;
 using ServerlessCarRent.Functions.Entities;
+using OrchestrationTriggerAttribute = Microsoft.Azure.Functions.Worker.OrchestrationTriggerAttribute;
 
 namespace ServerlessCarRent.Functions.Orchestrators
 {
@@ -24,19 +28,19 @@ namespace ServerlessCarRent.Functions.Orchestrators
 
 		[FunctionName(nameof(ReturnOrchestrator))]
 		public async Task<ReturnOrchestratorResponseDto> RunOrchestrator(
-			[OrchestrationTrigger] IDurableOrchestrationContext context)
+			[OrchestrationTrigger] TaskOrchestrationContext context)
 		{
             this._logger.LogInformation($"[START ORCHESTRATOR] --> {nameof(ReturnOrchestrator)}");
             var requestDto = context.GetInput<ReturnOrchestratorDto>();
 
-			var entityId = new EntityId(nameof(CarEntity), requestDto.CarPlate);
+			var entityId = new EntityInstanceId(nameof(CarEntity), requestDto.CarPlate);
 
 			var rentCarDto = new ReturnCarDto()
 			{
 				EndDate=requestDto.RentalEndDate,
 			};
 
-			var returnOperationresult = await context.CallEntityAsync<ReturnCarResponseDto>(entityId,
+			var returnOperationresult = await context.Entities.CallEntityAsync<ReturnCarResponseDto>(entityId,
 				nameof(ICarEntity.Return), rentCarDto);
 
 			var response = new ReturnOrchestratorResponseDto()

@@ -1,21 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
-using Microsoft.Azure.WebJobs;
+using Microsoft.DurableTask.Client;
+using Microsoft.DurableTask.Client.Entities;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using ServerlessCarRent.Functions.Responses;
+using System.Net;
 
 namespace ServerlessCarRent.Functions.Clients
 {
@@ -28,7 +20,7 @@ namespace ServerlessCarRent.Functions.Clients
             _logger = logger;
         }
 
-        [OpenApiOperation(operationId: "getPickupLocation", new[] { "Pickup Locations Management" },
+        [OpenApiOperation(operationId: "getPickupLocation", ["Pickup Locations Management"],
            Summary = "Retrieve the information about a pickup location", Visibility = OpenApiVisibilityType.Important)]
         [OpenApiParameter("identifier", Summary = "The identifier of the pickup location to retrieve",
            In = Microsoft.OpenApi.Models.ParameterLocation.Path, Required = true,
@@ -39,17 +31,17 @@ namespace ServerlessCarRent.Functions.Clients
         [OpenApiResponseWithoutBody(HttpStatusCode.NotFound,
            Summary = "The pickup location with the search identifier doesn't exist")]
 
-        [FunctionName("GetPickupLocation")]
+        [Function("GetPickupLocation")]
         public async Task<IActionResult> Run(
            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "pickuplocations/{identifier}")] HttpRequest req,
            string identifier,
-           [DurableClient] IDurableEntityClient client)
+           [DurableClient] DurableTaskClient client)
         {
             _logger.LogInformation("GetPickupLocation function");
 
             try
             {
-                var locationData = await client.GetPickupLocationDataAsync(identifier);
+                var locationData = await client.Entities.GetPickupLocationDataAsync(identifier);
                 if (locationData == null)
                     return new NotFoundResult();
 
