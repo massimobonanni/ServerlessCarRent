@@ -16,7 +16,7 @@ namespace ServerlessCarRent.Functions.Orchestrators
         public RentalStatusChangeOrchestrator(IConfiguration configuration,
             ILogger<RentalStatusChangeOrchestrator> logger)
         {
-            _configuration= configuration;
+            _configuration = configuration;
             _logger = logger;
         }
 
@@ -28,11 +28,27 @@ namespace ServerlessCarRent.Functions.Orchestrators
 
             var orchestratorDto = context.GetInput<RentalStatusChangeOrchestratorDto>();
 
-            await context.CallActivityAsync(nameof(SendEmailToAdminActivity), orchestratorDto);
+            var sendEmailToAdmin=this._configuration.GetValue<bool>("SendMailToAdminEnabled");
+            if (sendEmailToAdmin)
+                try
+                {
+                    await context.CallActivityAsync(nameof(SendEmailToAdminActivity), orchestratorDto);
+                }
+                catch (Exception ex)
+                {
+                    this._logger.LogCritical(ex, "Error during sending email to admin");
+                }
 
-            await context.CallActivityAsync(nameof(SendRentalStatusChangeNotificationToEventGridActivity), orchestratorDto);
+            var sendEventToEventGrid=this._configuration.GetValue<bool>("SendEventToEventGridEnabled");
+            if (sendEventToEventGrid)
+                try
+                {
+                    await context.CallActivityAsync(nameof(SendRentalStatusChangeNotificationToEventGridActivity), orchestratorDto);
+                }
+                catch (Exception ex)
+                {
+                    this._logger.LogCritical(ex, "Error during sending event to EventGrid");
+                }
         }
-
-
     }
 }

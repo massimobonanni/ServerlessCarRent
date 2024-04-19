@@ -29,11 +29,12 @@ namespace ServerlessCarRent.Functions.Activities
         {
             this._logger.LogInformation($"[START ACTIVITY] --> {nameof(SendEmailToAdminActivity)}");
 
+            var senderEmail = this._configuration.GetValue<string>("FromEmail");
             var adminEmail = this._configuration.GetValue<string>("AdminEmail");
 
             if (!string.IsNullOrWhiteSpace(adminEmail))
             {
-                var message = await CreateSendGridMessageAsync(adminEmail, context);
+                var message = await CreateSendGridMessageAsync(senderEmail,adminEmail, context);
                 return message;
             }
             else
@@ -44,11 +45,11 @@ namespace ServerlessCarRent.Functions.Activities
 
         }
 
-        private async Task<SendGridMessage> CreateSendGridMessageAsync(string toEmail,
+        private async Task<SendGridMessage> CreateSendGridMessageAsync(string senderEmail,string toEmail,
             RentalStatusChangeOrchestratorDto context)
         {
             var subject = $"Rental state changed for car {context.CarPlate}";
-            var from = new EmailAddress("noreply@serverlesscarrent.com");
+            var from = new EmailAddress(senderEmail);
             var to = new EmailAddress(toEmail);
             var textContent= MailUtilities.GenerateHtmlContentForAdmin(context);
             var htmlContent= MailUtilities.GenerateTextContentForAdmin(context);

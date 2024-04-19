@@ -26,8 +26,14 @@ namespace ServerlessCarRent.Functions.Activities
         {
             this._logger.LogInformation($"[START ACTIVITY] --> {nameof(SendRentalStatusChangeNotificationToEventGridActivity)}");
 
+            var firstPerson = new
+            {
+                FullName = "Alba Sutton",
+                Address = "4567 Pine Avenue, Edison, WA 97202"
+            };
+
             var @event = new EventGridEvent($"cars/{context.CarPlate}",
-              "RentalStatusChanged","1.0", context);
+              "RentalStatusChanged","1.0.0", "ciao");
 
             this._logger.LogInformation("Event sending to custom topic", JsonConvert.SerializeObject(@event));
 
