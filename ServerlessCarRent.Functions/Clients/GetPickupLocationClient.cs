@@ -63,7 +63,7 @@ namespace ServerlessCarRent.Functions.Clients
                         .ToList()
                 };
 
-                return new OkObjectResult(response);
+                return response.CreateOkResponse();
 
             }
             catch (Exception ex)

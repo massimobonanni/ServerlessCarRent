@@ -1,0 +1,94 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+
+### -------------- SEARCH CARS -------------- ###
+
+# Get car with details
+@carPlate = AA000AA
+GET {{serviceUrl}}/api/cars/{{carPlate}}?details HTTP/1.1
+    
+###
+
+# Get car without details
+GET {{serviceUrl}}/api/cars/{{carPlate}} HTTP/1.1
+    
+###
+
+# Search Cars  with no filters
+GET {{serviceUrl}}/api/cars HTTP/1.1
+
+###
+
+# Search Cars with Rental State filter
+GET {{serviceUrl}}/api/cars?rentalState=free|rented HTTP/1.1
+
+###
+
+# Search Cars with filters
+GET {{serviceUrl}}/api/cars?rentalState=free|rented&model=Toyota&plate=&location=&state=working HTTP/1.1
+
+###
+### -------------- SEARCH CARS -------------- ###
+
+### -------------- MANAGE CAR -------------- ###
+
+# Initialize a Car
+POST {{serviceUrl}}/api/cars HTTP/1.1
+content-type: application/json
+
+{
+    "plate" : "BB111BB",
+    "model" : "Toyota Prius",
+    "pickupLocation" : "ROME-FCO",
+    "currentStatus" : "Working",
+    "costPerHour" : 8.0,
+    "currency" : "EUR"
+}
+###
+
+# Update a Car
+@carPlateToUpdate = AA000AA
+PUT {{serviceUrl}}/api/cars/{{carPlate}} HTTP/1.1
+content-type: application/json
+
+{  
+    "newPickupLocation": "ROME-FCO",  
+    "newCarStatus": null,  
+    "newCostPerHour": null,  
+    "newCurrency": null
+}
+###
+
+# Delete a car (use Durable Entities delete operation)
+@carPlateToDelete = AA000AA
+POST {{serviceUrl}}/runtime/webhooks/durabletask/entities/carentity/{{carPlateToDelete}}?op=delete
+content-type: application/json
+###
+
+### -------------- MANAGE CAR -------------- ###
+
+### -------------- CAR RENT/RETURN -------------- ###
+
+# Rent a Car
+POST {{serviceUrl}}/api/rents HTTP/1.1
+content-type: application/json
+
+{  
+    "carPlate": "BB111BB",  
+    "pickupLocation" : "ROME-FCO",  
+    "rentalStartDate" : "{{$datetime "yyyy-MM-ddTHH:mm:ss.000Z"}}",  
+    "renterFirstName" : "Massimo",  
+    "renterLastName" : "Bonanni",  
+    "renterEmail" : "massimo.bonanni@tiscali.it"
+}
+###
+
+# Return a Car
+@carPlateToReturn = BB111BB
+PUT {{serviceUrl}}/api/rents/{{carPlateToReturn}} HTTP/1.1
+content-type: application/json
+
+{  
+    "rentalEndDate" : "{{$datetime "yyyy-MM-ddTHH:mm:ss.000Z"}}"
+}
+###
+### -------------- INITIALIZE CAR -------------- ###

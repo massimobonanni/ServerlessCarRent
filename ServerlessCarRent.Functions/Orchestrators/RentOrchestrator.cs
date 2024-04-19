@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using DurableTask.Core.Entities;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Azure.WebJobs;
 using Microsoft.DurableTask;
 using Microsoft.DurableTask.Entities;
 using Microsoft.Extensions.Logging;
@@ -20,7 +19,7 @@ namespace ServerlessCarRent.Functions.Orchestrators
 			_logger = logger;
 		}
 
-		[FunctionName(nameof(RentOrchestrator))]
+		[Function(nameof(RentOrchestrator))]
 		public async Task<RentOrchestratorResponseDto> RunOrchestrator(
 			[OrchestrationTrigger] TaskOrchestrationContext context)
 		{

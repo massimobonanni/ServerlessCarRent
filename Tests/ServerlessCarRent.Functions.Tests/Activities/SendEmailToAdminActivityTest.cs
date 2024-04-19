@@ -59,13 +59,13 @@ namespace ServerlessCarRent.Functions.Tests.Activities
                 .Build();
             var instance = CreateInstance(configuration);
             var context = CreateRentalStatusChangeOrchestratorDto();
-            var mockMessageCollector = new Mock<IAsyncCollector<SendGridMessage>>();
+
 
             // Act
-            await instance.Run(context, mockMessageCollector.Object);
+            var message = await instance.Run(context);
 
             // Assert
-            Assert.False(mockMessageCollector.Invocations.Any());
+            Assert.Null(message);
         }
 
         [Fact]
@@ -80,13 +80,12 @@ namespace ServerlessCarRent.Functions.Tests.Activities
                 .Build();
             var instance = CreateInstance(configuration);
             var context = CreateRentalStatusChangeOrchestratorDto();
-            var mockMessageCollector = new Mock<IAsyncCollector<SendGridMessage>>();
 
             // Act
-            await instance.Run(context, mockMessageCollector.Object);
+            var message=await instance.Run(context);
 
             // Assert
-           mockMessageCollector.Verify( x=> x.AddAsync(It.IsNotNull<SendGridMessage>(),default));
+            Assert.NotNull(message);
         }
     }
 }

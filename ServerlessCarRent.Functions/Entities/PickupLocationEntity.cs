@@ -1,28 +1,21 @@
 ﻿using Microsoft.Azure.Functions.Worker;
-using Microsoft.Azure.WebJobs;
 using Microsoft.DurableTask.Entities;
 using Microsoft.Extensions.Logging;
 using ServerlessCarRent.Common.Dtos;
 using ServerlessCarRent.Common.Interfaces;
 using ServerlessCarRent.Common.Models.PickupLocation;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using EntityTriggerAttribute = Microsoft.Azure.Functions.Worker.EntityTriggerAttribute;
-
 
 namespace ServerlessCarRent.Functions.Entities
 {
-    public class PickupLocationEntity : TaskEntity<PickupLocationData>,IPickupLocationEntity
+    public class PickupLocationEntity : EntityBase<PickupLocationData>,IPickupLocationEntity
 	{
-		private readonly ILogger _logger;
-		public PickupLocationEntity(ILogger logger)
-		{
-			_logger = logger;
-		}
+        public PickupLocationEntity(ILogger<PickupLocationEntity> logger):base(logger)
+        {
+            
+        }
 
-		#region [ Public methods ]
-		public void Initialize(InitializePickupLocationDto locationInfo)
+        #region [ Public methods ]
+        public void Initialize(InitializePickupLocationDto locationInfo)
 		{
 			if (this.State == null)
 				this.State = new PickupLocationData();
@@ -124,7 +117,7 @@ namespace ServerlessCarRent.Functions.Entities
 		}
 		#endregion [ Private methods ]
 
-		[FunctionName(nameof(PickupLocationEntity))]
+		[Function(nameof(PickupLocationEntity))]
 		public static Task Run([EntityTrigger] TaskEntityDispatcher ctx)
 				=> ctx.DispatchAsync<PickupLocationEntity>();
 

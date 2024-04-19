@@ -1,5 +1,4 @@
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Azure.WebJobs;
 using Microsoft.DurableTask;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -21,7 +20,7 @@ namespace ServerlessCarRent.Functions.Orchestrators
             _logger = logger;
         }
 
-        [FunctionName(nameof(RentalStatusChangeOrchestrator))]
+        [Function(nameof(RentalStatusChangeOrchestrator))]
         public async Task RunOrchestrator(
             [OrchestrationTrigger] TaskOrchestrationContext context)
         {

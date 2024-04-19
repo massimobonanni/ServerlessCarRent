@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+using Microsoft.DurableTask.Client;
+using Microsoft.DurableTask.Entities;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
 using Moq;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ServerlessCarRent.Common.Models.Car;
 using ServerlessCarRent.Common.Models.CarRental;
@@ -14,19 +12,13 @@ using ServerlessCarRent.Functions.Entities;
 using ServerlessCarRent.Functions.Responses;
 using ServerlessCarRent.Functions.Tests.DataGenerators;
 using ServerlessCarRent.Functions.Tests.Mocks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YamlDotNet.Core.Tokens;
 
 namespace ServerlessCarRent.Functions.Tests.Clients
 {
     public class GetCarClientTest
     {
         [Fact]
-        public async void Run_ShouldReturnNotFound_WhenPlateNotExist_AndNoDetailRequest()
+        public async Task Run_ShouldReturnNotFound_WhenPlateNotExist_AndNoDetailRequest()
         {
             var plate = "AA000AA";
             // Setup Ilogger
@@ -34,9 +26,9 @@ namespace ServerlessCarRent.Functions.Tests.Clients
             //Setup HttpRequest            
             var requestMock = HttpRequestMockUtility.CreateMockForGetRequest(null);
             // Setup IDurableEntityClient
-            var durableClientMock = new Mock<IDurableEntityClient>();
-            var entityId = new EntityId(nameof(CarEntity), plate);
-            durableClientMock.Setup(c => c.ReadEntityStateAsync<JObject>(entityId, null, null))
+            var durableClientMock = new Mock<DurableTaskClient>();
+            var entityId = new EntityInstanceId(nameof(CarEntity), plate);
+            durableClientMock.Setup(c => c.Entities.GetEntityAsync<JObject>(entityId,true,default))
                 .Returns(() => Task.FromResult(new EntityStateResponse<JObject>() { EntityState = null, EntityExists = false }));
 
             // Create Class to test
@@ -52,7 +44,7 @@ namespace ServerlessCarRent.Functions.Tests.Clients
         }
 
         [Fact]
-        public async void Run_ShouldReturnNotFound_WhenPlateNotExist_AndDetailRequest()
+        public async Task Run_ShouldReturnNotFound_WhenPlateNotExist_AndDetailRequest()
         {
             var plate = "AA000AA";
             // Setup Ilogger
@@ -60,9 +52,9 @@ namespace ServerlessCarRent.Functions.Tests.Clients
             //Setup HttpRequest
             var requestMock = HttpRequestMockUtility.CreateMockForGetRequest("details");
             // Setup IDurableEntityClient
-            var durableClientMock = new Mock<IDurableEntityClient>();
-            var entityId = new EntityId(nameof(CarEntity), plate);
-            durableClientMock.Setup(c => c.ReadEntityStateAsync<JObject>(entityId, null, null))
+            var durableClientMock = new Mock<DurableTaskClient>();
+            var entityId = new EntityInstanceId(nameof(CarEntity), plate);
+            durableClientMock.Setup(c => c.Entities.GetEntityAsync<JObject>(entityId, true, default))
                 .Returns(() => Task.FromResult(new EntityStateResponse<JObject>() { EntityState = null, EntityExists = false }));
 
             // Create Class to test
@@ -79,16 +71,16 @@ namespace ServerlessCarRent.Functions.Tests.Clients
 
         [Theory]
         [MemberData(nameof(CarDataGenerator.GetCarDataWithoutDetails), MemberType = typeof(CarDataGenerator))]
-        public async void Run_ShouldReturnOk_WhenPlateExist_AndNoDetailRequest(string plate, CarData carData)
+        public async Task Run_ShouldReturnOk_WhenPlateExist_AndNoDetailRequest(string plate, CarData carData)
         {
             // Setup Ilogger
             var loggerMock = new Mock<ILogger<GetCarClient>>();
             //Setup HttpRequest            
             var requestMock = HttpRequestMockUtility.CreateMockForGetRequest(null);
             // Setup IDurableEntityClient
-            var durableClientMock = new Mock<IDurableEntityClient>();
-            var entityId = new EntityId(nameof(CarEntity), plate);
-            durableClientMock.Setup(c => c.ReadEntityStateAsync<JObject>(entityId, null, null))
+            var durableClientMock = new Mock<DurableTaskClient>();
+            var entityId = new EntityInstanceId(nameof(CarEntity), plate);
+            durableClientMock.Setup(c => c.Entities.GetEntityAsync<JObject>(entityId, true, default))
                 .Returns(() =>
                 {
                     var entityState = JObject.FromObject(new { Status = carData });
@@ -113,23 +105,23 @@ namespace ServerlessCarRent.Functions.Tests.Clients
 
         [Theory]
         [MemberData(nameof(CarDataGenerator.GetCarDataWithDetails), MemberType = typeof(CarDataGenerator))]
-        public async void Run_ShouldReturnOk_WhenPlateExist_WithDetailRequest(string plate, CarData carData, CarRentalsData carRentals)
+        public async Task Run_ShouldReturnOk_WhenPlateExist_WithDetailRequest(string plate, CarData carData, CarRentalsData carRentals)
         {
             // Setup Ilogger
             var loggerMock = new Mock<ILogger<GetCarClient>>();
             //Setup HttpRequest            
             var requestMock = HttpRequestMockUtility.CreateMockForGetRequest("details");
             // Setup IDurableEntityClient
-            var durableClientMock = new Mock<IDurableEntityClient>();
-            var entityId = new EntityId(nameof(CarEntity), plate);
-            durableClientMock.Setup(c => c.ReadEntityStateAsync<JObject>(entityId, null, null))
+            var durableClientMock = new Mock<DurableTaskClient>();
+            var entityId = new EntityInstanceId(nameof(CarEntity), plate);
+            durableClientMock.Setup(c => c.Entities.GetEntityAsync<JObject>(entityId, true, default))
                 .Returns(() =>
                 {
                     var entityState = JObject.FromObject(new { Status = carData });
                     return Task.FromResult(new EntityStateResponse<JObject>() { EntityState = entityState, EntityExists = true });
                 });
-            var rentalsEntityId = new EntityId(nameof(CarRentalsEntity), plate);
-            durableClientMock.Setup(c => c.ReadEntityStateAsync<JObject>(rentalsEntityId, null, null))
+            var rentalsEntityId = new EntityInstanceId(nameof(CarRentalsEntity), plate);
+            durableClientMock.Setup(c => c.Entities.GetEntityAsync<JObject>(rentalsEntityId, true, default))
                 .Returns(() =>
                 {
                     var entityState = JObject.FromObject(new { Status = carRentals });

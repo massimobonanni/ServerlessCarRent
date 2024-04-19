@@ -1,20 +1,12 @@
 ﻿using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
-using ServerlessCarRent.Common.Models;
 using ServerlessCarRent.Common.Models.Car;
 using ServerlessCarRent.Common.Models.CarRental;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static ServerlessCarRent.Functions.Responses.GetCarsResponse;
 
 namespace ServerlessCarRent.Functions.Responses
 {
-	public class GetCarsResponse
+    public class GetCarsResponse
 	{
 		[OpenApiProperty(Description = "The search parameter for the plate")]
 		[JsonProperty("plateFilter")]
@@ -57,11 +49,10 @@ namespace ServerlessCarRent.Functions.Responses
 				Plate = plate;
 			}
 
-			public CarDto(string plate,JObject entityState )
+			public CarDto(string plate,string serializedEntityState )
 			{
-				var carStatusProperty = (JObject)entityState.Property("Status").Value;
-				var carData = carStatusProperty.ToObject<CarData>();
-				CurrentRentalStatus = carData.CurrentRentalState;
+                var carData=JsonConvert.DeserializeObject<CarData>(serializedEntityState);
+                CurrentRentalStatus = carData.CurrentRentalState;
 				CurrentStatus = carData.CurrentState;
 				Model = carData.Model;
 				PickupLocation = carData.PickupLocation;

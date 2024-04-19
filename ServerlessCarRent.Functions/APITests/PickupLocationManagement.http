@@ -1,0 +1,36 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+
+### -------------- SEARCH PICKUPLOCATIONS -------------- ###
+
+# Get a Pickup Loxcation details
+@pickupLocationId = ROME-TERMINI
+GET {{serviceUrl}}/api/pickuplocations/{{pickupLocationId}} HTTP/1.1
+    
+###
+
+# Search for locations without filters
+GET {{serviceUrl}}/api/pickuplocations HTTP/1.1
+    
+###
+
+# Search for locations with filters
+GET {{serviceUrl}}/api/pickuplocations?city=rome&location=&identifier=&state=open HTTP/1.1
+    
+###
+
+### -------------- SEARCH PICKUPLOCATIONS -------------- ###
+
+### -------------- INITIALIZE PICKUPLOCATION -------------- ###
+
+# Initialize a Pickup Location
+POST {{serviceUrl}}/api/pickuplocations HTTP/1.1
+content-type: application/json
+
+{    
+    "identifier" : "ROME-TERMINI",    
+    "city" : "Rome",    
+    "location" : "Termini train station",    
+    "status" : "open"
+}
+###
+### -------------- INITIALIZE PICKUPLOCATION -------------- ###

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using ServerlessCarRent.Common.Models.Car;
 using System;
 using System.Collections.Generic;
 using System.Linq;

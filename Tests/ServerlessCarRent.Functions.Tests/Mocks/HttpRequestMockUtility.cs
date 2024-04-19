@@ -1,13 +1,6 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ServerlessCarRent.Functions.Tests.Mocks
 {

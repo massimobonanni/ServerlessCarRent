@@ -1,5 +1,9 @@
-﻿using Microsoft.DurableTask.Entities;
+﻿using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+using Microsoft.DurableTask.Entities;
 using Newtonsoft.Json.Linq;
+using ServerlessCarRent.Common.Models.Car;
+using ServerlessCarRent.Common.Models.CarRental;
+using ServerlessCarRent.Common.Models.PickupLocation;
 using ServerlessCarRent.Functions.Entities;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,34 +20,29 @@ namespace Microsoft.DurableTask.Client.Entities
     {
         #region [ Generic Entity methods]
 
-        public static async Task<EntityMetadata<JObject>> GetEntityStateAsync(this DurableEntityClient client,
+        public static async Task<EntityMetadata> GetEntityAsync(this DurableEntityClient client,
            string entityName, string entityKey, CancellationToken token = default)
         {
-            if (await client.EntityExistsAsync(entityName, entityKey, token))
-            {
-                var entityId = new EntityInstanceId(entityName, entityKey);
-                var entity = await client.GetEntityAsync<JObject>(entityId, true, token);
-                return entity;
-            }
-            return null;
+            var entityId = new EntityInstanceId(entityName, entityKey);
+            var entity = await client.GetEntityAsync(entityId, true, token);
+            return entity;
         }
 
         public static async Task<bool> EntityExistsAsync(this DurableEntityClient client,
-         string entityName, string entityKey, CancellationToken token = default)
+         string entityName, string entityKey, CancellationToken token = default) 
         {
-            var entity = await client.GetEntityStateAsync(entityName, entityKey, token);
+            var entity = await client.GetEntityAsync(entityName, entityKey, token);
             return entity != null;
         }
 
         public static async Task<TState> GetEntityStateAsync<TState>(this DurableEntityClient client,
-          string entityName, string entityKey, CancellationToken token = default)
+          string entityName, string entityKey, CancellationToken token = default) 
         {
             TState entityState = default;
-            var entity = await client.GetEntityStateAsync(entityName, entityKey, token);
+            var entity = await client.GetEntityAsync(entityName, entityKey, token);
             if (entity != null)
             {
-                var innerStatus = (JObject)entity.State.Property("State").Value;
-                entityState = innerStatus.ToObject<TState>();
+                entityState = entity.State.ReadAs<TState>();
             }
             return entityState;
         }
@@ -58,20 +57,20 @@ namespace Microsoft.DurableTask.Client.Entities
             return client.EntityExistsAsync(nameof(CarEntity), plate, token);
         }
 
-        public static Task<Car.CarData> GetCarDataAsync(this DurableEntityClient client,
+        public static Task<CarData> GetCarDataAsync(this DurableEntityClient client,
             string plate, CancellationToken token = default)
         {
-            return client.GetEntityStateAsync<Car.CarData>(nameof(CarEntity), plate, token);
+            return client.GetEntityStateAsync<CarData>(nameof(CarEntity), plate, token);
         }
 
         #endregion [ Car Entity methods]
 
         #region [ Car Rentals Entity methods]
 
-        public static Task<CarRental.CarRentalsData> GetCarRentalsDataAsync(this DurableEntityClient client,
+        public static Task<CarRentalsData> GetCarRentalsDataAsync(this DurableEntityClient client,
             string plate, CancellationToken token = default)
         {
-            return client.GetEntityStateAsync<CarRental.CarRentalsData>(nameof(CarRentalsEntity), plate, token);
+            return client.GetEntityStateAsync<CarRentalsData>(nameof(CarRentalsEntity), plate, token);
         }
 
         #endregion [ Car Rentals Entity methods]
@@ -84,10 +83,10 @@ namespace Microsoft.DurableTask.Client.Entities
             return client.EntityExistsAsync(nameof(PickupLocationEntity), locationId, token);
         }
 
-        public static Task<PickupLocation.PickupLocationData> GetPickupLocationDataAsync(this DurableEntityClient client,
+        public static Task<PickupLocationData> GetPickupLocationDataAsync(this DurableEntityClient client,
             string locationId, CancellationToken token = default)
         {
-            return client.GetEntityStateAsync<PickupLocation.PickupLocationData>(nameof(PickupLocationEntity), locationId, token);
+            return client.GetEntityStateAsync<PickupLocationData>(nameof(PickupLocationEntity), locationId, token);
         }
 
         #endregion [ PickupLocation Entity methods ]

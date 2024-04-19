@@ -79,7 +79,7 @@ namespace ServerlessCarRent.Functions.Clients
                     Identifier = request.Identifier
                 };
 
-                return new OkObjectResult(response);
+                return response.CreateOkResponse();
 
             }
             catch (Exception ex)

@@ -1,0 +1,726 @@
+{
+  "pickupLocations": [
+    {
+      "identifier": "ROMA-TERMINI",
+      "city": "Rome",
+      "location": "Rome Termini station"
+    },
+    {
+      "identifier": "ROME-FCO",
+      "city": "Rome",
+      "location": "Rome Fiumicino Airport"
+    },
+    {
+      "identifier": "MILAN-DUOMO",
+      "city": "Milan",
+      "location": "Milan Downtown (Duomo square)"
+    },
+    {
+      "identifier": "MILAN-LIN",
+      "city": "Milan",
+      "location": "Milan Linate Airport"
+    }
+  ],
+  "cars": [
+    {
+      "plate": "MF074PF",
+      "model": "Audi A3",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "GP933HV",
+      "model": "Toyota CHR",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "SF043QN",
+      "model": "Toyota Yaris",
+      "location": "MILAN-LIN",
+      "costPerHour":2.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "OT920ZD",
+      "model": "Toyota Yaris",
+      "location": "MILAN-LIN",
+      "costPerHour":2.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "HV068RD",
+      "model": "Audi A2",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "DN098NE",
+      "model": "Fiat Panda",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "CQ756TR",
+      "model": "Fiat Panda",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "FB954DI",
+      "model": "Fiat Bravo",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "HT445HU",
+      "model": "Fiat Bravo",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "HZ106IE",
+      "model": "Toyota CHR",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "OP649AB",
+      "model": "Audi A2",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "LO277LE",
+      "model": "Ford Focus",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "VU096DE",
+      "model": "Audi A3",
+      "location": "ROMA-TERMINI",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "EG479CO",
+      "model": "Audi A3",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "ZO564DT",
+      "model": "Toyota CHR",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "RD728US",
+      "model": "Ford Fiesta",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "CI057FN",
+      "model": "Audi A2",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "CC192RT",
+      "model": "Ford Focus",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "TO843LN",
+      "model": "Fiat 500",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "OS937VI",
+      "model": "Fiat Panda",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "EL412PG",
+      "model": "Audi A2",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "GS103IF",
+      "model": "Audi A2",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "BM761UR",
+      "model": "Fiat Bravo",
+      "location": "ROMA-TERMINI",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "SR597MF",
+      "model": "Audi A3",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "GH435EQ",
+      "model": "Ford Fiesta",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "HN424IH",
+      "model": "Ford Focus",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "OV581MD",
+      "model": "Ford Focus",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "NH489SN",
+      "model": "Toyota CHR",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "AB797OB",
+      "model": "Fiat 500",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "IB188SZ",
+      "model": "Audi A2",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "HI601MU",
+      "model": "Toyota CHR",
+      "location": "ROMA-TERMINI",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "ZP555GQ",
+      "model": "Fiat Bravo",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "IM895MQ",
+      "model": "Fiat Bravo",
+      "location": "ROMA-TERMINI",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "UL223PA",
+      "model": "Fiat 500",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "ED777FE",
+      "model": "Ford Focus",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "NM509ML",
+      "model": "Toyota CHR",
+      "location": "ROMA-TERMINI",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "PN591FF",
+      "model": "Audi A2",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "TQ088QU",
+      "model": "Audi A3",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "DL812DQ",
+      "model": "Ford Fiesta",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "ZN466SO",
+      "model": "Fiat Panda",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "DQ558NC",
+      "model": "Fiat Bravo",
+      "location": "ROMA-TERMINI",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "QU354MN",
+      "model": "Ford Focus",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "ST666BR",
+      "model": "Ford Fiesta",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "IR231HV",
+      "model": "Toyota Yaris",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "VE897IM",
+      "model": "Ford Focus",
+      "location": "ROMA-TERMINI",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "CG242FS",
+      "model": "Fiat 500",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "TF149VE",
+      "model": "Fiat Panda",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "MN155ED",
+      "model": "Toyota Yaris",
+      "location": "ROMA-TERMINI",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "MM300OR",
+      "model": "Ford Fiesta",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "HE680IL",
+      "model": "Toyota CHR",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "UN160PV",
+      "model": "Toyota Yaris",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "IF526SS",
+      "model": "Ford Fiesta",
+      "location": "ROMA-TERMINI",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "EF506II",
+      "model": "Fiat Bravo",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "SV559TM",
+      "model": "Ford Focus",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "US419CN",
+      "model": "Audi A3",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "RM808NQ",
+      "model": "Ford Fiesta",
+      "location": "ROMA-TERMINI",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "HU137DC",
+      "model": "Ford Fiesta",
+      "location": "ROMA-TERMINI",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "ZH084LD",
+      "model": "Audi A2",
+      "location": "ROMA-TERMINI",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "HL068ZS",
+      "model": "Audi A3",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "SI085MF",
+      "model": "Ford Fiesta",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "CO290TV",
+      "model": "Toyota Yaris",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "EA247UC",
+      "model": "Ford Fiesta",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "OD944EP",
+      "model": "Audi A3",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "MB179NO",
+      "model": "Fiat Bravo",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "SO721CP",
+      "model": "Ford Fiesta",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "DN246RT",
+      "model": "Audi A3",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "AI596GI",
+      "model": "Ford Fiesta",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "QA763BI",
+      "model": "Toyota CHR",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "NE456BG",
+      "model": "Audi A3",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "LA454LO",
+      "model": "Fiat 500",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "CS221BR",
+      "model": "Fiat Bravo",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "PL828EA",
+      "model": "Audi A2",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "SR011OI",
+      "model": "Toyota Yaris",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "OG003BO",
+      "model": "Ford Fiesta",
+      "location": "ROMA-TERMINI",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "LB619PU",
+      "model": "Toyota Yaris",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "FF484EM",
+      "model": "Ford Fiesta",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "QH485PE",
+      "model": "Fiat 500",
+      "location": "ROMA-TERMINI",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "QH766VA",
+      "model": "Fiat Bravo",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "FR353AZ",
+      "model": "Fiat Panda",
+      "location": "ROMA-TERMINI",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "CL698FN",
+      "model": "Ford Fiesta",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "PB583VO",
+      "model": "Toyota CHR",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "OA056RT",
+      "model": "Fiat Panda",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "PQ100ZH",
+      "model": "Fiat Panda",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "OM182PP",
+      "model": "Audi A2",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "CA524IT",
+      "model": "Toyota CHR",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "QB535FZ",
+      "model": "Fiat 500",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "OA417PZ",
+      "model": "Fiat Bravo",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "PC273IT",
+      "model": "Ford Fiesta",
+      "location": "ROMA-TERMINI",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "FH119CH",
+      "model": "Toyota Yaris",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "NT520MM",
+      "model": "Ford Fiesta",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "QC367EG",
+      "model": "Fiat Bravo",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "GG370CB",
+      "model": "Fiat Panda",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "OF610LQ",
+      "model": "Ford Fiesta",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "TI766HH",
+      "model": "Toyota CHR",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "TB276QU",
+      "model": "Toyota Yaris",
+      "location": "ROME-FCO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "IF764HS",
+      "model": "Toyota CHR",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "OL020EU",
+      "model": "Ford Fiesta",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "ZS740ZS",
+      "model": "Fiat Bravo",
+      "location": "MILAN-DUOMO",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "OP976AA",
+      "model": "Fiat Panda",
+      "location": "MILAN-LIN",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    },
+    {
+      "plate": "AL749TC",
+      "model": "Audi A3",
+      "location": "ROMA-TERMINI",
+      "costPerHour":1.0,
+      "currency": "EUR"
+    }
+  ]
+}

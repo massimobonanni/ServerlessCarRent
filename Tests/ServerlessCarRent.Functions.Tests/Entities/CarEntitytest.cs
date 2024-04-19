@@ -16,7 +16,7 @@ using ServerlessCarRent.Common.Models.Car;
 
 namespace ServerlessCarRent.Functions.Tests.Entities
 {
-    public class CarEntitytest
+    public class CarEntityTest
     {
         [Theory]
         [MemberData(nameof(CarEntityDataGenerator.GetInitializeCarDtos), MemberType = typeof(CarEntityDataGenerator))]
@@ -40,12 +40,13 @@ namespace ServerlessCarRent.Functions.Tests.Entities
 
             entityUT.Initialize(initDto);
 
-            Assert.NotNull(entityUT.State);
-            Assert.Equal(initDto.CarStatus, entityUT.State.CurrentState);
-            Assert.Equal(initDto.Model, entityUT.State.Model);
-            Assert.Equal(initDto.Currency, entityUT.State.Currency);
-            Assert.Equal(initDto.PickupLocation, entityUT.State.PickupLocation);
-            Assert.Equal(initDto.CostPerHour, entityUT.State.CostPerHour);
+            var stateAssert = entityUT.GetState();
+            Assert.NotNull(stateAssert);
+            Assert.Equal(initDto.CarStatus, stateAssert.CurrentState);
+            Assert.Equal(initDto.Model, stateAssert.Model);
+            Assert.Equal(initDto.Currency, stateAssert.Currency);
+            Assert.Equal(initDto.PickupLocation, stateAssert.PickupLocation);
+            Assert.Equal(initDto.CostPerHour, stateAssert.CostPerHour);
         }
 
 
@@ -68,18 +69,19 @@ namespace ServerlessCarRent.Functions.Tests.Entities
             Entity.SetMockContext(entityContextMock.Object);
 
             var entityUT = new CarEntity(loggerMock.Object);
-            entityUT.State = initialCarState;
+            entityUT.SetState(initialCarState);
 
             entityUT.Rent(rentDto);
 
-            Assert.NotNull(entityUT.State);
-            Assert.Equal(expectedCarState.CurrentState, entityUT.State.CurrentState);
-            Assert.Equal(expectedCarState.CurrentRental.Id, entityUT.State.CurrentRental.Id);
-            Assert.Equal(expectedCarState.CurrentRental.StartDate, entityUT.State.CurrentRental.StartDate);
-            Assert.Null(entityUT.State.CurrentRental.EndDate);
-            Assert.Equal(expectedCarState.CurrentRenter.Email, entityUT.State.CurrentRenter.Email);
-            Assert.Equal(expectedCarState.CurrentRenter.FirstName, entityUT.State.CurrentRenter.FirstName);
-            Assert.Equal(expectedCarState.CurrentRenter.LastName, entityUT.State.CurrentRenter.LastName);
+            var stateAssert = entityUT.GetState();
+            Assert.NotNull(stateAssert);
+            Assert.Equal(expectedCarState.CurrentState, stateAssert.CurrentState);
+            Assert.Equal(expectedCarState.CurrentRental.Id, stateAssert.CurrentRental.Id);
+            Assert.Equal(expectedCarState.CurrentRental.StartDate, stateAssert.CurrentRental.StartDate);
+            Assert.Null(stateAssert.CurrentRental.EndDate);
+            Assert.Equal(expectedCarState.CurrentRenter.Email, stateAssert.CurrentRenter.Email);
+            Assert.Equal(expectedCarState.CurrentRenter.FirstName, stateAssert.CurrentRenter.FirstName);
+            Assert.Equal(expectedCarState.CurrentRenter.LastName, stateAssert.CurrentRenter.LastName);
         }
     }
 }

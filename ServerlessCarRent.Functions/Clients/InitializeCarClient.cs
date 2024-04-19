@@ -74,7 +74,7 @@ namespace ServerlessCarRent.Functions.Clients
                     Plate = request.Plate
                 };
 
-                return new ObjectResult(response) { StatusCode = 201 };
+                return response.CreateOkResponse(201);
             }
             catch (Exception ex)
             {

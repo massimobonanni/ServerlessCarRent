@@ -66,7 +66,7 @@ namespace ServerlessCarRent.Functions.Clients
                     return new BadRequestObjectResult("The pickup location is not open");
 
                 if (car.PickupLocation != request.PickupLocation)
-                    return new BadRequestObjectResult("The car location is not the same of the rent location"); ;
+                    return new BadRequestObjectResult("The car location is not the same of the rent location");
 
                 var orchestrationDto = new RentOrchestratorDto()
                 {
@@ -82,7 +82,7 @@ namespace ServerlessCarRent.Functions.Clients
                 var rentOperationId = await client.ScheduleNewOrchestrationInstanceAsync(rentTaskName, orchestrationDto);
 
                 var waitForCompletionToken = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
-                await client.WaitForInstanceCompletionAsync(rentOperationId, waitForCompletionToken);
+                await client.WaitForInstanceCompletionAsync(rentOperationId, true, waitForCompletionToken);
 
                 var response = new RentCarResponse()
                 {
@@ -92,14 +92,14 @@ namespace ServerlessCarRent.Functions.Clients
                     RentOperationStatus = RentOperationState.Pending
                 };
 
-                var orchestratorStatus = await client.GetInstanceAsync(rentOperationId);
+                var orchestratorStatus = await client.GetInstanceAsync(rentOperationId,true);
                 if (orchestratorStatus.RuntimeStatus == OrchestrationRuntimeStatus.Completed)
                 {
                     var orchestratorOutput = orchestratorStatus.ReadOutputAs<RentOrchestratorResponseDto>();
                     response.RentOperationStatus = orchestratorOutput.Status;
                 }
 
-                return new OkObjectResult(response);
+                return response.CreateOkResponse();
 
             }
             catch (Exception ex)

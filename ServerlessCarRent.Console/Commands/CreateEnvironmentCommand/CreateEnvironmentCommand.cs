@@ -38,7 +38,7 @@ namespace ServerlessCarRent.Console.Commands
             var createJsonOptions = new Option<bool>(
                "--createJson",
                () => false,
-               "Save a templet for the JSON file");
+               "Save a template for the JSON file");
 
             this.AddOption(createJsonOptions);
 

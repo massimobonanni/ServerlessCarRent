@@ -67,11 +67,12 @@ namespace ServerlessCarRent.Functions.Clients
                     RentalEndDate = request.RentalEndDate
                 };
 
-                var returnTaskName = new TaskName(nameof(RentOrchestrator));
-                var returnOperationId = await client.ScheduleNewOrchestrationInstanceAsync(returnTaskName, orchestrationDto);
+                var returnTaskName = new TaskName(nameof(ReturnOrchestrator));
+                var returnOperationId = await client.ScheduleNewOrchestrationInstanceAsync(returnTaskName,
+                    orchestrationDto);
 
                 var waitForCompletionToken = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
-                await client.WaitForInstanceCompletionAsync(returnOperationId,waitForCompletionToken);
+                await client.WaitForInstanceCompletionAsync(returnOperationId, true, waitForCompletionToken);
 
                 var response = new ReturnCarResponse()
                 {
@@ -79,7 +80,7 @@ namespace ServerlessCarRent.Functions.Clients
                     ReturnOperationStatus = ReturnOperationState.Pending
                 };
 
-                var orchestratorStatus = await client.GetInstanceAsync(returnOperationId);
+                var orchestratorStatus = await client.GetInstanceAsync(returnOperationId, true);
                 if (orchestratorStatus.RuntimeStatus == OrchestrationRuntimeStatus.Completed)
                 {
                     var orchestratorOutput = orchestratorStatus.ReadOutputAs<ReturnOrchestratorResponseDto>();
@@ -90,7 +91,7 @@ namespace ServerlessCarRent.Functions.Clients
                     response.ReturnOperationStatus = orchestratorOutput.Status;
                 }
 
-                return new OkObjectResult(response);
+                return response.CreateOkResponse();
             }
             catch (Exception ex)
             {

@@ -6,6 +6,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.DurableTask.Client;
 using Microsoft.DurableTask.Client.Entities;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ServerlessCarRent.Common.Models.Car;
 using ServerlessCarRent.Common.Models.CarRental;
@@ -82,14 +83,14 @@ namespace ServerlessCarRent.Functions.Clients
                 {
                     foreach (var item in page.Values)
                     {
-                        var carDto = new CarDto(item.Id.Key, item.State.ReadAs<JObject>());
+                        var carDto = new CarDto(item.Id.Key, item.State.Value);
 
                         if (searchFilters.Match(carDto))
                             response.Cars.Add(carDto);
                     }
                 }
 
-                responseData = new OkObjectResult(response);
+                responseData = response.CreateOkResponse();
             }
             catch (Exception ex)
             {

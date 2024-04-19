@@ -1,4 +1,6 @@
 ﻿using Microsoft.Azure.WebJobs.Extensions.DurableTask;
+using Microsoft.DurableTask;
+using Microsoft.DurableTask.Entities;
 using Microsoft.Extensions.Logging;
 using Moq;
 using ServerlessCarRent.Common.Dtos;
@@ -19,18 +21,18 @@ namespace ServerlessCarRent.Functions.Tests.Orchestrators
     {
         [Theory]
         [MemberData(nameof(RentOrchestratorDataGenerator.GetData), MemberType = typeof(RentOrchestratorDataGenerator))]
-        public async void RunOrchestrator_Test(RentOrchestratorDto orchestratorDto, string instanceId,
+        public async Task RunOrchestrator_Test(RentOrchestratorDto orchestratorDto, string instanceId,
             bool pickupLocationRentResult, RentOperationState expectedOrchestratorResult)
         {
             // Setup Ilogger
             var loggerMock = new Mock<ILogger<RentOrchestrator>>();
 
             // Setup IDurableOrchestrationContext
-            var durableContextMock = new Mock<IDurableOrchestrationContext>();
+            var durableContextMock = new Mock<TaskOrchestrationContext>();
             durableContextMock.Setup(e => e.GetInput<RentOrchestratorDto>())
                 .Returns(orchestratorDto);
-            var pickupLocationEntityId = new EntityId(nameof(PickupLocationEntity), orchestratorDto.PickupLocation);
-            durableContextMock.Setup(e => e.CallEntityAsync<bool>(pickupLocationEntityId, nameof(IPickupLocationEntity.RentCar), It.IsAny<RentCarPickupLocationDto>()))
+            var pickupLocationEntityId = new EntityInstanceId(nameof(PickupLocationEntity), orchestratorDto.PickupLocation);
+            durableContextMock.Setup(e => e.Entities.CallEntityAsync<bool>(pickupLocationEntityId, nameof(IPickupLocationEntity.RentCar), It.IsAny<RentCarPickupLocationDto>(),null))
                 .Returns(Task.FromResult(pickupLocationRentResult));
             durableContextMock.SetupGet(e => e.InstanceId)
                 .Returns(instanceId);
@@ -42,7 +44,7 @@ namespace ServerlessCarRent.Functions.Tests.Orchestrators
             Assert.NotNull(actual);
             Assert.Equal(orchestratorDto.CarPlate, actual.CarPlate);
             Assert.Equal(orchestratorDto.PickupLocation, actual.PickupLocation);
-            Assert.Equal(expectedOrchestratorResult, actual.State);
+            Assert.Equal(expectedOrchestratorResult, actual.Status);
             Assert.Equal(instanceId, actual.RentalId);
         }
     }

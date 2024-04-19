@@ -1,6 +1,4 @@
 ﻿using Microsoft.Azure.Functions.Worker;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.DurableTask.Entities;
 using Microsoft.Extensions.Logging;
 using ServerlessCarRent.Common.Dtos;
@@ -9,16 +7,14 @@ using ServerlessCarRent.Common.Models.Car;
 using ServerlessCarRent.Common.Models.CarRental;
 using ServerlessCarRent.Functions.Orchestrators;
 using System.Threading.Tasks;
-using EntityTriggerAttribute = Microsoft.Azure.Functions.Worker.EntityTriggerAttribute;
 
 namespace ServerlessCarRent.Functions.Entities
 {
-    public class CarEntity : TaskEntity<CarData>, ICarEntity
+    public class CarEntity : EntityBase<CarData>, ICarEntity
     {
-        private readonly ILogger _logger;
-        public CarEntity(ILogger logger)
+        public CarEntity(ILogger<CarEntity> logger) : base(logger)
         {
-            _logger = logger;
+
         }
 
         #region [ Public methods ]
@@ -195,7 +191,7 @@ namespace ServerlessCarRent.Functions.Entities
 
         #endregion [ Private methods ]
 
-        [FunctionName(nameof(CarEntity))]
+        [Function(nameof(CarEntity))]
         public static Task Run([EntityTrigger] TaskEntityDispatcher ctx)
             => ctx.DispatchAsync<CarEntity>();
 
