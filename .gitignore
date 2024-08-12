@@ -349,3 +349,4 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 /ServerlessCarRent.WebSite/Properties/ServiceDependencies/scr5hhazfzcca4qofe - Web Deploy
+/ServerlessCarRent.Functions/Properties/ServiceDependencies/scr5hhazfzcca4qo-func - Zip Deploy
