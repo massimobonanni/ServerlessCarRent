@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.DurableTask.Client;
+using Microsoft.DurableTask.Client.Entities;
 using Microsoft.DurableTask.Entities;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -113,20 +114,36 @@ namespace ServerlessCarRent.Functions.Tests.Clients
             var requestMock = HttpRequestMockUtility.CreateMockForGetRequest("details");
             // Setup IDurableEntityClient
             var durableClientMock = new Mock<DurableTaskClient>();
+            var durableEntityClientMock = new Mock<DurableEntityClient>();
+            durableClientMock.Setup(c => c.Entities).Returns(durableEntityClientMock.Object);
+
             var entityId = new EntityInstanceId(nameof(CarEntity), plate);
-            durableClientMock.Setup(c => c.Entities.GetEntityAsync<JObject>(entityId, true, default))
+
+            durableEntityClientMock.Setup(c=>c.GetEntityAsync<JObject>(entityId, true, default))
                 .Returns(() =>
                 {
                     var entityState = JObject.FromObject(new { Status = carData });
                     return Task.FromResult(new EntityStateResponse<JObject>() { EntityState = entityState, EntityExists = true });
                 });
+            //durableClientMock.Setup(c => c.Entities.GetEntityAsync<JObject>(entityId, true, default))
+            //    .Returns(() =>
+            //    {
+            //        var entityState = JObject.FromObject(new { Status = carData });
+            //        return Task.FromResult(new EntityStateResponse<JObject>() { EntityState = entityState, EntityExists = true });
+            //    });
             var rentalsEntityId = new EntityInstanceId(nameof(CarRentalsEntity), plate);
-            durableClientMock.Setup(c => c.Entities.GetEntityAsync<JObject>(rentalsEntityId, true, default))
+            durableEntityClientMock.Setup(c => c.GetEntityAsync<JObject>(rentalsEntityId, true, default))
                 .Returns(() =>
                 {
                     var entityState = JObject.FromObject(new { Status = carRentals });
                     return Task.FromResult(new EntityStateResponse<JObject>() { EntityState = entityState, EntityExists = true });
                 });
+            //durableClientMock.Setup(c => c.Entities.GetEntityAsync<JObject>(rentalsEntityId, true, default))
+            //    .Returns(() =>
+            //    {
+            //        var entityState = JObject.FromObject(new { Status = carRentals });
+            //        return Task.FromResult(new EntityStateResponse<JObject>() { EntityState = entityState, EntityExists = true });
+            //    });
             // Create Class to test
             var funcClass = new GetCarClient(loggerMock.Object);
 
