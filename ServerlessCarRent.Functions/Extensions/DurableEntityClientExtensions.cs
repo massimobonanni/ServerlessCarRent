@@ -1,15 +1,8 @@
-﻿using Microsoft.Azure.WebJobs.Extensions.DurableTask;
-using Microsoft.DurableTask.Entities;
-using Newtonsoft.Json.Linq;
+﻿using Microsoft.DurableTask.Entities;
 using ServerlessCarRent.Common.Models.Car;
 using ServerlessCarRent.Common.Models.CarRental;
 using ServerlessCarRent.Common.Models.PickupLocation;
 using ServerlessCarRent.Functions.Entities;
-using System.Threading;
-using System.Threading.Tasks;
-using Car = ServerlessCarRent.Common.Models.Car;
-using CarRental = ServerlessCarRent.Common.Models.CarRental;
-using PickupLocation = ServerlessCarRent.Common.Models.PickupLocation;
 
 namespace Microsoft.DurableTask.Client.Entities
 {

@@ -15,7 +15,7 @@ namespace ServerlessCarRent.Functions.Entities
     /// <typeparam name="TState">The type of the entity state.</typeparam>
     public abstract class EntityBase<TState> : TaskEntity<TState>
     {
-        private readonly ILogger _logger;
+        private readonly ILogger? _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EntityBase{TState}"/> class.
@@ -23,6 +23,7 @@ namespace ServerlessCarRent.Functions.Entities
         internal EntityBase()
         {
         }
+
         internal EntityBase(ILogger logger)
         {
             this._logger = logger;

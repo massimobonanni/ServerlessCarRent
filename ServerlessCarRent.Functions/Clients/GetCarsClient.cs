@@ -52,7 +52,7 @@ namespace ServerlessCarRent.Functions.Clients
            [DurableClient] DurableTaskClient client)
         {
             _logger.LogInformation("GetCars function");
-            IActionResult responseData = null;
+            IActionResult? responseData = null;
 
             var searchFilters = new GetCarsFilters(req);
 
@@ -107,22 +107,22 @@ namespace ServerlessCarRent.Functions.Clients
         public GetCarsFilters(HttpRequest req)
         {
             if (req.Query.ContainsKey("plate"))
-                Plate = ((string)req.Query["plate"]).ToLower();
+                Plate = req.Query.GetFirstStringValue("plate")?.ToLower();
             if (req.Query.ContainsKey("model"))
-                Model = ((string)req.Query["model"]).ToLower();
+                Model = req.Query.GetFirstStringValue("model")?.ToLower();
             if (req.Query.ContainsKey("location"))
-                Location = ((string)req.Query["location"]).ToLower();
+                Location = req.Query.GetFirstStringValue("location")?.ToLower();
             if (req.Query.ContainsKey("state"))
             {
-                var states = ((string)req.Query["state"]).ToLower()
+                var states = req.Query.GetFirstStringValue("state")?.ToLower()
                     .Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-                States = states.Select(s => (CarState)Enum.Parse(typeof(CarState), s, true));
+                States = states!.Select(s => (CarState)Enum.Parse(typeof(CarState), s, true));
             }
             if (req.Query.ContainsKey("rentalState"))
             {
-                var rentalStates = ((string)req.Query["rentalState"]).ToLower()
+                var rentalStates = req.Query.GetFirstStringValue("rentalState")?.ToLower()
                     .Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-                RentalStates = rentalStates.Select(s => (CarRentalState)Enum.Parse(typeof(CarRentalState), s, true));
+                RentalStates = rentalStates!.Select(s => (CarRentalState)Enum.Parse(typeof(CarRentalState), s, true));
             }
         }
 
@@ -131,11 +131,11 @@ namespace ServerlessCarRent.Functions.Clients
             bool result = true;
 
             if (!string.IsNullOrEmpty(Plate))
-                result &= car.Plate.ToLower().Contains(Plate);
+                result &= car.Plate!.Contains(Plate, StringComparison.CurrentCultureIgnoreCase);
             if (!string.IsNullOrEmpty(Model))
-                result &= car.Model.ToLower().Contains(Model);
+                result &= car.Model!.Contains(Model, StringComparison.CurrentCultureIgnoreCase);
             if (!string.IsNullOrEmpty(Location))
-                result &= car.PickupLocation.ToLower().Contains(Location);
+                result &= car.PickupLocation!.Contains(Location, StringComparison.CurrentCultureIgnoreCase);
             if (States != null && States.Any())
                 result &= States.Contains(car.CurrentStatus);
             if (RentalStates != null && RentalStates.Any())
@@ -144,15 +144,11 @@ namespace ServerlessCarRent.Functions.Clients
             return result;
         }
 
-        public string Plate { get; set; }
-        public string Model { get; set; }
-        public string Location { get; set; }
-
-        public IEnumerable<CarState> States { get; set; }
-        public IEnumerable<CarRentalState> RentalStates { get; set; }
-
-
-
+        public string? Plate { get; set; }
+        public string? Model { get; set; }
+        public string? Location { get; set; }
+        public IEnumerable<CarState>? States { get; set; }
+        public IEnumerable<CarRentalState>? RentalStates { get; set; }
     }
 }
 

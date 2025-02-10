@@ -32,14 +32,14 @@ namespace ServerlessCarRent.Functions.Activities
             var senderEmail = this._configuration.GetValue<string>("FromEmail");
             var adminEmail = this._configuration.GetValue<string>("AdminEmail");
 
-            if (!string.IsNullOrWhiteSpace(adminEmail))
+            if (!string.IsNullOrWhiteSpace(adminEmail) && !string.IsNullOrWhiteSpace(senderEmail))
             {
                 var message = await CreateSendGridMessageAsync(senderEmail,adminEmail, context);
                 return message;
             }
             else
             {
-                this._logger.LogWarning("AdminEmail not setted in the configuration file. The Sendmail activity cannot send email to admin.");
+                this._logger.LogWarning("AdminEmail or FromEmail not setted in the configuration file. The Sendmail activity cannot send email to admin.");
                 return null;
             }
 
