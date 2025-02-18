@@ -101,14 +101,14 @@ namespace ServerlessCarRent.Functions.Clients
         public GetPickupLocationsFilters(HttpRequest req)
         {
             if (req.Query.ContainsKey("identifier"))
-                Identifier = ((string)req.Query["identifier"]).ToLower();
+                Identifier = req.Query["identifier"].First()!.ToLower();
             if (req.Query.ContainsKey("city"))
-                City = ((string)req.Query["city"]).ToLower();
+                City = req.Query["city"].First()!.ToLower();
             if (req.Query.ContainsKey("location"))
-                Location = ((string)req.Query["location"]).ToLower();
+                Location = req.Query["location"].First()!.ToLower();
             if (req.Query.ContainsKey("state"))
             {
-                var states = ((string)req.Query["state"]).ToLower()
+                var states = req.Query["state"].First()!.ToLower()
                     .Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                 States = states.Select(s => (PickupLocationState)Enum.Parse(typeof(PickupLocationState), s, true));
             }
@@ -130,11 +130,11 @@ namespace ServerlessCarRent.Functions.Clients
             return result;
         }
 
-        public string Identifier { get; set; }
-        public string City { get; set; }
-        public string Location { get; set; }
+        public string? Identifier { get; set; }
+        public string? City { get; set; }
+        public string? Location { get; set; }
 
-        public IEnumerable<PickupLocationState> States { get; set; }
+        public IEnumerable<PickupLocationState>? States { get; set; }
     }
 }
 

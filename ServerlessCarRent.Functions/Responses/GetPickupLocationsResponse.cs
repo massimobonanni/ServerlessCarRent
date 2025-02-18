@@ -9,24 +9,24 @@ namespace ServerlessCarRent.Functions.Responses
 	{
 		[OpenApiProperty(Description = "The search parameter for the identifier")]
 		[JsonProperty("identifierFilter")]
-		public string IdentifierFilter { get; set; }
+		public string? IdentifierFilter { get; set; }
 
 		[OpenApiProperty(Description = "The search parameter for the city")]
 		[JsonProperty("cityFilter")]
-		public string CityFilter { get; set; }
+		public string? CityFilter { get; set; }
 
 		[OpenApiProperty(Description = "The search parameter for the location")]
 		[JsonProperty("locationFilter")]
-		public string LocationFilter { get; set; }
+		public string? LocationFilter { get; set; }
 
 		[OpenApiProperty(Description = "The search parameter for the current states")]
 		[JsonProperty("statesFilter")]
-		public IEnumerable<string> StatesFilter { get; set; }
+		public IEnumerable<string>? StatesFilter { get; set; }
 
 
 		[OpenApiProperty(Description = "The search results")]
 		[JsonProperty("pickupLocations")]
-		public List<PickupLocationDto> PickupLocations { get; set; }
+		public List<PickupLocationDto>? PickupLocations { get; set; }
 
 		public class PickupLocationDto
 		{
@@ -46,7 +46,7 @@ namespace ServerlessCarRent.Functions.Responses
             public PickupLocationDto(string identifier, string serializedEntityState)
             {
                 var locationData = JsonConvert.DeserializeObject<PickupLocationData>(serializedEntityState);
-                CurrentStatus = locationData.Status;
+                CurrentStatus = locationData!.Status;
                 City = locationData.City;
                 Location = locationData.Location;
                 Identifier = identifier;
