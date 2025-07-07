@@ -4,7 +4,7 @@ param location string = resourceGroup().location
 @description('The name of the environment. It will be used to create the name of the resources in the resource group.')
 @maxLength(16)
 @minLength(3)
-param environmentName string = 'sfa${uniqueString(subscription().id, resourceGroup().name)}'
+param environmentName string = 'scr${uniqueString(subscription().id, resourceGroup().name)}'
 
 var eventGridTopicName = toLower('${environmentName}-topic')
 
