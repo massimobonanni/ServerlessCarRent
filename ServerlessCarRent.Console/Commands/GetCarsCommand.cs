@@ -8,51 +8,66 @@ using System.Threading.Tasks;
 
 namespace ServerlessCarRent.Console.Commands
 {
-    internal class GetCarsCommand : Command
+    internal class GetCarsCommand : CommandBase
     {
-        public GetCarsCommand() : base("search", "Retrieve cars based on filters")
+        private readonly Option<string> urlOption;
+        private readonly Option<string> keyOption;
+        private readonly Option<string> plateOption;
+        private readonly Option<string> locationOption;
+        private readonly Option<string> modelOption;
+
+        public GetCarsCommand(IServiceProvider serviceProvider) :
+            base("search", "Retrieve cars based on filters", serviceProvider)
         {
-            var urlOptions = new Option<Uri>(
-                name: "--uri",
-                description: "The service url to call.")
-            { IsRequired = true };
-
-            this.AddOption(urlOptions);
-
-            var keyOptions = new Option<string>(
-                name: "--key",
-                description: "The key to call the service.");
-
-            this.AddOption(keyOptions);
-
-            var plateOptions = new Option<string>(
-               name: "--plate",
-               description: "The plate filter for search cars.");
-
-            this.AddOption(plateOptions);
-
-            var locationOptions = new Option<string>(
-               name: "--location",
-               description: "The location filter for search cars.");
-
-            this.AddOption(locationOptions);
-
-            var modelOptions = new Option<string>(
-               name: "--model",
-               description: "The model filter for search cars.");
-
-            this.AddOption(modelOptions);
-
-            this.SetHandler(async (uri, key, plate, location, model) =>
+            urlOption = new Option<string>("--uri")
             {
-                await CommandHandler(uri, key, plate, location, model);
-            }, urlOptions, keyOptions, plateOptions, locationOptions, modelOptions);
+                Required = true,
+                Description = "The service url to call."
+            };
+
+            this.Options.Add(urlOption);
+
+            keyOption = new Option<string>("--key")
+            {
+                Description = "The key to call the service."
+            };
+
+            this.Options.Add(keyOption);
+
+            plateOption = new Option<string>("--plate")
+            {
+                Description = "The plate filter for search cars."
+            };
+
+            this.Options.Add(plateOption);
+
+            locationOption = new Option<string>("--location")
+            {
+                Description = "The location filter for search cars."
+            };
+
+            this.Options.Add(locationOption);
+
+            modelOption = new Option<string>("--model")
+            {
+                Description = "The model filter for search cars."
+            };
+
+            this.Options.Add(modelOption);
+
+            this.SetAction(CommandHandler);
         }
 
-        private async Task CommandHandler(Uri uri, string key, string plate, string location, string model)
+        private async Task CommandHandler(ParseResult parseResult, CancellationToken cancellationToken)
         {
+            var uri = parseResult.GetRequiredValue(urlOption);
+            var key = parseResult.GetValue(keyOption);
+            var plate = parseResult.GetValue(plateOption);
+            var location = parseResult.GetValue(locationOption);
+            var model = parseResult.GetValue(modelOption);
+
             using var httpClient = new HttpClient();
-            var restClient = new CarsManagementClient(httpClient, uri.ToString(), key);
+            var restClient = new CarsManagementClient(httpClient, uri, key);
 
             var response = await restClient.GetCarsAsync(plate, location, model, null, null);
 

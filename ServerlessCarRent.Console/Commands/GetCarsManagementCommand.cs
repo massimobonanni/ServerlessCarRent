@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace ServerlessCarRent.Console.Commands
 {
-	internal  class GetCarsManagementCommand : Command
+	internal  class GetCarsManagementCommand : CommandBase
 	{
-        public GetCarsManagementCommand() : base("cars", "manages cars")
+        public GetCarsManagementCommand(IServiceProvider serviceProvider) : 
+            base("cars", "manages cars",serviceProvider)
         {
-            this.Add(new GetCarsCommand());
+            this.Add(new GetCarsCommand(serviceProvider));
         }
 	}
 }
