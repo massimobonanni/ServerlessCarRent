@@ -1,19 +1,12 @@
-﻿using ServerlessCarRent.Console.Commands;
+﻿using Microsoft.Extensions.DependencyInjection;
+using ServerlessCarRent.Console.Commands;
 using System.CommandLine;
 
-namespace scl;
+var serviceCollection = new ServiceCollection();
+var serviceProvider = serviceCollection.BuildServiceProvider();
 
-class Program
-{
-	static async Task<int> Main(string[] args)
-	{
-		var rootCommand = new RootCommand("Console for Serverless Rent car platform");
-		
-		rootCommand.AddCommand(new GetCarsManagementCommand());
-        rootCommand.AddCommand(new CreateEnvironmentCommand());
+var rootCommand = new ServerlessCarRent.Console.Commands.RootCommand(serviceProvider);
 
-        return await rootCommand.InvokeAsync(args);
-	}
+ParseResult parseResult = rootCommand.Parse(args);
+return await parseResult.InvokeAsync();
 
-		
-}
